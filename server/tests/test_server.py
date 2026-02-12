@@ -5,13 +5,10 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+import importlib.util
 
 # Only run if mcp package is available
-try:
-    import mcp.server.fastmcp
-    HAS_MCP = True
-except ImportError:
-    HAS_MCP = False
+HAS_MCP = importlib.util.find_spec("mcp") is not None
 
 
 @pytest.mark.skipif(not HAS_MCP, reason="mcp package not installed")
