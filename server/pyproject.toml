@@ -38,6 +38,9 @@ dev = [
     "pytest>=8.0",
     "pytest-asyncio>=0.23",
 ]
+judge = [
+    "openai>=1.0",
+]
 
 [project.scripts]
 prompt-catalog = "prompt_catalog_mcp.cli:main"
