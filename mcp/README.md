@@ -137,6 +137,8 @@ await server.connect(transport);
 
 Add to your MCP settings (e.g., `claude_desktop_config.json`):
 
+**TypeScript / Node.js server:**
+
 ```json
 {
   "mcpServers": {
@@ -149,6 +151,239 @@ Add to your MCP settings (e.g., `claude_desktop_config.json`):
     }
   }
 }
+```
+
+**Python server:**
+
+```json
+{
+  "mcpServers": {
+    "prompt-catalog": {
+      "command": "python",
+      "args": ["path/to/prompt-catalog-server/server.py"],
+      "env": {
+        "CATALOG_ROOT": "/path/to/prompt-catalog"
+      }
+    }
+  }
+}
+```
+
+### Minimal Implementation (Python)
+
+```python
+"""
+Prompt Catalog MCP Server — Python implementation.
+
+Requires:
+    pip install mcp pyyaml
+"""
+
+import os
+import re
+from pathlib import Path
+
+import yaml
+from mcp.server import Server
+from mcp.server.stdio import stdio_server
+from mcp.types import (
+    GetPromptResult,
+    Prompt,
+    PromptArgument,
+    PromptMessage,
+    Resource,
+    TextContent,
+)
+
+CATALOG_ROOT = Path(os.environ.get("CATALOG_ROOT", "."))
+PROMPT_DIRS = [
+    "planning", "architecture", "development", "testing",
+    "security", "deployment", "operations", "domains",
+]
+
+server = Server("prompt-catalog")
+
+
+# ── Helpers ──────────────────────────────────────────────────────────
+
+def _load_prompt(path: Path) -> dict:
+    """Parse a YAML prompt file and return its contents."""
+    return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+
+def _iter_prompts():
+    """Yield (dir_name, path, parsed_dict) for every prompt YAML file."""
+    for dir_name in PROMPT_DIRS:
+        dir_path = CATALOG_ROOT / "prompts" / dir_name
+        if not dir_path.is_dir():
+            continue
+        for file in sorted(dir_path.glob("*.yaml")):
+            if file.name.startswith("_"):
+                continue  # skip _template.yaml
+            yield dir_name, file, _load_prompt(file)
+
+
+def _iter_instructions():
+    """Yield (scope, path) for every instruction Markdown file."""
+    for scope in ("phases", "guardrails", "platforms"):
+        scope_dir = CATALOG_ROOT / "instructions" / scope
+        if not scope_dir.is_dir():
+            continue
+        for file in sorted(scope_dir.glob("*.instructions.md")):
+            yield scope, file
+
+
+def _extract_variables(prompt_text: str) -> list[str]:
+    """Extract {{variable}} placeholders from a prompt string."""
+    return list(dict.fromkeys(re.findall(r"\{\{(\w+)\}\}", prompt_text)))
+
+
+# ── Resources ────────────────────────────────────────────────────────
+
+@server.list_resources()
+async def list_resources() -> list[Resource]:
+    resources: list[Resource] = []
+
+    # Prompt resources
+    for dir_name, file, data in _iter_prompts():
+        resources.append(
+            Resource(
+                uri=f"prompt-catalog://prompts/{dir_name}/{data['id']}",
+                name=data["title"],
+                description=data.get("description", ""),
+                mimeType="text/yaml",
+            )
+        )
+
+    # Instruction resources
+    for scope, file in _iter_instructions():
+        resources.append(
+            Resource(
+                uri=f"prompt-catalog://instructions/{scope}/{file.stem}",
+                name=file.stem,
+                description=f"{scope} instruction file",
+                mimeType="text/markdown",
+            )
+        )
+
+    return resources
+
+
+@server.read_resource()
+async def read_resource(uri: str) -> str:
+    """Return the raw file content for a given resource URI."""
+    # prompt-catalog://prompts/{dir}/{id}
+    if uri.startswith("prompt-catalog://prompts/"):
+        parts = uri.replace("prompt-catalog://prompts/", "").split("/")
+        dir_name, prompt_id = parts[0], parts[1]
+        for _, file, data in _iter_prompts():
+            if data["id"] == prompt_id:
+                return file.read_text(encoding="utf-8")
+        raise ValueError(f"Prompt not found: {prompt_id}")
+
+    # prompt-catalog://instructions/{scope}/{stem}
+    if uri.startswith("prompt-catalog://instructions/"):
+        parts = uri.replace("prompt-catalog://instructions/", "").split("/")
+        scope, stem = parts[0], parts[1]
+        target = CATALOG_ROOT / "instructions" / scope / f"{stem}.md"
+        if target.exists():
+            return target.read_text(encoding="utf-8")
+        raise ValueError(f"Instruction not found: {stem}")
+
+    raise ValueError(f"Unknown URI scheme: {uri}")
+
+
+# ── Prompt Templates ────────────────────────────────────────────────
+
+@server.list_prompts()
+async def list_prompts() -> list[Prompt]:
+    prompts: list[Prompt] = []
+
+    for _, _, data in _iter_prompts():
+        variables = data.get("variables", [])
+        arguments = [
+            PromptArgument(
+                name=var["name"],
+                description=var.get("description", ""),
+                required=var.get("required", False),
+            )
+            for var in variables
+        ]
+        prompts.append(
+            Prompt(
+                name=data["id"].lower(),
+                description=data.get("description", data["title"]),
+                arguments=arguments,
+            )
+        )
+
+    return prompts
+
+
+@server.get_prompt()
+async def get_prompt(name: str, arguments: dict[str, str] | None = None) -> GetPromptResult:
+    """Fill in a prompt template with the supplied arguments."""
+    for _, _, data in _iter_prompts():
+        if data["id"].lower() == name:
+            prompt_text = data.get("prompt", "")
+
+            # Substitute {{variables}} with provided arguments
+            if arguments:
+                for key, value in arguments.items():
+                    prompt_text = prompt_text.replace(f"{{{{{key}}}}}", value)
+
+            return GetPromptResult(
+                description=data.get("description", data["title"]),
+                messages=[
+                    PromptMessage(
+                        role="user",
+                        content=TextContent(type="text", text=prompt_text),
+                    )
+                ],
+            )
+
+    raise ValueError(f"Prompt not found: {name}")
+
+
+# ── Filtering helpers (for advanced usage) ───────────────────────────
+
+def filter_prompts(
+    category: str | None = None,
+    skill_level: str | None = None,
+    platform: str | None = None,
+    tag: str | None = None,
+) -> list[dict]:
+    """Return prompt metadata matching the given filters."""
+    results = []
+    skill_order = ["beginner", "intermediate", "advanced", "expert"]
+
+    for _, _, data in _iter_prompts():
+        if category and data.get("category") != category:
+            continue
+        if skill_level:
+            max_idx = skill_order.index(skill_level)
+            cur_idx = skill_order.index(data.get("skill_level", "expert"))
+            if cur_idx > max_idx:
+                continue
+        if platform and platform not in data.get("platforms", []):
+            continue
+        if tag and tag not in data.get("tags", []):
+            continue
+        results.append(data)
+
+    return results
+
+
+# ── Entry point ──────────────────────────────────────────────────────
+
+async def main():
+    async with stdio_server() as (read_stream, write_stream):
+        await server.run(read_stream, write_stream, server.create_initialization_options())
+
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
 ```
 
 ## Instruction File Loading Strategy
