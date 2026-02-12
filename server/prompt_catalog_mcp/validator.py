@@ -270,8 +270,9 @@ def validate_kits(root: Path) -> ValidationResult:
                 data = yaml.safe_load(yaml_file.read_text(encoding="utf-8"))
                 if data and "id" in data:
                     available_prompts.add(data["id"])
-            except Exception:
-                pass
+            except yaml.YAMLError as e:
+                rel_prompt_path = str(yaml_file.relative_to(root))
+                result.issues.append(Issue(rel_prompt_path, f"YAML parse error while scanning prompts: {e}"))
 
     available_instructions = set()
     for scope in INSTRUCTION_SCOPES:
