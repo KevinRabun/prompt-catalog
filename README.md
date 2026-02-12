@@ -112,6 +112,9 @@ prompt-catalog/
 │   ├── maybe-personal-finance.md   # Maybe — personal finance
 │   └── calcom-scheduling-saas.md   # Cal.com — scheduling SaaS
 │
+├── tutorials/                      # Step-by-step guided tutorials
+│   └── build-saas-from-zero.md     # Build a SaaS app from scratch
+│
 └── mcp/                            # MCP integration guide
     ├── README.md                   # Integration guide
     └── server-config.json          # MCP server configuration
@@ -222,6 +225,12 @@ prompt-catalog serve
 ```
 
 See [server/README.md](server/README.md) for configuration details.
+
+### Follow the Tutorial
+
+New to the catalog? Start here:
+
+> **[Build a SaaS Task Manager from Zero](tutorials/build-saas-from-zero.md)** — A complete walkthrough of building a team task management app using the `saas-web-app` starter kit. Shows every prompt, every variable fill-in, and what the prompts catch that you'd otherwise miss.
 
 ### Browse Prompts
 Navigate the `prompts/` directory organized by SDLC phase, or use the master `prompts/index.json` to search programmatically.

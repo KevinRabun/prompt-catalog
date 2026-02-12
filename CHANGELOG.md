@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - Medplum (medplum/medplum) — Healthcare, HIPAA, HL7 FHIR
   - Maybe Finance (maybe-finance/maybe) — FinTech, decimal arithmetic, reconciliation
   - Cal.com (calcom/cal.com) — SaaS scheduling, timezone handling, OAuth
+- **Tutorial** (`tutorials/`) — "Build a SaaS Task Manager from Zero" end-to-end walkthrough using the `saas-web-app` starter kit, covering 8 prompts with filled-in variables, representative AI output, and analysis of what each prompt catches
 - Catalog loader engine with filtering by category, platform, skill level, tag, and free-text search
 - Interactive `prompt-catalog start` command that recommends prompt stacks based on project type
 

@@ -647,5 +647,14 @@
       "domain": "SaaS Web App",
       "file": "case-studies/calcom-scheduling-saas.md"
     }
+  ],
+  "tutorials": [
+    {
+      "title": "Build a SaaS Task Manager from Zero",
+      "description": "End-to-end walkthrough building a task management SaaS using the saas-web-app starter kit",
+      "file": "tutorials/build-saas-from-zero.md",
+      "starter_kit": "saas-web-app",
+      "skill_level": "intermediate"
+    }
   ]
 }
