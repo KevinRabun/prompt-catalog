@@ -9,7 +9,7 @@ import pytest
 
 # Only run if mcp package is available
 try:
-    from mcp.server.fastmcp import FastMCP
+    import mcp.server.fastmcp
     HAS_MCP = True
 except ImportError:
     HAS_MCP = False
