@@ -1,0 +1,144 @@
+id: "DOM-GAMEDEV-001"
+version: "1.0.0"
+title: "Game Development Architecture and Design"
+description: "Guides game application development across platforms with performance-critical design patterns"
+category: "domains"
+subcategory: "game-development"
+skill_level: "intermediate"
+platforms: ["windows", "android", "ios", "web", "linux"]
+tags: ["game-dev", "unity", "unreal", "godot", "2d", "3d", "multiplayer", "ecs"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are an expert game developer designing a game application.
+
+  **Context:**
+  - Game Type: {{game_type}}
+  - Engine / Framework: {{engine}}
+  - Target Platforms: {{target_platforms}}
+  - Multiplayer: {{multiplayer_mode}}
+  - Monetization: {{monetization_model}}
+
+  **Design and implement covering these game-specific concerns:**
+
+  ### 1. Architecture Pattern Selection
+  Choose and justify the appropriate pattern:
+  - **Entity-Component-System (ECS)** for data-oriented, high-entity-count games
+  - **Scene graph / Node hierarchy** (Godot, Unity's GameObject model)
+  - **Actor model** for network-heavy, distributed game worlds
+  - **State machine** architecture for game states (menu, play, pause, game-over)
+  - Separate **simulation / logic layer** from **rendering layer**
+  - Define a clear **game loop**: input → update → physics → render
+
+  ### 2. Performance Optimization (Critical for Games)
+  - **Frame budget**: Divide work across the 16.67ms frame (60 FPS) or 33.33ms (30 FPS)
+  - **Object pooling**: Reuse frequently created/destroyed objects (bullets, particles, enemies)
+  - **Level of Detail (LOD)**: Reduce mesh/texture quality for distant objects
+  - **Occlusion culling**: Don't render what the camera can't see
+  - **Spatial partitioning**: Quad-tree (2D), octree (3D), spatial hashing for collision/queries
+  - **Batching**: Minimize draw calls through instancing and texture atlases
+  - **Memory management**: Minimize GC pressure, pre-allocate buffers, avoid allocations in hot paths
+  - **Asset streaming**: Load assets asynchronously, implement loading screens or seamless streaming
+
+  ### 3. Input System
+  - **Input abstraction layer**: Map raw inputs to game actions
+  - **Multi-platform input**: Keyboard/mouse, gamepad, touch, motion controls
+  - **Input buffering**: Allow buffered inputs for responsive controls
+  - **Rebindable controls**: Player-configurable key bindings
+  - **Accessibility**: Alternative input methods, assist modes
+
+  ### 4. Physics and Collision
+  - Choose **physics engine** appropriate for game type
+  - **Fixed timestep** for physics updates (deterministic simulation)
+  - **Collision layers/masks** to optimize collision checks
+  - **Raycasting** for line-of-sight, projectile trajectories
+  - **Interpolation** between physics steps for smooth rendering
+
+  ### 5. Multiplayer / Networking (if applicable)
+  - **Client-server** vs **peer-to-peer** architecture decision
+  - **Authoritative server** for anti-cheat and consistency
+  - **Network synchronization**: Snapshot interpolation, client-side prediction, lag compensation
+  - **State replication**: Define what state is replicated and at what frequency
+  - **Bandwidth optimization**: Delta compression, priority systems, area of interest
+  - **Reconnection** and session management
+  - **Matchmaking** and lobby systems
+
+  ### 6. Audio System
+  - **Spatial audio**: 3D sound positioning, attenuation
+  - **Audio pooling**: Manage concurrent sounds, priority system
+  - **Music system**: Adaptive/dynamic music, crossfading, layers
+  - **Sound categories**: Master, music, SFX, voice, UI with independent volume controls
+
+  ### 7. Save / Persistence System
+  - **Serialization format**: Binary (performance) vs JSON/YAML (debuggability)
+  - **Save versioning**: Handle save file migration across game versions
+  - **Auto-save**: Periodic automatic save with player notification
+  - **Cloud saves**: Cross-platform save synchronization
+  - **Anti-tampering**: Checksums or encryption for save data if competitive
+
+  ### 8. UI / UX System
+  - **Resolution-independent** UI scaling
+  - **Localization-ready** text and UI layout
+  - **Accessibility**: Colorblind modes, text scaling, screen reader support, subtitles
+  - **Platform-specific UX**: Controller-friendly menus for console, touch for mobile
+  - **Tutorial / onboarding** system
+
+  ### 9. Testing for Games
+  - **Automated gameplay tests**: Record and replay input sequences
+  - **Performance profiling**: Frame time analysis, memory profiling
+  - **Multiplayer testing**: Simulate latency, packet loss, desync detection
+  - **Playtesting**: Structured playtesting protocol with feedback collection
+  - **Analytics**: Track player behavior, funnel analysis, retention metrics
+
+  **Deliver:**
+  1. Architecture diagram with system interactions
+  2. Core systems breakdown with implementation priorities
+  3. Performance budget and optimization plan
+  4. Platform-specific considerations for each target
+  5. Development milestone plan
+
+variables:
+  - name: "game_type"
+    description: "Genre and mechanics of the game"
+    required: true
+    examples: ["2D platformer", "3D open-world RPG", "Real-time strategy", "Roguelike", "Puzzle", "FPS multiplayer"]
+  - name: "engine"
+    description: "Game engine or framework"
+    required: true
+    examples: ["Unity (C#)", "Unreal Engine 5 (C++/Blueprints)", "Godot 4 (GDScript/C#)", "Custom (C++/Rust)", "Bevy (Rust ECS)", "Phaser (JavaScript/TypeScript)"]
+  - name: "target_platforms"
+    description: "Platforms to support"
+    required: true
+    examples: ["PC (Windows/Linux/Mac)", "Mobile (iOS/Android)", "Console (Switch/PS5/Xbox)", "Web (WebGL/WebGPU)", "Cross-platform"]
+  - name: "multiplayer_mode"
+    description: "Whether and how multiplayer is supported"
+    required: true
+    examples: ["Single-player only", "Local co-op (2-4 players)", "Online competitive (up to 100)", "Online co-op (2-4 players)", "MMO persistent world"]
+  - name: "monetization_model"
+    description: "How the game generates revenue"
+    required: false
+    default: "Premium (one-time purchase)"
+    examples: ["Premium", "Free-to-play with cosmetic microtransactions", "Subscription", "Ad-supported", "Season pass"]
+
+expected_output: "Game architecture document with system design, performance plan, platform considerations, and milestone roadmap"
+
+quality_criteria:
+  - "Architecture supports target frame rate on lowest-spec target platform"
+  - "Performance budget is defined per system"
+  - "Multiplayer section addresses latency and cheating (if applicable)"
+  - "Accessibility features are included"
+  - "Platform-specific constraints are addressed"
+
+anti_patterns:
+  - "Allocating memory in the game loop"
+  - "Using physics for non-physics purposes"
+  - "Tightly coupling game logic to rendering"
+  - "No object pooling for frequently spawned objects"
+  - "Relying on client authority in multiplayer"
+
+related_prompts: ["ARCH-SYS-001", "DEV-DESK-001", "DEV-MOB-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001", "ARCH-SYS-001"]
+  next: ["DEV-DESK-001", "TEST-UNIT-001"]

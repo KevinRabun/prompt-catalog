@@ -1,0 +1,153 @@
+id: "SEC-THREAT-001"
+version: "1.0.0"
+title: "Threat Modeling"
+description: "Conducts structured threat modeling using STRIDE methodology to identify and mitigate security risks"
+category: "security"
+subcategory: "threat-modeling"
+skill_level: "advanced"
+platforms: ["all"]
+tags: ["security", "threat-modeling", "stride", "risk-assessment", "attack-surface"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a security architect conducting threat modeling for a software system.
+
+  **System Context:**
+  - System: {{system_name}}
+  - Architecture: {{architecture_description}}
+  - Data Sensitivity: {{data_sensitivity}}
+  - User Types: {{user_types}}
+  - External Interfaces: {{external_interfaces}}
+
+  **Conduct threat modeling using the STRIDE methodology:**
+
+  ### 1. System Decomposition
+  - Create a **data flow diagram** (DFD) in Mermaid syntax
+  - Identify **trust boundaries** (where trust level changes)
+  - List **entry points** (how users/systems interact with the system)
+  - List **assets** (what needs protection: data, functionality, infrastructure)
+
+  ### 2. STRIDE Analysis
+  For each component and data flow, analyze threats in each STRIDE category:
+
+  | Category | Threat | Property Violated |
+  |----------|--------|------------------|
+  | **S**poofing | Pretending to be someone else | Authentication |
+  | **T**ampering | Modifying data or code | Integrity |
+  | **R**epudiation | Denying having performed an action | Non-repudiation |
+  | **I**nformation Disclosure | Exposing data to unauthorized parties | Confidentiality |
+  | **D**enial of Service | Making the system unavailable | Availability |
+  | **E**levation of Privilege | Gaining unauthorized capabilities | Authorization |
+
+  ### 3. Threat Documentation
+  For each identified threat:
+  ```
+  Threat ID: T-{number}
+  Category: [STRIDE category]
+  Component: [Affected component]
+  Description: [What could happen]
+  Attack Vector: [How would this be exploited]
+  Impact: Critical | High | Medium | Low
+  Likelihood: High | Medium | Low
+  Risk Score: [Impact × Likelihood]
+  Mitigation: [How to prevent or detect this]
+  Status: Mitigated | Accepted | Open
+  ```
+
+  ### 4. Attack Surface Analysis
+  - External-facing endpoints (APIs, web pages, file uploads)
+  - Authentication mechanisms and their weaknesses
+  - Data storage access patterns
+  - Third-party integrations and their trust level
+  - Administrative interfaces and privileged operations
+
+  ### 5. Mitigation Plan
+  For top-risk threats, provide:
+  - Specific technical mitigation (code, configuration, architecture changes)
+  - Detection mechanism (how to know if this threat materializes)
+  - Response plan (what to do if it happens)
+  - Residual risk after mitigation
+
+  ### 6. Security Requirements
+  Derive security requirements from the threat model:
+  - Authentication requirements
+  - Authorization requirements
+  - Encryption requirements
+  - Audit logging requirements
+  - Input validation requirements
+  - Rate limiting requirements
+
+  **Important:**
+  - Focus on realistic threats, not theoretical exercises
+  - Consider the attacker's perspective — what's the easiest way in?
+  - Don't assume security controls work — verify defense-in-depth
+  - Flag areas where you need more information about the system
+  - If unsure about a specific attack vector, say so and recommend expert review
+
+  ### 7. Adversarial Evaluation of This Threat Model
+  After completing the threat model, red-team your own analysis:
+  - **Blind spots**: What attack categories might you have missed?
+  - **Assumption testing**: For each "Mitigated" threat, describe how the mitigation could fail
+  - **Attacker creativity**: What would a well-funded, persistent attacker try that isn't in STRIDE?
+  - **Insider threats**: Have you considered malicious insiders with legitimate access?
+  - **Supply chain**: Have you considered compromised dependencies or build pipelines?
+  - **Confidence rating**: Rate your confidence in each finding (High/Medium/Low) and flag Low-confidence items for human expert review
+
+variables:
+  - name: "system_name"
+    description: "Name of the system being analyzed"
+    required: true
+  - name: "architecture_description"
+    description: "Brief description of the system architecture"
+    required: true
+    examples: ["3-tier web app with React frontend, Node.js API, PostgreSQL database deployed on Azure"]
+  - name: "data_sensitivity"
+    description: "Types and sensitivity of data handled"
+    required: true
+    examples: ["PII (names, emails), financial data (payment info)", "Healthcare records (PHI)", "Public content only"]
+  - name: "user_types"
+    description: "Types of users interacting with the system"
+    required: true
+    examples: ["Anonymous visitors, registered users, administrators", "API consumers, internal operators"]
+  - name: "external_interfaces"
+    description: "External systems and interfaces"
+    required: true
+    examples: ["Stripe payment API, SendGrid email, S3 storage", "No external integrations"]
+
+expected_output: "Complete threat model with DFD, STRIDE analysis, prioritized threats, mitigation plan, and derived security requirements"
+
+quality_criteria:
+  - "All STRIDE categories analyzed for each component"
+  - "Threats are specific and realistic"
+  - "Risk scoring is consistent and justified"
+  - "Mitigations are actionable and specific"
+  - "Trust boundaries are clearly identified"
+
+anti_patterns:
+  - "Generic threats not specific to this system"
+  - "Missing entire STRIDE categories"
+  - "No prioritization of threats"
+  - "Mitigations that are too vague to implement"
+  - "Assuming attacks only come from external actors"
+  - "No adversarial self-evaluation of the threat model itself"
+
+adversarial_tests:
+  - scenario: "Threat model claims a component has no Information Disclosure risks — challenge with data flow analysis"
+    expected_behavior: "Re-examine all data flows from the component; if any cross a trust boundary, identify potential disclosure"
+    severity: "high"
+  - scenario: "All threats are rated Medium or Low — probe for underestimated risks"
+    expected_behavior: "Justify each rating; identify if any attacker-accessible components handling sensitive data should be Critical/High"
+    severity: "medium"
+  - scenario: "Threat model ignores insider threat scenarios"
+    expected_behavior: "Add at least one threat per STRIDE category from an authenticated, authorized insider with malicious intent"
+    severity: "high"
+  - scenario: "Mitigations rely on a single control with no fallback"
+    expected_behavior: "Apply defense-in-depth; every Critical/High threat should have at least two independent mitigations"
+    severity: "critical"
+
+related_prompts: ["SEC-CODE-001", "ARCH-SYS-001", "ARCH-CLOUD-001"]
+
+chain_position:
+  previous: ["ARCH-SYS-001", "ARCH-CLOUD-001"]
+  next: ["SEC-CODE-001", "TEST-INT-001"]

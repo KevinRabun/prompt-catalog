@@ -1,0 +1,153 @@
+id: "DOM-COMPLIANCE-001"
+version: "1.0.0"
+title: "Regulatory Compliance and GRC Application Development"
+description: "Guides development of applications that enforce or track regulatory compliance, governance, and risk management"
+category: "domains"
+subcategory: "compliance"
+skill_level: "advanced"
+platforms: ["web", "cloud"]
+tags: ["compliance", "grc", "regulatory", "audit", "governance", "risk-management", "sox", "hipaa", "gdpr", "pci-dss"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a compliance-aware software architect designing a system that must meet regulatory requirements.
+
+  **Context:**
+  - Application Domain: {{application_domain}}
+  - Applicable Regulations: {{regulations}}
+  - Data Classifications: {{data_classifications}}
+  - Deployment Regions: {{deployment_regions}}
+  - Audit Requirements: {{audit_requirements}}
+
+  **Design and implement covering these compliance-specific concerns:**
+
+  ### 1. Regulatory Framework Mapping
+  For each applicable regulation, identify:
+  - **Specific requirements** that affect software design (not just policy)
+  - **Technical controls** required (encryption standards, access controls, logging)
+  - **Data handling obligations** (retention, deletion, portability, residency)
+  - **Reporting obligations** (breach notification timelines, periodic reports)
+  - **Penalties** for non-compliance (to prioritize controls appropriately)
+
+  Map requirements to implementation controls:
+  | Regulation | Requirement | Technical Control | Implementation |
+  |-----------|-------------|-------------------|----------------|
+  | Example   | Data at rest encryption | AES-256 | Database TDE + file encryption |
+
+  ### 2. Data Governance Architecture
+  - **Data classification engine**: Automatically classify data by sensitivity level
+  - **Data inventory / catalog**: Track all PII, PHI, financial data, and regulated data
+  - **Data lineage**: Trace data from source through transformations to storage/output
+  - **Data retention**: Automated enforcement of retention periods with purge schedules
+  - **Data minimization**: Collect only what is necessary; enforce at API/form level
+  - **Right to erasure**: Implement verifiable deletion across all systems (including backups)
+  - **Consent management**: Track, version, and enforce user consent for data processing
+
+  ### 3. Access Control and Identity
+  - **Role-Based Access Control (RBAC)** with principle of least privilege
+  - **Attribute-Based Access Control (ABAC)** for fine-grained, context-aware decisions
+  - **Separation of duties**: Enforce multi-person approval for critical operations
+  - **Privileged access management**: Time-bound elevation, just-in-time access
+  - **Multi-factor authentication** for all privileged and sensitive operations
+  - **Access reviews**: Periodic automated access certification campaigns
+  - **Break-glass procedures**: Emergency access with full audit trail
+
+  ### 4. Audit Trail and Logging (Non-Negotiable)
+  - **Immutable audit logs**: Append-only logs that cannot be modified or deleted
+  - **What to log**: Who, what, when, where, outcome for every regulated action
+  - **Log integrity**: Hash chains, write-once storage, or external attestation
+  - **Retention**: Meet the longest applicable regulation retention period
+  - **Searchability**: Logs must be searchable for audit and investigation
+  - **Tamper evidence**: Detect and alert on any attempt to modify audit records
+  - **Log format**: Structured (JSON) with consistent schema across services
+
+  ### 5. Encryption and Data Protection
+  - **At rest**: AES-256 for stored data, including backups and archives
+  - **In transit**: TLS 1.2+ for all communications, certificate pinning for mobile
+  - **In use**: Consider confidential computing or homomorphic encryption for sensitive processing
+  - **Key management**: HSM-backed key storage, automated rotation, key escrow policy
+  - **Tokenization**: Replace sensitive data with tokens where possible (PCI-DSS)
+  - **Data masking**: Dynamic masking for non-production environments
+
+  ### 6. Compliance Monitoring and Reporting
+  - **Continuous compliance monitoring**: Automated checks against control framework
+  - **Control evidence collection**: Automated gathering of compliance artifacts
+  - **Exception management**: Track, approve, and review compliance exceptions
+  - **Dashboard**: Real-time compliance posture visibility for stakeholders
+  - **Audit preparation**: Pre-built report packages for common audit frameworks
+  - **Regulatory change tracking**: Monitor and assess impact of regulation updates
+
+  ### 7. Incident Response Integration
+  - **Breach detection**: Automated anomaly detection for potential data breaches
+  - **Notification workflows**: Configurable timelines per regulation (e.g., GDPR 72 hours)
+  - **Evidence preservation**: Automated forensic data capture upon incident detection
+  - **Communication templates**: Pre-approved notification templates for regulators and affected parties
+  - **Post-incident**: Root cause analysis, remediation tracking, lessons learned
+
+  ### 8. Development and Deployment Controls
+  - **Secure SDLC**: Security gates at each development phase
+  - **Change management**: All changes tracked, approved, and auditable
+  - **Environment segregation**: Production data never in non-production environments
+  - **Dependency scanning**: Continuous vulnerability monitoring of all dependencies
+  - **Infrastructure as Code**: Auditable, version-controlled infrastructure
+  - **Deployment approval**: Multi-person approval for production deployments
+
+  **IMPORTANT CAVEATS:**
+  - This prompt provides technical guidance only, NOT legal advice
+  - Always engage qualified legal counsel for regulatory interpretation
+  - Regulations change; implement controls that can adapt
+  - Compliance is a minimum bar, not a ceiling — aim for strong security posture
+  - Document all design decisions and their regulatory justification
+
+  **Deliver:**
+  1. Regulation-to-control mapping matrix
+  2. Data governance architecture with classification scheme
+  3. Access control model and policy definitions
+  4. Audit logging architecture with retention plan
+  5. Compliance monitoring dashboard specification
+  6. Incident response workflow integration
+
+variables:
+  - name: "application_domain"
+    description: "The business domain of the application"
+    required: true
+    examples: ["Healthcare patient portal", "Financial trading platform", "Government benefits portal", "Education records system", "Insurance claims processing"]
+  - name: "regulations"
+    description: "Applicable regulatory frameworks"
+    required: true
+    examples: ["GDPR + ePrivacy", "HIPAA + HITECH", "PCI-DSS v4.0", "SOX + SOC 2", "FedRAMP High", "CCPA/CPRA + state privacy laws"]
+  - name: "data_classifications"
+    description: "Types of sensitive data handled"
+    required: true
+    examples: ["PII (names, SSN, addresses)", "PHI (medical records, diagnoses)", "Financial (account numbers, transactions)", "Government classified (CUI, FOUO)"]
+  - name: "deployment_regions"
+    description: "Geographic deployment locations"
+    required: true
+    examples: ["US only", "EU (GDPR jurisdictions)", "Global (multi-region)", "US + EU + APAC", "Government cloud only"]
+  - name: "audit_requirements"
+    description: "Types of audits the system must support"
+    required: true
+    examples: ["Annual SOC 2 Type II", "Quarterly PCI-DSS scan", "Continuous FedRAMP monitoring", "Annual HIPAA risk assessment", "On-demand regulatory examination"]
+
+expected_output: "Compliance architecture with control mapping, data governance model, audit trail design, and monitoring strategy"
+
+quality_criteria:
+  - "Every applicable regulation requirement maps to a technical control"
+  - "Audit trail captures all regulated actions"
+  - "Data governance covers the full lifecycle"
+  - "Access control enforces least privilege and separation of duties"
+  - "Incident response meets notification timelines"
+
+anti_patterns:
+  - "Treating compliance as a one-time checkbox exercise"
+  - "Storing sensitive data without classification"
+  - "Mutable audit logs"
+  - "Same credentials for production and non-production"
+  - "Manual compliance monitoring with no automation"
+
+related_prompts: ["SEC-THREAT-001", "SEC-CODE-001", "DEPLOY-IAC-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001", "ARCH-SYS-001", "SEC-THREAT-001"]
+  next: ["DEV-API-001", "DEPLOY-IAC-001", "OPS-MON-001"]

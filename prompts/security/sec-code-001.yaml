@@ -1,0 +1,156 @@
+id: "SEC-CODE-001"
+version: "1.0.0"
+title: "Security Code Review"
+description: "Conducts a structured security review of code identifying vulnerabilities against OWASP Top 10"
+category: "security"
+subcategory: "code-review"
+skill_level: "advanced"
+platforms: ["all"]
+tags: ["security", "code-review", "owasp", "vulnerability", "static-analysis"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a security engineer conducting a security-focused code review.
+
+  **Context:**
+  - Code to Review: {{code_or_repository}}
+  - Language: {{language}}
+  - Framework: {{framework}}
+  - Application Type: {{application_type}}
+
+  **Review the code for security vulnerabilities in these categories:**
+
+  ### 1. Injection (OWASP A03)
+  - [ ] SQL queries use parameterized statements (no string concatenation)
+  - [ ] NoSQL queries are parameterized
+  - [ ] OS commands are not constructed from user input
+  - [ ] LDAP queries are parameterized
+  - [ ] XPath queries are parameterized
+  - [ ] Template injection is prevented
+
+  ### 2. Broken Authentication (OWASP A07)
+  - [ ] Passwords are hashed with strong algorithms (bcrypt, Argon2, PBKDF2)
+  - [ ] Session tokens are cryptographically random and sufficient length
+  - [ ] Sessions expire and are invalidated on logout
+  - [ ] MFA is implemented for sensitive operations
+  - [ ] Account lockout or rate limiting prevents brute force
+  - [ ] Password reset is secure (time-limited, single-use tokens)
+
+  ### 3. Sensitive Data Exposure (OWASP A02)
+  - [ ] PII is encrypted at rest
+  - [ ] All data in transit uses TLS 1.2+
+  - [ ] Sensitive data is not logged
+  - [ ] Sensitive data is not in URLs/query strings
+  - [ ] Proper cache-control headers for sensitive responses
+  - [ ] Secrets are not hard-coded
+
+  ### 4. Access Control (OWASP A01)
+  - [ ] Authentication is checked on every protected endpoint
+  - [ ] Authorization is checked for every resource access
+  - [ ] No IDOR (Insecure Direct Object Reference) vulnerabilities
+  - [ ] Admin functionality is properly protected
+  - [ ] CORS is configured with specific origins (not wildcard)
+  - [ ] File upload validates type, size, and content
+
+  ### 5. Cross-Site Scripting (OWASP A03)
+  - [ ] Output is encoded for the rendering context (HTML, JavaScript, URL, CSS)
+  - [ ] Content Security Policy headers are configured
+  - [ ] User input is never used in `innerHTML`, `eval`, or `document.write`
+  - [ ] React's `dangerouslySetInnerHTML` / Angular's `bypassSecurityTrust` are justified
+
+  ### 6. Security Misconfiguration (OWASP A05)
+  - [ ] Debug mode is disabled in production
+  - [ ] Default credentials are changed
+  - [ ] Error messages don't expose internal details
+  - [ ] Security headers are set (HSTS, X-Frame-Options, X-Content-Type-Options, CSP)
+  - [ ] Unnecessary features/endpoints are disabled
+
+  ### 7. Dependency Security
+  - [ ] Dependencies are from trusted sources
+  - [ ] Versions are pinned
+  - [ ] No known vulnerabilities in dependencies
+  - [ ] Dependency audit is part of CI/CD
+
+  **For each finding, report:**
+  ```
+  Finding: SEC-{number}
+  Severity: Critical | High | Medium | Low | Info
+  Category: [OWASP category]
+  Location: [File, line number, function]
+  Description: [What's wrong]
+  Impact: [What could happen if exploited]
+  Remediation: [How to fix it, with code example]
+  ```
+
+  **Important:**
+  - Focus on real vulnerabilities, not style issues
+  - Provide working remediation code, not just descriptions
+  - Consider the application context — not all findings are equally important
+  - Note false positives and why they're not issues
+  - If unsure about a framework's security behavior, flag it for verification
+
+  ### 8. Adversarial Input Testing
+  For each input-accepting function or endpoint found in the review:
+  - Provide **specific adversarial payloads** that should be tested
+  - Indicate whether the current code would **survive or fail** each payload
+  - For failures, include the remediation in the finding
+
+  ### 9. Judging the Review Itself
+  Self-evaluate this security review:
+  - **Coverage**: Did you check all OWASP Top 10 categories? List any skipped and why.
+  - **Confidence**: For each finding, rate confidence (High/Medium/Low).
+  - **False negatives**: What vulnerability types MIGHT exist but you couldn't confirm from the code provided?
+
+variables:
+  - name: "code_or_repository"
+    description: "Code to review (paste code or describe the repository structure)"
+    required: true
+  - name: "language"
+    description: "Programming language"
+    required: true
+    examples: ["C#", "TypeScript", "Python", "Java", "Go"]
+  - name: "framework"
+    description: "Framework being used"
+    required: true
+    examples: ["ASP.NET Core", "Express.js", "Django", "Spring Boot"]
+  - name: "application_type"
+    description: "Type of application"
+    required: true
+    examples: ["Web API", "Web application with UI", "Backend service", "Mobile backend"]
+
+expected_output: "Security review report with findings categorized by severity, OWASP category, and remediation code"
+
+quality_criteria:
+  - "All OWASP Top 10 categories are checked"
+  - "Findings include specific file/line references"
+  - "Remediation includes working code examples"
+  - "Severity ratings are justified"
+  - "False positives are acknowledged"
+
+anti_patterns:
+  - "Flagging style issues as security findings"
+  - "No remediation provided"
+  - "Generic findings not specific to the code"
+  - "Missing severity ratings"
+  - "No adversarial input examples provided with findings"
+
+adversarial_tests:
+  - scenario: "Code review misses a SQL injection because ORM is assumed safe — but raw query methods are used"
+    expected_behavior: "Identify ALL database query patterns including raw/direct queries, not just standard ORM calls"
+    severity: "critical"
+  - scenario: "Review marks code as 'no auth issues' but does not check authorization (only authentication)"
+    expected_behavior: "Explicitly distinguish authentication (who are you?) from authorization (what can you do?) and check both"
+    severity: "high"
+  - scenario: "Reviewer provides remediation code that itself contains a vulnerability"
+    expected_behavior: "Remediation code must follow the same security standards; self-verify all suggested fixes"
+    severity: "critical"
+  - scenario: "All findings are Low/Info severity — probe for missed high-severity issues"
+    expected_behavior: "Re-examine input handling, auth flows, and data exposure; justify the absence of high-severity findings"
+    severity: "medium"
+
+related_prompts: ["SEC-THREAT-001", "TEST-UNIT-001"]
+
+chain_position:
+  previous: ["DEV-WEB-001", "DEV-API-001"]
+  next: ["DEPLOY-CICD-001"]

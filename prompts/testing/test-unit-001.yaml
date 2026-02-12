@@ -1,0 +1,158 @@
+id: "TEST-UNIT-001"
+version: "1.0.0"
+title: "Unit Test Generation"
+description: "Generates comprehensive unit tests for existing code with edge cases, error paths, and clear naming"
+category: "testing"
+subcategory: "unit-testing"
+skill_level: "intermediate"
+platforms: ["all"]
+tags: ["testing", "unit-tests", "tdd", "code-quality", "coverage"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a test engineer writing unit tests for existing code.
+
+  **Context:**
+  - Code to Test: {{code_or_module}}
+  - Language/Framework: {{language_framework}}
+  - Testing Framework: {{test_framework}}
+  - Mocking Library: {{mock_library}}
+
+  **Generate comprehensive unit tests following these guidelines:**
+
+  ### 1. Test Structure
+  - Use **Arrange-Act-Assert** (AAA) pattern for each test
+  - Group tests by method/function being tested
+  - One assertion per test (preferably) — test one behavior at a time
+
+  ### 2. Naming Convention
+  `{MethodUnderTest}_{Scenario}_{ExpectedBehavior}`
+
+  Examples:
+  - `CalculateTotal_WithValidItems_ReturnsSumOfPrices`
+  - `CreateUser_WithDuplicateEmail_ThrowsConflictException`
+  - `ParseDate_WithNullInput_ThrowsArgumentNullException`
+  - `GetBalance_AfterWithdrawal_ReturnsReducedAmount`
+
+  ### 3. Test Categories to Cover
+
+  **Happy Path Tests:**
+  - Normal expected inputs produce correct output
+  - Multiple valid input variations
+
+  **Edge Case Tests:**
+  - Empty inputs (null, empty string, empty collection)
+  - Boundary values (0, -1, MAX_INT, MIN_INT)
+  - Single-item collections
+  - Maximum-length strings
+  - Unicode and special characters
+
+  **Error Path Tests:**
+  - Invalid inputs (wrong type, out of range, malformed)
+  - Missing required fields
+  - Unauthorized access attempts
+  - External dependency failures (network, database, file system)
+  - Timeout scenarios
+  - Concurrent access conflicts
+
+  **State Tests:**
+  - Initial state behavior
+  - State transitions
+  - Repeated operations (idempotency)
+
+  ### 4. Mocking Guidelines
+  - Mock **external dependencies** (databases, APIs, file system, clock)
+  - Do NOT mock the class under test
+  - Do NOT mock simple value objects or data structures
+  - Verify mock interactions only when the interaction IS the behavior being tested
+  - Use strict mocks sparingly — they make tests brittle
+
+  ### 5. Test Data
+  - Use **descriptive test data** that makes the test's intent clear
+  - Use **builder patterns** or **factories** for complex test objects
+  - Avoid **magic numbers** — use named constants or explanatory variables
+  - Generate **unique identifiers** to avoid test interdependence
+
+  ### 6. Quality Checks
+  Each test should pass these criteria:
+  - [ ] **Fast** — Runs in milliseconds (no I/O, no network)
+  - [ ] **Independent** — No dependency on other tests or test execution order
+  - [ ] **Repeatable** — Same result every time, no randomness without seeding
+  - [ ] **Self-validating** — Pass/fail is automatic, no manual inspection
+  - [ ] **Focused** — Tests one behavior, fails for one reason
+
+  **Important:**
+  - Ensure tests actually test the right thing — a test that always passes is useless
+  - Verify that tests FAIL when the behavior is broken (mutation testing mindset)
+  - Don't test framework or library code — test YOUR code
+  - If you're unsure about a method's exact behavior, note the assumption
+
+  ### 7. Adversarial Test Cases
+  For each function under test, include adversarial tests:
+  - **Hostile inputs**: Injection payloads, encoding tricks, null bytes, extreme sizes
+  - **Type confusion**: Pass wrong types where language permits (dynamic languages)
+  - **Boundary abuse**: MAX_INT+1, negative values for unsigned expectations, empty collections
+  - **Concurrency attacks**: If the function is called concurrently, does it remain correct?
+
+  ### 8. Mutation Testing Verification
+  After generating tests, self-evaluate:
+  - "If I change `>` to `>=` in the code, does at least one test fail?"
+  - "If I remove the null check, does a test catch it?"
+  - "If I return a hardcoded value, does a test fail?"
+  Flag any test that would NOT catch these mutations as **weak** and strengthen it.
+
+variables:
+  - name: "code_or_module"
+    description: "The code, class, or module to test"
+    required: true
+    examples: ["UserService class", "calculateShipping function", "OrderRepository"]
+  - name: "language_framework"
+    description: "Programming language and framework"
+    required: true
+    examples: ["C# / ASP.NET Core", "TypeScript / Node.js", "Python / Django", "Java / Spring Boot", "Go"]
+  - name: "test_framework"
+    description: "Testing framework to use"
+    required: true
+    examples: ["xUnit", "Jest", "pytest", "JUnit 5", "Go testing", "NUnit"]
+  - name: "mock_library"
+    description: "Mocking library to use"
+    required: false
+    default: "Framework default"
+    examples: ["Moq", "jest.mock", "unittest.mock", "Mockito", "gomock"]
+
+expected_output: "Complete test file with happy path, edge case, and error path tests following AAA pattern"
+
+quality_criteria:
+  - "Tests follow Arrange-Act-Assert pattern"
+  - "Naming convention is descriptive"
+  - "Edge cases and error paths are covered"
+  - "Mocking is used appropriately"
+  - "Tests are independent and repeatable"
+  - "No tests that always pass or test framework code"
+
+anti_patterns:
+  - "Tests with no assertions"
+  - "Tests that test multiple behaviors"
+  - "Over-mocking (mocking everything including the subject)"
+  - "Test data that doesn't reveal intent"
+  - "Tests dependent on execution order"
+  - "No adversarial inputs in test data"
+  - "Tests that pass even when the code under test is broken (mutation survivors)"
+
+adversarial_tests:
+  - scenario: "Generated tests all pass even when a critical function is replaced with a no-op"
+    expected_behavior: "At least one test per function must fail when function body is emptied (mutation test)"
+    severity: "critical"
+  - scenario: "Tests only use 'happy path' data — no nulls, empty strings, or boundary values"
+    expected_behavior: "Every function accepting input must have tests with null, empty, boundary, and type-confused inputs"
+    severity: "high"
+  - scenario: "Tests pass injection payloads to input-handling functions but don't assert safe handling"
+    expected_behavior: "Tests with adversarial inputs must assert the function rejects, sanitizes, or safely handles the payload"
+    severity: "high"
+
+related_prompts: ["TEST-INT-001", "DEV-WEB-001", "DEV-API-001"]
+
+chain_position:
+  previous: ["DEV-WEB-001", "DEV-API-001", "DEV-MOB-001"]
+  next: ["TEST-INT-001"]

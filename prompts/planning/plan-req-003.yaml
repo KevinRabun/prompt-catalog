@@ -1,0 +1,103 @@
+id: "PLAN-REQ-003"
+version: "1.0.0"
+title: "User Story Generation"
+description: "Generates well-structured user stories with acceptance criteria from high-level feature descriptions"
+category: "planning"
+subcategory: "requirements"
+skill_level: "beginner"
+platforms: ["all"]
+tags: ["user-stories", "agile", "requirements", "acceptance-criteria"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are an agile coach helping to write user stories for a software project.
+
+  **Feature to decompose:**
+  {{feature_description}}
+
+  **Target user roles:**
+  {{user_roles}}
+
+  **Generate user stories following this process:**
+
+  1. **Identify the actors** — Who interacts with this feature?
+  2. **Identify the actions** — What do they need to do?
+  3. **Identify the value** — Why do they need to do it?
+  4. **Decompose** — Break large stories into smaller, independently deliverable stories
+  5. **Add acceptance criteria** — Define "done" for each story
+
+  **Format each user story as:**
+
+  ```
+  Story ID: US-{{feature_prefix}}-XXX
+  Title: [Short descriptive title]
+
+  As a [specific user role],
+  I want to [specific action],
+  So that [measurable business value].
+
+  Acceptance Criteria:
+    Given [precondition],
+    When [action],
+    Then [expected result].
+
+    Given [another precondition],
+    When [another action],
+    Then [another expected result].
+
+  Story Points Estimate: [1, 2, 3, 5, 8, 13]
+  Dependencies: [Other story IDs]
+  Notes: [Any clarifications or open questions]
+  ```
+
+  **INVEST Checklist (verify each story meets these criteria):**
+  - **I**ndependent — Can be developed and delivered separately
+  - **N**egotiable — Details can be discussed and adjusted
+  - **V**aluable — Delivers value to the user or business
+  - **E**stimable — Team can estimate the effort
+  - **S**mall — Completable within one sprint
+  - **T**estable — Has clear acceptance criteria
+
+  **Important:**
+  - Each story should be deliverable within a single sprint
+  - If a story is too large, split it and document the split
+  - Include edge cases and error scenarios in acceptance criteria
+  - Flag any assumptions you're making
+  - Do NOT include implementation details — stories describe WHAT, not HOW
+
+variables:
+  - name: "feature_description"
+    description: "High-level description of the feature to decompose into stories"
+    required: true
+    examples: ["User authentication with social login and MFA", "Shopping cart with promo codes and saved items"]
+  - name: "user_roles"
+    description: "The user roles that interact with this feature"
+    required: true
+    examples: ["customer, admin, support agent", "driver, dispatcher, fleet manager"]
+  - name: "feature_prefix"
+    description: "Short prefix for story IDs"
+    required: false
+    default: "FEAT"
+    examples: ["AUTH", "CART", "PAY", "INV"]
+
+expected_output: "A set of INVEST-compliant user stories with acceptance criteria, estimates, and dependencies"
+
+quality_criteria:
+  - "Each story follows the As a / I want / So that format"
+  - "Each story has at least two acceptance criteria"
+  - "Stories are small enough for one sprint"
+  - "Dependencies between stories are documented"
+  - "Stories meet INVEST criteria"
+
+anti_patterns:
+  - "Epic-sized stories that span multiple sprints"
+  - "Technical tasks disguised as user stories"
+  - "Missing acceptance criteria"
+  - "Stories without clear user value"
+
+related_prompts: ["PLAN-REQ-001", "PLAN-SCOPE-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001"]
+  next: ["ARCH-SYS-001", "DEV-WEB-001"]

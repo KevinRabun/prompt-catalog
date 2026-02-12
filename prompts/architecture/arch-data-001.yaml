@@ -1,0 +1,122 @@
+id: "ARCH-DATA-001"
+version: "1.0.0"
+title: "Data Architecture and Modeling"
+description: "Guides database selection, data modeling, and data flow design"
+category: "architecture"
+subcategory: "data"
+skill_level: "intermediate"
+platforms: ["all"]
+tags: ["database", "data-modeling", "schema", "sql", "nosql", "caching"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a data architect designing the data layer for a software system.
+
+  **Context:**
+  - System: {{system_name}}
+  - Primary Use Case: {{primary_use_case}}
+  - Data Characteristics: {{data_characteristics}}
+  - Query Patterns: {{query_patterns}}
+  - Compliance Requirements: {{compliance_requirements}}
+
+  **Design the data architecture:**
+
+  ### 1. Database Selection
+  For each data store needed, evaluate and recommend:
+  - **Type**: Relational (PostgreSQL, SQL Server, MySQL), Document (MongoDB, Cosmos DB), Key-Value (Redis, DynamoDB), Wide-Column (Cassandra, Bigtable), Graph (Neo4j, Neptune), Time-Series (InfluxDB, TimescaleDB), Search (Elasticsearch, Solr)
+  - **Justification**: Why this type fits the data and access patterns
+  - **Managed vs. Self-Hosted**: Recommendation with cost/complexity trade-offs
+  - **Sizing**: Initial sizing with scaling strategy
+
+  ### 2. Data Model
+  - Entity-Relationship diagram (in Mermaid syntax)
+  - Key entities and their relationships
+  - Primary keys, foreign keys, and indexes
+  - Data types and constraints
+  - Normalization level with justification (3NF for OLTP, denormalized for OLAP)
+
+  ### 3. Data Access Patterns
+  - Read vs. write ratio
+  - Hot data vs. cold data identification
+  - Query patterns that drive index design
+  - Caching strategy (what to cache, TTL, invalidation)
+  - Pagination strategy for large result sets
+
+  ### 4. Data Integrity
+  - Transaction boundaries and isolation levels
+  - Referential integrity enforcement
+  - Validation rules at the data layer
+  - Unique constraints and business rule enforcement
+  - Optimistic vs. pessimistic concurrency control
+
+  ### 5. Data Migration & Evolution
+  - Migration tool recommendation (Flyway, Liquibase, EF Migrations, Alembic)
+  - Schema versioning strategy
+  - Backward-compatible migration patterns
+  - Seed data and reference data management
+  - Zero-downtime migration approach for production
+
+  ### 6. Data Security
+  - Encryption at rest (TDE, column-level, application-level)
+  - Row-level security if applicable
+  - Data masking for non-production environments
+  - Access control (principle of least privilege)
+  - Audit trail for sensitive data access
+
+  ### 7. Data Sovereignty & Compliance
+  - Data classification (public, internal, confidential, restricted)
+  - Data residency — where each data class must be stored
+  - Retention policies per data class
+  - Right to deletion support (soft delete + scheduled purge)
+  - Anonymization/pseudonymization strategy for analytics
+
+  **Important:**
+  - Don't over-normalize — balance normalization with query performance
+  - Don't over-index — each index has a write cost
+  - Consider the data growth rate when designing partitioning
+  - If unsure about specific database version features, note the assumption
+
+variables:
+  - name: "system_name"
+    description: "Name of the system"
+    required: true
+  - name: "primary_use_case"
+    description: "Primary use case for the data"
+    required: true
+    examples: ["OLTP for order processing", "Analytics dashboard", "Content management", "IoT sensor data ingestion"]
+  - name: "data_characteristics"
+    description: "Nature of the data"
+    required: true
+    examples: ["Relational, 10GB growing 1GB/month", "Time-series, 1M events/day", "Document-oriented, variable schema"]
+  - name: "query_patterns"
+    description: "How the data will be queried"
+    required: true
+    examples: ["Primarily by customer ID, with full-text search on products", "Time-range queries with real-time aggregations"]
+  - name: "compliance_requirements"
+    description: "Data-specific compliance needs"
+    required: false
+    default: "Standard security best practices"
+    examples: ["GDPR - EU data residency", "HIPAA - PHI protection", "PCI-DSS - cardholder data"]
+
+expected_output: "Data architecture document with ER diagrams, database selections, access patterns, migration strategy, and compliance controls"
+
+quality_criteria:
+  - "Database selection is justified by data and access patterns"
+  - "Data model is normalized appropriately"
+  - "Indexes align with query patterns"
+  - "Data sovereignty requirements are met"
+  - "Migration strategy supports zero-downtime updates"
+
+anti_patterns:
+  - "Using a single database type for all data regardless of access patterns"
+  - "No indexing strategy"
+  - "Missing data retention policies"
+  - "No migration strategy"
+  - "Storing PII without classification and protection"
+
+related_prompts: ["ARCH-SYS-001", "ARCH-MICRO-001"]
+
+chain_position:
+  previous: ["ARCH-SYS-001"]
+  next: ["DEV-API-001", "SEC-THREAT-001"]

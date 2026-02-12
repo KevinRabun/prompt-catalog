@@ -1,0 +1,173 @@
+id: "DOM-HR-001"
+version: "1.0.0"
+title: "Human Resources Information System (HRIS) Development"
+description: "Guides development of HR technology platforms including employee lifecycle management, payroll, benefits, performance management, and workforce analytics with labor law compliance"
+category: "domains"
+subcategory: "human-resources"
+skill_level: "advanced"
+platforms: ["web", "cloud", "android", "ios"]
+tags: ["hris", "hrm", "payroll", "benefits", "performance-management", "workforce-analytics", "employee-lifecycle", "labor-law", "self-service"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a software architect designing a human resources information system (HRIS).
+
+  **Context:**
+  - Organization Scope: {{organization_scope}}
+  - HR Modules Required: {{hr_modules}}
+  - Payroll Requirements: {{payroll_requirements}}
+  - Compliance Jurisdictions: {{compliance_jurisdictions}}
+  - Integration Requirements: {{integration_requirements}}
+
+  **Design and implement covering these HR-specific requirements:**
+
+  ### 1. Employee Lifecycle Management
+  - **Pre-boarding**: offer letter generation, background check integration, new-hire paperwork
+  - **Onboarding**: task checklists, training assignments, equipment provisioning, buddy assignment
+  - **Active employment**: position, department, manager, compensation, and status changes
+  - **Transfers and promotions**: workflow for internal moves with effective dating
+  - **Leave of absence**: FMLA, ADA, parental, military, personal with return tracking
+  - **Separation**: voluntary/involuntary termination workflows, exit interviews, asset recovery
+  - **Rehire**: retain historical data, streamlined re-onboarding
+  - **Effective dating**: all employment changes recorded with effective dates for historical accuracy
+  - **Org chart**: dynamic visualization of reporting relationships, span of control
+
+  ### 2. Compensation and Payroll
+  - **Compensation structures**: salary grades, bands, step increases, geographic differentials
+  - **Payroll calculation engine**:
+    - Gross-to-net with federal, state, and local tax withholding
+    - Pre-tax and post-tax deductions (health, dental, vision, 401k, HSA, FSA)
+    - Garnishments and court-ordered deductions with priority rules
+    - Overtime calculation per FLSA rules (and state-specific variations)
+    - Retroactive adjustments and off-cycle payments
+  - **Tax engine**: W-4 processing, multi-state taxation, reciprocity agreements
+  - **Year-end processing**: W-2, 1099, ACA reporting (1095-B/C)
+  - **Direct deposit**: ACH file generation, pay card support
+  - **Pay equity analysis**: tools to identify and flag compensation disparities
+  - **Payroll journal**: export to GL with configurable account mapping
+  - **DECIMAL TYPES**: Use decimal (never float) for all monetary calculations
+
+  ### 3. Benefits Administration
+  - **Open enrollment**: annual enrollment workflows with plan comparison tools
+  - **Life event processing**: qualifying events (marriage, birth, loss of coverage) with eligibility rules
+  - **Plan configuration**: medical, dental, vision, life, disability, FSA, HSA, 401k
+  - **Eligibility engine**: rules-based eligibility (employment class, hours, waiting periods)
+  - **Carrier feeds**: EDI 834 files for benefit carrier enrollment synchronization
+  - **COBRA administration**: qualifying event tracking, notification, payment management
+  - **ACA compliance**: variable-hour tracking, measurement/stability periods, affordability
+  - **Dependent management**: add/remove dependents with documentation requirements
+  - **Cost modeling**: employer and employee contribution calculators
+
+  ### 4. Time and Attendance
+  - **Time capture**: web clock, mobile clock, physical terminal integration, timesheet entry
+  - **Scheduling**: shift scheduling, rotation patterns, open shift management
+  - **Pay rules engine**: overtime (daily, weekly, 7th day), shift differentials, holiday premiums
+  - **Leave management**: PTO accrual rules, balance tracking, request/approval workflows
+  - **Absence tracking**: unscheduled absence patterns, Bradford Factor, FMLA tracking
+  - **Geofencing**: validate clock-in/out location for remote or field workers
+  - **Meal and break compliance**: automated alerts for jurisdiction-specific break requirements
+  - **Integration**: feed approved time to payroll with code mapping
+
+  ### 5. Performance Management
+  - **Goal setting**: cascading goals (company → department → individual), OKR support
+  - **Review cycles**: configurable review periods (annual, semi-annual, quarterly, continuous)
+  - **360-degree feedback**: multi-rater feedback with anonymity controls
+  - **Competency frameworks**: role-based competency models with proficiency levels
+  - **Calibration**: manager calibration sessions to normalize ratings across teams
+  - **Performance improvement plans (PIP)**: structured improvement tracking with milestones
+  - **Continuous feedback**: peer-to-peer recognition, real-time manager feedback
+  - **Compensation linkage**: connect performance ratings to merit increase recommendations
+
+  ### 6. Workforce Analytics and Reporting
+  - **Headcount analytics**: real-time headcount by org, department, location, EEO category
+  - **Turnover analysis**: voluntary/involuntary, regretted/non-regretted, trending
+  - **Diversity metrics**: EEO-1' component 1 reporting, pay equity, representation metrics
+  - **Compensation analytics**: total cost of workforce, comp ratio, range penetration
+  - **Absence analytics**: absence rates, patterns, cost of absence
+  - **Predictive analytics**: flight risk modeling, succession readiness, workforce planning
+  - **Compliance reporting**: EEO-1, VETS-4212, AAP, ACA, state new-hire reporting
+  - **Manager dashboards**: self-service team analytics for people managers
+  - **Data privacy**: aggregate and anonymize analytics where individual identification not required
+
+  ### 7. Employee Self-Service and Experience
+  - **Personal information**: address, emergency contacts, tax withholding updates
+  - **Pay**: pay stubs, W-2 access, direct deposit management
+  - **Benefits**: enrollment, dependent changes, plan documents, ID cards
+  - **Time off**: request PTO, view balances, team calendar
+  - **Performance**: view goals, submit self-assessment, access reviews
+  - **Learning**: assigned training, browse catalog, track completion
+  - **Mobile app**: native mobile experience for common self-service tasks
+  - **Digital assistant / chatbot**: answer common HR questions (with escalation to HR team)
+  - **Notifications**: proactive alerts for tasks, deadlines, approvals
+
+  ### 8. Compliance and Security
+  - **Labor law compliance**: FLSA, FMLA, ADA, Title VII, ADEA, state/local labor laws
+  - **Data privacy**: employee PII protection per GDPR (EU employees), CCPA, state privacy laws
+  - **Access control**: role-based access (HR admin, manager, employee, benefits admin, payroll admin)
+  - **Data segregation**: restrict access by org unit, location, country (critical for global orgs)
+  - **Audit trail**: immutable log of all data changes with user, timestamp, old/new values
+  - **Document retention**: per-jurisdiction retention schedules (I-9 = 3 years, payroll = 7 years, etc.)
+  - **SOC 2 controls**: if SaaS, demonstrate security and availability controls
+  - **SSO/MFA**: integrate with corporate identity provider, enforce MFA for sensitive operations
+
+  **IMPORTANT CAVEATS:**
+  - Payroll errors have direct employee impact and potential regulatory penalties — test exhaustively
+  - Labor law and tax regulations vary by jurisdiction and change frequently — design for configurability
+  - HR data is among the most sensitive in any organization — security is non-negotiable
+  - Benefits eligibility rules are complex — engage benefits counsel for edge cases
+  - International HR (if applicable) multiplies complexity — consider phased rollout by country
+
+  **Deliver:**
+  1. Employee lifecycle data model with effective dating
+  2. Payroll calculation engine architecture with tax integration
+  3. Benefits administration with eligibility engine and carrier integration
+  4. Time and attendance with pay rules engine
+  5. Performance management workflow design
+  6. Compliance framework mapping (FLSA, FMLA, ACA, EEO, privacy)
+
+variables:
+  - name: "organization_scope"
+    description: "Size and geographic scope of the organization"
+    required: true
+    examples: ["Mid-market US company (2,000 employees, 10 states)", "Enterprise global (50,000 employees, 30 countries)", "Small business (50-200 employees, single state)", "Federal government agency (10,000 employees)", "Non-profit with union and non-union workforce"]
+  - name: "hr_modules"
+    description: "HR modules to implement"
+    required: true
+    examples: ["Core HR + payroll + benefits + time & attendance", "Core HR + performance + learning (payroll outsourced)", "Full suite (all modules including recruiting and learning)", "Payroll and benefits only (supplementing existing HRIS)", "Global core HR with US payroll"]
+  - name: "payroll_requirements"
+    description: "Payroll processing requirements"
+    required: true
+    examples: ["US multi-state payroll (bi-weekly and semi-monthly)", "US payroll + Canadian payroll", "Payroll outsourced to ADP — need integration only", "Certified payroll for government contractors (Davis-Bacon)", "Multi-country payroll across EU + US + APAC"]
+  - name: "compliance_jurisdictions"
+    description: "Jurisdictions requiring compliance"
+    required: true
+    examples: ["US federal + 50 states", "US + Canada", "US + EU (GDPR) + UK", "California-specific (CCPA, meal/break, daily OT)", "Federal government (5 CFR, OPM regulations)"]
+  - name: "integration_requirements"
+    description: "Systems to integrate with"
+    required: true
+    examples: ["ADP payroll + Workday recruiting + Okta SSO", "NetSuite GL + Greenhouse ATS + BSwift benefits", "SAP SuccessFactors + custom time clocks + Active Directory", "Standalone with REST API for future integrations", "Microsoft 365 + Teams + Azure AD + custom ERP"]
+
+expected_output: "Complete HRIS architecture with employee lifecycle management, payroll engine, benefits administration, compliance framework, and analytics"
+
+quality_criteria:
+  - "Payroll calculations use decimal types and match sample calculations exactly"
+  - "Effective dating correctly handles past, present, and future-dated changes"
+  - "Benefits eligibility engine handles all qualifying events and waiting periods"
+  - "Compliance rules are configurable per jurisdiction without code changes"
+  - "Access control enforces least-privilege with org-unit-level restrictions"
+  - "Audit trail captures every data change with before/after values"
+
+anti_patterns:
+  - "Using floating-point arithmetic for payroll calculations"
+  - "Hardcoding tax rates or labor law rules instead of making them configurable"
+  - "No effective dating — overwriting employment history"
+  - "Manager access to all employee data regardless of reporting relationship"
+  - "Manual compliance reporting with no automated data collection"
+  - "Storing SSNs or bank account numbers without encryption"
+
+related_prompts: ["DOM-RECRUIT-001", "DOM-COMPLIANCE-001", "DEV-WEB-001", "DEV-API-001", "SEC-THREAT-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001", "PLAN-REQ-002", "ARCH-SYS-001", "ARCH-DATA-001"]
+  next: ["DOM-RECRUIT-001", "DEV-API-001", "SEC-THREAT-001", "DEPLOY-CICD-001"]

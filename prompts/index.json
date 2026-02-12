@@ -1,0 +1,573 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-02-12",
+  "description": "Master index of all prompts in the Prompt Catalog for programmatic discovery and MCP server ingestion",
+  "statistics": {
+    "total_prompts": 32,
+    "categories": {
+      "planning": 4,
+      "architecture": 4,
+      "development": 4,
+      "testing": 2,
+      "security": 2,
+      "deployment": 2,
+      "operations": 1,
+      "domains": 13
+    },
+    "skill_levels": {
+      "beginner": 2,
+      "intermediate": 11,
+      "advanced": 11,
+      "expert": 8
+    },
+    "platforms_covered": ["web", "windows", "linux", "android", "ios", "cloud", "blockchain"]
+  },
+  "prompts": [
+    {
+      "id": "PLAN-REQ-001",
+      "title": "Functional Requirements Elicitation",
+      "category": "planning",
+      "subcategory": "requirements",
+      "skill_level": "beginner",
+      "platforms": ["web", "windows", "linux", "android", "ios"],
+      "tags": ["requirements", "functional", "elicitation", "stakeholder"],
+      "file": "prompts/planning/plan-req-001.yaml",
+      "chain_next": ["PLAN-REQ-002", "PLAN-REQ-003"]
+    },
+    {
+      "id": "PLAN-REQ-002",
+      "title": "Non-Functional Requirements Specification",
+      "category": "planning",
+      "subcategory": "requirements",
+      "skill_level": "intermediate",
+      "platforms": ["web", "windows", "linux", "android", "ios"],
+      "tags": ["requirements", "non-functional", "performance", "scalability", "security"],
+      "file": "prompts/planning/plan-req-002.yaml",
+      "chain_next": ["ARCH-SYS-001"]
+    },
+    {
+      "id": "PLAN-REQ-003",
+      "title": "User Story and Acceptance Criteria Generation",
+      "category": "planning",
+      "subcategory": "requirements",
+      "skill_level": "beginner",
+      "platforms": ["web", "windows", "linux", "android", "ios"],
+      "tags": ["user-stories", "acceptance-criteria", "agile", "bdd"],
+      "file": "prompts/planning/plan-req-003.yaml",
+      "chain_next": ["ARCH-SYS-001", "DEV-WEB-001"]
+    },
+    {
+      "id": "PLAN-SCOPE-001",
+      "title": "Project Scope Definition and Work Breakdown",
+      "category": "planning",
+      "subcategory": "scope",
+      "skill_level": "intermediate",
+      "platforms": ["web", "windows", "linux", "android", "ios"],
+      "tags": ["scope", "wbs", "estimation", "project-management", "mvp"],
+      "file": "prompts/planning/plan-scope-001.yaml",
+      "chain_next": ["PLAN-REQ-001", "ARCH-SYS-001"]
+    },
+    {
+      "id": "ARCH-SYS-001",
+      "title": "System Architecture Design",
+      "category": "architecture",
+      "subcategory": "system",
+      "skill_level": "advanced",
+      "platforms": ["web", "windows", "linux", "cloud"],
+      "tags": ["architecture", "system-design", "components", "patterns", "n-tier"],
+      "file": "prompts/architecture/arch-sys-001.yaml",
+      "chain_next": ["ARCH-MICRO-001", "ARCH-CLOUD-001", "ARCH-DATA-001"]
+    },
+    {
+      "id": "ARCH-MICRO-001",
+      "title": "Microservices Architecture Design",
+      "category": "architecture",
+      "subcategory": "microservices",
+      "skill_level": "expert",
+      "platforms": ["cloud", "web"],
+      "tags": ["microservices", "distributed-systems", "service-mesh", "event-driven"],
+      "file": "prompts/architecture/arch-micro-001.yaml",
+      "chain_next": ["DEV-API-001", "DEPLOY-IAC-001"]
+    },
+    {
+      "id": "ARCH-CLOUD-001",
+      "title": "Cloud Architecture Design",
+      "category": "architecture",
+      "subcategory": "cloud",
+      "skill_level": "expert",
+      "platforms": ["cloud"],
+      "tags": ["cloud", "azure", "aws", "gcp", "multi-cloud", "well-architected"],
+      "file": "prompts/architecture/arch-cloud-001.yaml",
+      "chain_next": ["DEPLOY-IAC-001", "OPS-MON-001"]
+    },
+    {
+      "id": "ARCH-DATA-001",
+      "title": "Data Modeling and Database Architecture",
+      "category": "architecture",
+      "subcategory": "data",
+      "skill_level": "advanced",
+      "platforms": ["web", "cloud", "windows", "linux"],
+      "tags": ["data-modeling", "database", "sql", "nosql", "schema-design", "migration"],
+      "file": "prompts/architecture/arch-data-001.yaml",
+      "chain_next": ["DEV-API-001", "DEV-WEB-001"]
+    },
+    {
+      "id": "DEV-WEB-001",
+      "title": "Web Application Development",
+      "category": "development",
+      "subcategory": "web",
+      "skill_level": "intermediate",
+      "platforms": ["web"],
+      "tags": ["web", "frontend", "backend", "fullstack", "responsive", "accessibility"],
+      "file": "prompts/development/dev-web-001.yaml",
+      "chain_next": ["TEST-UNIT-001", "SEC-CODE-001", "DEPLOY-CICD-001"]
+    },
+    {
+      "id": "DEV-API-001",
+      "title": "RESTful API Development",
+      "category": "development",
+      "subcategory": "api",
+      "skill_level": "intermediate",
+      "platforms": ["web", "cloud"],
+      "tags": ["api", "rest", "openapi", "versioning", "pagination", "authentication"],
+      "file": "prompts/development/dev-api-001.yaml",
+      "chain_next": ["TEST-INT-001", "SEC-CODE-001"]
+    },
+    {
+      "id": "DEV-MOB-001",
+      "title": "Mobile Application Development",
+      "category": "development",
+      "subcategory": "mobile",
+      "skill_level": "intermediate",
+      "platforms": ["android", "ios"],
+      "tags": ["mobile", "android", "ios", "cross-platform", "flutter", "react-native"],
+      "file": "prompts/development/dev-mob-001.yaml",
+      "chain_next": ["TEST-UNIT-001", "SEC-CODE-001", "DEPLOY-CICD-001"]
+    },
+    {
+      "id": "DEV-DESK-001",
+      "title": "Desktop Application Development",
+      "category": "development",
+      "subcategory": "desktop",
+      "skill_level": "intermediate",
+      "platforms": ["windows", "linux"],
+      "tags": ["desktop", "electron", "wpf", "maui", "native", "cross-platform"],
+      "file": "prompts/development/dev-desk-001.yaml",
+      "chain_next": ["TEST-UNIT-001", "SEC-CODE-001", "DEPLOY-CICD-001"]
+    },
+    {
+      "id": "TEST-UNIT-001",
+      "title": "Unit Test Generation and Strategy",
+      "category": "testing",
+      "subcategory": "unit",
+      "skill_level": "intermediate",
+      "platforms": ["web", "windows", "linux", "android", "ios"],
+      "tags": ["unit-testing", "tdd", "mocking", "code-coverage", "test-strategy"],
+      "file": "prompts/testing/test-unit-001.yaml",
+      "chain_next": ["TEST-INT-001"]
+    },
+    {
+      "id": "TEST-INT-001",
+      "title": "Integration and End-to-End Testing Strategy",
+      "category": "testing",
+      "subcategory": "integration",
+      "skill_level": "advanced",
+      "platforms": ["web", "cloud", "windows", "linux", "android", "ios"],
+      "tags": ["integration-testing", "e2e", "contract-testing", "performance-testing", "test-environments"],
+      "file": "prompts/testing/test-int-001.yaml",
+      "chain_next": ["DEPLOY-CICD-001"]
+    },
+    {
+      "id": "SEC-THREAT-001",
+      "title": "STRIDE Threat Model Analysis",
+      "category": "security",
+      "subcategory": "threat-modeling",
+      "skill_level": "advanced",
+      "platforms": ["web", "cloud", "windows", "linux", "android", "ios"],
+      "tags": ["security", "threat-modeling", "stride", "risk-assessment", "mitigations"],
+      "file": "prompts/security/sec-threat-001.yaml",
+      "chain_next": ["SEC-CODE-001"]
+    },
+    {
+      "id": "SEC-CODE-001",
+      "title": "Security-Focused Code Review",
+      "category": "security",
+      "subcategory": "code-review",
+      "skill_level": "advanced",
+      "platforms": ["web", "cloud", "windows", "linux", "android", "ios"],
+      "tags": ["security", "code-review", "owasp", "vulnerabilities", "static-analysis"],
+      "file": "prompts/security/sec-code-001.yaml",
+      "chain_next": ["DEPLOY-CICD-001"]
+    },
+    {
+      "id": "DEPLOY-CICD-001",
+      "title": "CI/CD Pipeline Design",
+      "category": "deployment",
+      "subcategory": "cicd",
+      "skill_level": "advanced",
+      "platforms": ["cloud", "web", "windows", "linux"],
+      "tags": ["cicd", "pipeline", "github-actions", "azure-devops", "automation", "deployment"],
+      "file": "prompts/deployment/deploy-cicd-001.yaml",
+      "chain_next": ["DEPLOY-IAC-001", "OPS-MON-001"]
+    },
+    {
+      "id": "DEPLOY-IAC-001",
+      "title": "Infrastructure as Code Design",
+      "category": "deployment",
+      "subcategory": "infrastructure",
+      "skill_level": "expert",
+      "platforms": ["cloud"],
+      "tags": ["iac", "terraform", "bicep", "cloudformation", "pulumi", "infrastructure"],
+      "file": "prompts/deployment/deploy-iac-001.yaml",
+      "chain_next": ["OPS-MON-001"]
+    },
+    {
+      "id": "OPS-MON-001",
+      "title": "Monitoring, Observability, and SRE Strategy",
+      "category": "operations",
+      "subcategory": "monitoring",
+      "skill_level": "expert",
+      "platforms": ["cloud", "web", "windows", "linux"],
+      "tags": ["monitoring", "observability", "sre", "alerting", "logging", "apm"],
+      "file": "prompts/operations/ops-mon-001.yaml",
+      "chain_next": []
+    },
+    {
+      "id": "DOM-FINTECH-001",
+      "title": "FinTech Application Development",
+      "category": "domains",
+      "subcategory": "fintech",
+      "skill_level": "expert",
+      "platforms": ["web", "cloud", "android", "ios"],
+      "tags": ["fintech", "payments", "banking", "trading", "compliance", "pci-dss", "kyc"],
+      "file": "prompts/domains/dom-fintech-001.yaml",
+      "chain_next": ["SEC-THREAT-001", "TEST-INT-001"]
+    },
+    {
+      "id": "DOM-REALESTATE-001",
+      "title": "Real Estate and PropTech Application Development",
+      "category": "domains",
+      "subcategory": "real-estate",
+      "skill_level": "intermediate",
+      "platforms": ["web", "cloud", "android", "ios"],
+      "tags": ["real-estate", "proptech", "mls", "property-management", "gis", "virtual-tours"],
+      "file": "prompts/domains/dom-realestate-001.yaml",
+      "chain_next": ["DEV-WEB-001", "DEV-API-001"]
+    },
+    {
+      "id": "DOM-BLOCKCHAIN-001",
+      "title": "Blockchain and Web3 Application Development",
+      "category": "domains",
+      "subcategory": "blockchain",
+      "skill_level": "expert",
+      "platforms": ["blockchain"],
+      "tags": ["blockchain", "web3", "smart-contracts", "defi", "nft", "solidity", "ethereum"],
+      "file": "prompts/domains/dom-blockchain-001.yaml",
+      "chain_next": ["SEC-THREAT-001", "TEST-UNIT-001"]
+    },
+    {
+      "id": "DOM-GAMEDEV-001",
+      "title": "Game Development Architecture and Design",
+      "category": "domains",
+      "subcategory": "game-development",
+      "skill_level": "intermediate",
+      "platforms": ["windows", "android", "ios", "web", "linux"],
+      "tags": ["game-dev", "unity", "unreal", "godot", "2d", "3d", "multiplayer", "ecs"],
+      "file": "prompts/domains/dom-gamedev-001.yaml",
+      "chain_next": ["DEV-DESK-001", "TEST-UNIT-001"]
+    },
+    {
+      "id": "DOM-COMPLIANCE-001",
+      "title": "Regulatory Compliance and GRC Application Development",
+      "category": "domains",
+      "subcategory": "compliance",
+      "skill_level": "advanced",
+      "platforms": ["web", "cloud"],
+      "tags": ["compliance", "grc", "regulatory", "audit", "governance", "risk-management", "sox", "hipaa", "gdpr", "pci-dss"],
+      "file": "prompts/domains/dom-compliance-001.yaml",
+      "chain_next": ["DEV-API-001", "DEPLOY-IAC-001", "OPS-MON-001"]
+    },
+    {
+      "id": "DOM-DATASOV-001",
+      "title": "Data Sovereignty and Cross-Border Data Architecture",
+      "category": "domains",
+      "subcategory": "data-sovereignty",
+      "skill_level": "expert",
+      "platforms": ["cloud", "web"],
+      "tags": ["data-sovereignty", "data-residency", "cross-border", "gdpr", "schrems-ii", "localization", "multi-region"],
+      "file": "prompts/domains/dom-datasov-001.yaml",
+      "chain_next": ["DEPLOY-IAC-001", "OPS-MON-001"]
+    },
+    {
+      "id": "DOM-HEALTHCARE-001",
+      "title": "Healthcare and Life Sciences Application Development",
+      "category": "domains",
+      "subcategory": "healthcare",
+      "skill_level": "advanced",
+      "platforms": ["web", "cloud", "android", "ios"],
+      "tags": ["healthcare", "hipaa", "hl7-fhir", "ehr", "phi", "clinical", "telemedicine", "medical-devices"],
+      "file": "prompts/domains/dom-healthcare-001.yaml",
+      "chain_next": ["DEV-API-001", "SEC-CODE-001", "TEST-INT-001"]
+    },
+    {
+      "id": "DOM-ECOMMERCE-001",
+      "title": "E-Commerce Platform Development",
+      "category": "domains",
+      "subcategory": "e-commerce",
+      "skill_level": "intermediate",
+      "platforms": ["web", "android", "ios", "cloud"],
+      "tags": ["e-commerce", "payments", "inventory", "shopping-cart", "pci-dss", "marketplace", "catalog"],
+      "file": "prompts/domains/dom-ecommerce-001.yaml",
+      "chain_next": ["DEV-WEB-001", "DEV-API-001", "SEC-THREAT-001", "DEPLOY-CICD-001"]
+    },
+    {
+      "id": "DOM-SIMTRAIN-001",
+      "title": "Simulation and Training Systems Development",
+      "category": "domains",
+      "subcategory": "simulation-training",
+      "skill_level": "expert",
+      "platforms": ["windows", "linux", "web", "cloud"],
+      "tags": ["simulation", "training", "modeling", "physics-engine", "dis", "hla", "scorm", "xapi", "aar"],
+      "file": "prompts/domains/dom-simtrain-001.yaml",
+      "chain_next": ["DOM-LVC-001", "TEST-INT-001", "DEPLOY-IAC-001"]
+    },
+    {
+      "id": "DOM-LVC-001",
+      "title": "Live Virtual Constructive (LVC) Integration Architecture",
+      "category": "domains",
+      "subcategory": "lvc-integration",
+      "skill_level": "expert",
+      "platforms": ["windows", "linux", "cloud"],
+      "tags": ["lvc", "live-virtual-constructive", "dis", "hla", "tena", "gateway", "federation", "interoperability"],
+      "file": "prompts/domains/dom-lvc-001.yaml",
+      "chain_next": ["TEST-INT-001", "DEPLOY-IAC-001", "OPS-MON-001"]
+    },
+    {
+      "id": "DOM-CLM-001",
+      "title": "Contract Lifecycle Management (CLM) Application Development",
+      "category": "domains",
+      "subcategory": "contract-lifecycle",
+      "skill_level": "advanced",
+      "platforms": ["web", "cloud"],
+      "tags": ["clm", "contract-management", "e-signature", "obligation-tracking", "procurement", "legal-tech"],
+      "file": "prompts/domains/dom-clm-001.yaml",
+      "chain_next": ["DOM-LEGAL-001", "DEV-API-001", "SEC-THREAT-001"]
+    },
+    {
+      "id": "DOM-LEGAL-001",
+      "title": "Legal Technology (LegalTech) Application Development",
+      "category": "domains",
+      "subcategory": "legal",
+      "skill_level": "advanced",
+      "platforms": ["web", "cloud"],
+      "tags": ["legal-tech", "case-management", "ediscovery", "legal-research", "document-review", "privilege"],
+      "file": "prompts/domains/dom-legal-001.yaml",
+      "chain_next": ["DOM-CLM-001", "DEV-API-001", "TEST-INT-001"]
+    },
+    {
+      "id": "DOM-MARKETING-001",
+      "title": "Marketing Technology (MarTech) Platform Development",
+      "category": "domains",
+      "subcategory": "marketing",
+      "skill_level": "intermediate",
+      "platforms": ["web", "cloud", "android", "ios"],
+      "tags": ["martech", "marketing", "campaign-management", "analytics", "personalization", "crm", "privacy"],
+      "file": "prompts/domains/dom-marketing-001.yaml",
+      "chain_next": ["DEV-WEB-001", "DEV-API-001", "DEPLOY-CICD-001"]
+    },
+    {
+      "id": "DOM-HR-001",
+      "title": "Human Resources Information System (HRIS) Development",
+      "category": "domains",
+      "subcategory": "human-resources",
+      "skill_level": "advanced",
+      "platforms": ["web", "cloud", "android", "ios"],
+      "tags": ["hris", "hrm", "payroll", "benefits", "performance-management", "workforce-analytics", "labor-law"],
+      "file": "prompts/domains/dom-hr-001.yaml",
+      "chain_next": ["DOM-RECRUIT-001", "DEV-API-001", "SEC-THREAT-001", "DEPLOY-CICD-001"]
+    },
+    {
+      "id": "DOM-RECRUIT-001",
+      "title": "Recruiting and Talent Acquisition Platform Development",
+      "category": "domains",
+      "subcategory": "recruiting",
+      "skill_level": "intermediate",
+      "platforms": ["web", "cloud", "android", "ios"],
+      "tags": ["recruiting", "ats", "talent-acquisition", "applicant-tracking", "hiring", "bias-mitigation"],
+      "file": "prompts/domains/dom-recruit-001.yaml",
+      "chain_next": ["DOM-HR-001", "DEV-WEB-001", "DEV-API-001", "DEPLOY-CICD-001"]
+    }
+  ],
+  "instructions": [
+    {
+      "id": "PHASE-REQUIREMENTS",
+      "title": "Requirements Phase Instructions",
+      "scope": "phase",
+      "file": "instructions/phases/requirements.instructions.md"
+    },
+    {
+      "id": "PHASE-DESIGN",
+      "title": "Design Phase Instructions",
+      "scope": "phase",
+      "file": "instructions/phases/design.instructions.md"
+    },
+    {
+      "id": "PHASE-IMPLEMENTATION",
+      "title": "Implementation Phase Instructions",
+      "scope": "phase",
+      "file": "instructions/phases/implementation.instructions.md"
+    },
+    {
+      "id": "PHASE-TESTING",
+      "title": "Testing Phase Instructions",
+      "scope": "phase",
+      "file": "instructions/phases/testing.instructions.md"
+    },
+    {
+      "id": "PHASE-DEPLOYMENT",
+      "title": "Deployment Phase Instructions",
+      "scope": "phase",
+      "file": "instructions/phases/deployment.instructions.md"
+    },
+    {
+      "id": "PHASE-MAINTENANCE",
+      "title": "Maintenance Phase Instructions",
+      "scope": "phase",
+      "file": "instructions/phases/maintenance.instructions.md"
+    },
+    {
+      "id": "GUARD-ACCURACY",
+      "title": "Accuracy and Anti-Hallucination Guardrails",
+      "scope": "guardrail",
+      "file": "instructions/guardrails/accuracy.instructions.md"
+    },
+    {
+      "id": "GUARD-SECURITY",
+      "title": "Security Guardrails",
+      "scope": "guardrail",
+      "file": "instructions/guardrails/security.instructions.md"
+    },
+    {
+      "id": "GUARD-COST",
+      "title": "Cost Optimization Guardrails",
+      "scope": "guardrail",
+      "file": "instructions/guardrails/cost-optimization.instructions.md"
+    },
+    {
+      "id": "GUARD-PERFORMANCE",
+      "title": "Performance Guardrails",
+      "scope": "guardrail",
+      "file": "instructions/guardrails/performance.instructions.md"
+    },
+    {
+      "id": "GUARD-COMPLIANCE",
+      "title": "Compliance Guardrails",
+      "scope": "guardrail",
+      "file": "instructions/guardrails/compliance.instructions.md"
+    },
+    {
+      "id": "GUARD-ADVERSARIAL",
+      "title": "Adversarial Evaluation and Judging Guardrails",
+      "scope": "guardrail",
+      "file": "instructions/guardrails/adversarial-evaluation.instructions.md"
+    },
+    {
+      "id": "PLAT-WEB",
+      "title": "Web Platform Instructions",
+      "scope": "platform",
+      "file": "instructions/platforms/web.instructions.md"
+    },
+    {
+      "id": "PLAT-WINDOWS",
+      "title": "Windows Platform Instructions",
+      "scope": "platform",
+      "file": "instructions/platforms/windows.instructions.md"
+    },
+    {
+      "id": "PLAT-LINUX",
+      "title": "Linux Platform Instructions",
+      "scope": "platform",
+      "file": "instructions/platforms/linux.instructions.md"
+    },
+    {
+      "id": "PLAT-ANDROID",
+      "title": "Android Platform Instructions",
+      "scope": "platform",
+      "file": "instructions/platforms/android.instructions.md"
+    },
+    {
+      "id": "PLAT-IOS",
+      "title": "iOS Platform Instructions",
+      "scope": "platform",
+      "file": "instructions/platforms/ios.instructions.md"
+    },
+    {
+      "id": "PLAT-CLOUD",
+      "title": "Cloud Platform Instructions",
+      "scope": "platform",
+      "file": "instructions/platforms/cloud.instructions.md"
+    }
+  ],
+  "chains": {
+    "description": "Pre-defined prompt chains for common workflows",
+    "full_sdlc": {
+      "name": "Full SDLC Workflow",
+      "description": "Complete software development lifecycle from requirements to monitoring",
+      "sequence": [
+        "PLAN-SCOPE-001",
+        "PLAN-REQ-001",
+        "PLAN-REQ-002",
+        "PLAN-REQ-003",
+        "ARCH-SYS-001",
+        "ARCH-DATA-001",
+        "SEC-THREAT-001",
+        "DEV-WEB-001",
+        "TEST-UNIT-001",
+        "TEST-INT-001",
+        "SEC-CODE-001",
+        "DEPLOY-CICD-001",
+        "DEPLOY-IAC-001",
+        "OPS-MON-001"
+      ]
+    },
+    "cloud_native": {
+      "name": "Cloud-Native Application",
+      "description": "Microservices-based cloud application from design to deployment",
+      "sequence": [
+        "PLAN-REQ-001",
+        "ARCH-CLOUD-001",
+        "ARCH-MICRO-001",
+        "ARCH-DATA-001",
+        "DEV-API-001",
+        "SEC-THREAT-001",
+        "TEST-INT-001",
+        "DEPLOY-IAC-001",
+        "DEPLOY-CICD-001",
+        "OPS-MON-001"
+      ]
+    },
+    "mobile_app": {
+      "name": "Mobile Application",
+      "description": "Mobile app development from requirements to deployment",
+      "sequence": [
+        "PLAN-REQ-001",
+        "PLAN-REQ-003",
+        "ARCH-SYS-001",
+        "DEV-MOB-001",
+        "DEV-API-001",
+        "TEST-UNIT-001",
+        "SEC-CODE-001",
+        "DEPLOY-CICD-001"
+      ]
+    },
+    "security_review": {
+      "name": "Security Review",
+      "description": "Comprehensive security assessment of an existing system",
+      "sequence": [
+        "SEC-THREAT-001",
+        "SEC-CODE-001",
+        "DOM-COMPLIANCE-001"
+      ]
+    }
+  }
+}

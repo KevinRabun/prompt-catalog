@@ -1,0 +1,166 @@
+id: "DOM-SIMTRAIN-001"
+version: "1.0.0"
+title: "Simulation and Training Systems Development"
+description: "Guides development of simulation, modeling, and training applications including physics engines, scenario editors, AAR systems, and standards compliance (DIS, HLA, SCORM, xAPI)"
+category: "domains"
+subcategory: "simulation-training"
+skill_level: "expert"
+platforms: ["windows", "linux", "web", "cloud"]
+tags: ["simulation", "training", "modeling", "physics-engine", "dis", "hla", "scorm", "xapi", "aar", "lms", "scenario-based", "serious-games"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are an expert simulation and training systems architect designing a simulation or training application.
+
+  **Context:**
+  - Simulation Type: {{simulation_type}}
+  - Training Objectives: {{training_objectives}}
+  - Fidelity Requirements: {{fidelity_level}}
+  - Interoperability Standards: {{interop_standards}}
+  - Deployment Environment: {{deployment_environment}}
+
+  **Design and implement covering these simulation and training-specific requirements:**
+
+  ### 1. Simulation Architecture
+  - Select appropriate **simulation paradigm**: discrete-event, continuous, agent-based, Monte Carlo, or hybrid
+  - Implement a **time management** system: real-time, scaled-time, faster/slower-than-real-time, and pause/resume
+  - Define **simulation update loop**: fixed timestep for deterministic physics, variable for rendering
+  - Design **entity state management**: position, velocity, orientation, damage state, operational status
+  - Implement **dead reckoning** algorithms to reduce network traffic between simulation nodes
+  - Support **deterministic replay**: given same inputs and seed, simulation produces identical results
+  - Separate **simulation model** from **visualization** — support headless execution for batch runs
+  - Design for **scalability**: support thousands of entities with spatial partitioning (quadtree, octree)
+
+  ### 2. Physics and Environment Modeling
+  - Select physics fidelity appropriate to training objectives (not always maximum fidelity)
+  - **Terrain modeling**: elevation data, ground type, vegetation, dynamic terrain modification
+  - **Weather and atmosphere**: wind, precipitation, visibility, temperature effects on operations
+  - **Sensor simulation**: radar, IR, visual, acoustic — with appropriate noise models
+  - **Ballistics / projectile modeling** if applicable: drag, wind, gravity, Coriolis effect
+  - **Vehicle dynamics**: appropriate model for training purpose (arcade vs. realistic)
+  - **Day/night cycle**: lighting, NVG simulation, thermal signature variation
+  - Implement **level-of-detail (LOD)** in physics: high fidelity near learner, aggregated at distance
+
+  ### 3. Interoperability Standards
+  - **DIS (Distributed Interactive Simulation)**: IEEE 1278.1
+    - Entity State PDUs, Fire/Detonation PDUs, Signal PDUs
+    - Proper enumeration usage (SISO enumerations)
+    - Dead reckoning algorithms (FPW, RPW, etc.)
+    - Heartbeat intervals and threshold-based updates
+  - **HLA (High Level Architecture)**: IEEE 1516
+    - Federation Object Model (FOM) design
+    - Runtime Infrastructure (RTI) integration
+    - Time management: time-stepped, event-driven, optimistic
+    - Ownership management for shared entities
+  - **CIGI (Common Image Generator Interface)**: for visual system control
+  - Choose DIS vs HLA based on federation complexity and requirements
+
+  ### 4. Training Integration and Pedagogy
+  - **Learning objectives mapping**: every scenario maps to measurable learning outcomes
+  - **Scenario authoring**: visual scenario editor with conditions, triggers, and branching
+  - **Instructor operator station (IOS)**: real-time control, entity injection, override capabilities
+  - **Automated tutoring**: context-aware hints, adaptive difficulty based on learner performance
+  - **Performance measurement**: track metrics aligned to learning objectives
+  - **After Action Review (AAR)**:
+    - Full event recording with timeline playback
+    - Multi-perspective replay (learner view, overhead, instructor-annotated)
+    - Automated performance scoring with rubric-based assessment
+    - Bookmarking of critical teaching moments
+    - Export for debrief and records
+
+  ### 5. Learning Standards Compliance
+  - **SCORM 1.2 / 2004**: If LMS integration required
+    - SCO packaging, CMI data model, sequencing and navigation
+  - **xAPI (Experience API / Tin Can)**:
+    - Statement structure: Actor + Verb + Object + Context + Result
+    - Learning Record Store (LRS) integration
+    - Custom activity types and verb definitions for simulation events
+    - Aggregate statements for complex training activities
+  - **cmi5**: For LMS-launched, xAPI-tracked content
+  - Track: completion, score, time-on-task, pass/fail, interactions, objectives
+
+  ### 6. Performance and Scalability
+  - **Frame budget**: maintain target frame rate (60+ FPS for real-time, 30 FPS minimum)
+  - **Entity count scaling**: profile with expected entity loads (100s to 10,000s)
+  - **Network optimization**: dead reckoning, relevance filtering, area-of-interest management
+  - **Multi-threading**: physics, AI, rendering, networking on separate threads
+  - **GPU compute**: offload particle systems, sensor simulation, terrain rendering
+  - **Cloud burst**: spin up additional simulation nodes for large-scale exercises
+  - **Data recording bandwidth**: efficient binary formats for event capture
+
+  ### 7. Verification, Validation, and Accreditation (VV&A)
+  - Define **accreditation criteria** based on intended use
+  - **Model verification**: confirm model matches specification (code correctness)
+  - **Model validation**: confirm model behavior matches real-world reference data
+  - **Face validation**: subject matter experts confirm realism is sufficient for training purpose
+  - **Statistical validation**: compare simulation outputs to historical / real-world data
+  - **Sensitivity analysis**: understand which parameters most affect outcomes
+  - Document **limitations and assumptions** explicitly
+
+  ### 8. Safety and Ethical Considerations
+  - **Simulation sickness**: FOV, latency < 20ms for VR, proper motion cues
+  - **Training negative transfer**: ensure simulation behavior matches real-world enough for task
+  - **Content sensitivity**: scenario content review for appropriateness
+  - **Data classification**: training data and scenarios may have classification levels
+  - **Cybersecurity**: simulation networks may contain sensitive tactical information
+
+  **IMPORTANT CAVEATS:**
+  - Simulation fidelity should match training objectives — higher is not always better
+  - Always validate simulation behavior against real-world reference data
+  - Engage subject matter experts for scenario design and AAR criteria
+  - Consider classification and export control requirements for defense simulations
+
+  **Deliver:**
+  1. Simulation architecture with entity model and time management design
+  2. Interoperability integration plan (DIS/HLA/CIGI selection and configuration)
+  3. Training integration design (scenario editor, IOS, AAR, performance measurement)
+  4. Learning standards integration (SCORM/xAPI/cmi5 mapping)
+  5. VV&A plan with accreditation criteria
+  6. Performance budget and scalability plan
+
+variables:
+  - name: "simulation_type"
+    description: "Type of simulation being developed"
+    required: true
+    examples: ["Flight simulator", "Vehicle crew trainer", "Tactical decision-making trainer", "Medical procedure simulator", "Emergency response trainer", "Wargaming / constructive simulation"]
+  - name: "training_objectives"
+    description: "Learning outcomes the simulation must support"
+    required: true
+    examples: ["Individual task proficiency", "Crew coordination and communication", "Tactical decision-making under stress", "Equipment operation procedures", "Emergency response protocols"]
+  - name: "fidelity_level"
+    description: "Required simulation fidelity"
+    required: true
+    examples: ["High fidelity (device-level, near real-world)", "Medium fidelity (functional, task-accurate)", "Low fidelity (conceptual, desktop)", "Mixed fidelity (high for primary task, low for environment)"]
+  - name: "interop_standards"
+    description: "Interoperability standards to support"
+    required: true
+    examples: ["DIS (IEEE 1278.1)", "HLA (IEEE 1516)", "DIS + HLA gateway", "SCORM 2004 for LMS", "xAPI with custom profile", "None (standalone)"]
+  - name: "deployment_environment"
+    description: "Where the simulation will be deployed"
+    required: true
+    examples: ["Fixed-site training center", "Deployable / mobile training", "Cloud-based (browser or streaming)", "Classified network (SIPRNet/JWICS)", "Commercial LMS platform"]
+
+expected_output: "Complete simulation and training system architecture with interoperability design, training integration, learning standards mapping, and VV&A plan"
+
+quality_criteria:
+  - "Simulation architecture supports required fidelity without over-engineering"
+  - "Interoperability standards correctly implemented with proper PDU/FOM design"
+  - "Training objectives map traceable to performance measurement"
+  - "AAR captures sufficient data for meaningful debrief"
+  - "VV&A plan addresses intended use accreditation"
+  - "Performance targets achievable for entity count requirements"
+
+anti_patterns:
+  - "Maximum fidelity everywhere regardless of training value"
+  - "No dead reckoning leading to excessive network traffic"
+  - "AAR that only records — no playback or analysis tools"
+  - "Tight coupling between simulation and visualization layers"
+  - "Ignoring VV&A until end of development"
+  - "Using SCORM for complex simulation tracking (use xAPI instead)"
+
+related_prompts: ["ARCH-SYS-001", "DOM-GAMEDEV-001", "DOM-LVC-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001", "PLAN-REQ-002", "ARCH-SYS-001"]
+  next: ["DOM-LVC-001", "TEST-INT-001", "DEPLOY-IAC-001"]

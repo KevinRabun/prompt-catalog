@@ -1,0 +1,173 @@
+id: "DOM-RECRUIT-001"
+version: "1.0.0"
+title: "Recruiting and Talent Acquisition Platform Development"
+description: "Guides development of recruiting and applicant tracking systems including job posting, candidate pipeline, assessment, interview scheduling, and offer management with bias mitigation and compliance"
+category: "domains"
+subcategory: "recruiting"
+skill_level: "intermediate"
+platforms: ["web", "cloud", "android", "ios"]
+tags: ["recruiting", "ats", "talent-acquisition", "applicant-tracking", "hiring", "candidate-experience", "job-posting", "bias-mitigation", "onboarding"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a software architect designing a recruiting and talent acquisition platform.
+
+  **Context:**
+  - Organization Type: {{organization_type}}
+  - Hiring Volume: {{hiring_volume}}
+  - Recruiting Model: {{recruiting_model}}
+  - Integration Requirements: {{integration_requirements}}
+  - Compliance Requirements: {{compliance_requirements}}
+
+  **Design and implement covering these recruiting-specific requirements:**
+
+  ### 1. Job Requisition and Posting
+  - **Requisition workflow**: create → approve → open → filled → closed
+  - **Approval routing**: based on department, level, headcount plan, and budget
+  - **Job description builder**: template-based with inclusive language analysis
+  - **Multi-channel distribution**: company career site, job boards (Indeed, LinkedIn, Glassdoor), social media
+  - **Automated posting**: single create, distribute to configured channels with tracking links
+  - **Posting analytics**: views, clicks, applications per channel, cost per applicant
+  - **Internal job board**: post internally first (configurable posting rules and timelines)
+  - **Referral management**: employee referral tracking with bonus eligibility rules
+  - **Programmatic advertising**: budget-optimized job ad placement across platforms
+
+  ### 2. Candidate Pipeline Management
+  - **Application intake**: online application, resume upload, LinkedIn apply, quick apply
+  - **Resume parsing**: extract name, contact, experience, education, skills from uploaded resumes
+  - **Pipeline stages**: applied → screened → phone screen → interview → offer → hired (configurable)
+  - **Kanban view**: visual pipeline per requisition with drag-and-drop stage advancement
+  - **Source tracking**: attribute every candidate to originating source/campaign
+  - **Candidate deduplication**: detect returning candidates and link to historical records
+  - **Candidate relationship management (CRM)**: nurture passive candidates with talent pools
+  - **Pipeline analytics**: time-in-stage, conversion rates, bottleneck identification
+  - **Communication hub**: email/SMS templates, automated status updates, personalized outreach
+
+  ### 3. Screening and Assessment
+  - **Pre-screening questions**: knockout questions with auto-disposition
+  - **Skills assessment integration**: HackerRank, Codility, TestGorilla, custom assessments
+  - **AI-assisted screening**:
+    - Resume matching against job requirements
+    - **Bias mitigation**: blind resume review option (remove name, photo, demographics)
+    - Regular bias audits on AI screening outcomes
+    - Human override and review for all AI decisions
+    - Transparency: notify candidates if AI is used in screening
+  - **Video screening**: async video interviews with structured evaluation rubrics
+  - **Background checks**: integration with checkr, Sterling, or equivalent providers
+  - **Reference checks**: automated reference collection with structured questionnaires
+  - **Assessment scorecards**: standardized evaluation criteria per role
+
+  ### 4. Interview Management
+  - **Interview scheduling**: self-scheduling links, interviewer calendar sync (Google, Outlook)
+  - **Availability management**: interviewers set availability windows, automated conflict detection
+  - **Panel coordination**: multi-interviewer scheduling with room/video link booking
+  - **Interview types**: phone, video, onsite, technical, panel, group, case study
+  - **Structured interviews**: question banks tied to competencies, scoring rubrics
+  - **Interview scorecards**: post-interview evaluation with standardized criteria
+  - **Interviewer training**: flag untrained interviewers, track certification status
+  - **Candidate experience**: confirmation emails, directions/links, interviewer bios, prep materials
+  - **Debrief workflow**: collect all scorecards, facilitate hiring committee decisions
+
+  ### 5. Offer Management
+  - **Offer generation**: template-based offers with compensation, benefits, start date, contingencies
+  - **Compensation benchmarking**: suggest ranges based on role, level, location, market data
+  - **Approval workflow**: offer approvals with escalation for above-range compensation
+  - **Offer negotiation tracking**: track counteroffers, modifications, final terms
+  - **E-signature**: integrated offer letter signing (DocuSign, Adobe Sign)
+  - **Offer analytics**: acceptance rate, decline reasons, time-to-accept
+  - **Pre-boarding handoff**: trigger onboarding workflows upon offer acceptance  
+  - **Competing offer intelligence**: track market positioning and loss reasons
+
+  ### 6. Career Site and Candidate Experience
+  - **Career site CMS**: branded career pages with content blocks, team spotlights, culture content
+  - **Job search**: faceted search/filter by location, department, level, remote/hybrid/onsite
+  - **SEO optimization**: structured data markup (JobPosting schema), fast page loads, mobile-first
+  - **Application UX**: mobile-optimized, minimal required fields, save-and-resume
+  - **Candidate portal**: track application status, upcoming interviews, messages
+  - **Chatbot**: answer FAQs, guide through application, check status
+  - **Accessibility**: WCAG 2.1 AA compliance for all candidate-facing surfaces
+  - **Analytics**: career site traffic, drop-off rates, search-to-apply conversion
+
+  ### 7. Compliance and Bias Prevention
+  - **EEO compliance**: voluntary self-identification (race, gender, veteran, disability)
+  - **OFCCP**: affirmative action plan support, applicant flow analysis for federal contractors
+  - **EEOC reporting**: disposition tracking, adverse impact analysis
+  - **State and local requirements**: ban-the-box, salary history bans, pay transparency
+  - **Data retention**: jurisdiction-specific retention schedules (1-5 years for applicant data)
+  - **GDPR (if applicable)**: consent for data processing, right to erasure, data portability
+  - **AI transparency**: comply with NYC Local Law 144, Illinois AIPA, EU AI Act requirements
+  - **Audit reports**: adverse impact ratios, four-fifths rule analysis, selection rate comparisons
+  - **Accommodations**: process for requesting and tracking interview accommodations
+
+  ### 8. Analytics and Reporting
+  - **Recruiting funnel**: end-to-end conversion metrics per requisition, department, recruiter
+  - **Time-to-fill and time-to-hire**: from requisition opening to start date
+  - **Source effectiveness**: applications, hires, and quality-of-hire per source
+  - **Recruiter productivity**: requisitions per recruiter, pipeline velocity, offer rate
+  - **Diversity analytics**: pipeline diversity at each stage, representation vs. goals
+  - **Cost analytics**: cost-per-hire, cost-per-applicant, agency spend
+  - **Quality of hire**: new-hire performance ratings, retention at 90/180/365 days
+  - **Hiring manager satisfaction**: survey scores and feedback
+  - **Benchmark dashboards**: compare metrics across departments, locations, and time periods
+
+  **IMPORTANT CAVEATS:**
+  - AI in recruiting is under increasing regulation — monitor and comply with emerging AI hiring laws
+  - Bias can enter at any stage — design bias checkpoints throughout the pipeline
+  - Candidate data is personal data — apply privacy principles throughout
+  - Employment law varies dramatically by jurisdiction — design for configurable compliance rules
+  - Candidate experience directly impacts employer brand — invest in the applicant journey
+
+  **Deliver:**
+  1. Requisition and job posting architecture with multi-channel distribution
+  2. Candidate pipeline management with CRM capabilities
+  3. Assessment and screening framework with AI bias mitigation
+  4. Interview scheduling and evaluation system
+  5. Compliance framework (EEO, OFCCP, privacy, AI transparency)
+  6. Analytics and reporting dashboard design
+
+variables:
+  - name: "organization_type"
+    description: "Type and size of hiring organization"
+    required: true
+    examples: ["Enterprise employer (10,000+ employees, 500+ hires/year)", "Staffing/recruitment agency (placing candidates for clients)", "High-growth startup (doubling headcount annually)", "Government agency (merit-based hiring with strict compliance)", "Recruitment process outsourcing (RPO) provider"]
+  - name: "hiring_volume"
+    description: "Scale of hiring operations"
+    required: true
+    examples: ["500+ hires per year across 20 departments", "50-100 specialized/technical hires per year", "5,000+ hires per year (high-volume hourly + salaried)", "Seasonal hiring peaks (2x volume in Q3)", "20-50 executive/senior hires per year"]
+  - name: "recruiting_model"
+    description: "How recruiting is organized"
+    required: true
+    examples: ["In-house recruiting team with ATS", "Agency model (external recruiters submit candidates)", "Hybrid (in-house + agency for hard-to-fill)", "RPO provider managing end-to-end", "Hiring manager self-service with minimal HR involvement"]
+  - name: "integration_requirements"
+    description: "Systems to integrate with"
+    required: true
+    examples: ["Workday HRIS + LinkedIn Recruiter + DocuSign", "SAP SuccessFactors + Indeed + HackerRank + Outlook", "Custom HRIS + Gmail + Zoom + Slack notifications", "BambooHR + Google Workspace + Checkr background checks", "Standalone ATS with REST API for future integrations"]
+  - name: "compliance_requirements"
+    description: "Regulatory compliance requirements"
+    required: true
+    examples: ["EEO + OFCCP (federal contractor)", "GDPR + UK Equality Act (EU/UK hiring)", "State-specific (NYC AI law, CA pay transparency, IL AIPA)", "Federal government hiring (USAJOBS, merit system principles)", "Minimal compliance (small employer, single state)"]
+
+expected_output: "Complete recruiting platform architecture with pipeline management, assessment framework, compliance automation, and analytics"
+
+quality_criteria:
+  - "Pipeline stages are configurable per organization and requisition type"
+  - "AI screening includes documented bias mitigation and audit capability"
+  - "Compliance rules are configurable per jurisdiction without code changes"
+  - "Candidate data handling complies with applicable privacy regulations"
+  - "Analytics provide actionable insights at recruiter, department, and org levels"
+  - "Career site meets WCAG 2.1 AA accessibility standards"
+
+anti_patterns:
+  - "AI screening with no bias audit or human review"
+  - "No structured interview process (unstructured = biased)"
+  - "Storing applicant data indefinitely without retention policies"
+  - "No source tracking — unable to measure channel effectiveness"
+  - "Cookie-cutter career site with poor mobile experience"
+  - "Dispositioned candidates receiving no status communication"
+
+related_prompts: ["DOM-HR-001", "DOM-COMPLIANCE-001", "DEV-WEB-001", "DEV-API-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001", "ARCH-SYS-001"]
+  next: ["DOM-HR-001", "DEV-WEB-001", "DEV-API-001", "DEPLOY-CICD-001"]

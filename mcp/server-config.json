@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Prompt Catalog MCP Server Configuration",
+  "description": "Configuration for serving the Prompt Catalog via Model Context Protocol",
+  "type": "object",
+  "properties": {
+    "server": {
+      "type": "object",
+      "description": "MCP server identity and capabilities",
+      "properties": {
+        "name": {
+          "type": "string",
+          "default": "prompt-catalog",
+          "description": "Server name advertised to MCP clients"
+        },
+        "version": {
+          "type": "string",
+          "default": "1.0.0",
+          "description": "Server version"
+        },
+        "capabilities": {
+          "type": "object",
+          "properties": {
+            "resources": {
+              "type": "boolean",
+              "default": true,
+              "description": "Expose prompts and instructions as MCP resources"
+            },
+            "prompts": {
+              "type": "boolean",
+              "default": true,
+              "description": "Expose prompts as MCP prompt templates with variables"
+            },
+            "tools": {
+              "type": "boolean",
+              "default": false,
+              "description": "Expose search/filter as MCP tools"
+            }
+          }
+        }
+      }
+    },
+    "catalog": {
+      "type": "object",
+      "description": "Configuration for catalog content",
+      "properties": {
+        "rootPath": {
+          "type": "string",
+          "default": ".",
+          "description": "Root path to the prompt-catalog repository"
+        },
+        "indexPath": {
+          "type": "string",
+          "default": "prompts/index.json",
+          "description": "Path to the master prompt index"
+        },
+        "promptDirectories": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [
+            "prompts/planning",
+            "prompts/architecture",
+            "prompts/development",
+            "prompts/testing",
+            "prompts/security",
+            "prompts/deployment",
+            "prompts/operations",
+            "prompts/domains"
+          ],
+          "description": "Directories to scan for prompt YAML files"
+        },
+        "instructionDirectories": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [
+            "instructions/phases",
+            "instructions/guardrails",
+            "instructions/platforms"
+          ],
+          "description": "Directories to scan for instruction files"
+        }
+      }
+    },
+    "filtering": {
+      "type": "object",
+      "description": "Default filters applied to served content",
+      "properties": {
+        "skillLevels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["beginner", "intermediate", "advanced", "expert"]
+          },
+          "default": ["beginner", "intermediate", "advanced", "expert"],
+          "description": "Only serve prompts at these skill levels"
+        },
+        "platforms": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["web", "windows", "linux", "android", "ios", "cloud", "blockchain"]
+          },
+          "default": [],
+          "description": "Only serve prompts for these platforms (empty = all)"
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["planning", "architecture", "development", "testing", "security", "deployment", "operations", "domains"]
+          },
+          "default": [],
+          "description": "Only serve prompts in these categories (empty = all)"
+        },
+        "excludeTags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "description": "Exclude prompts containing any of these tags"
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "description": "Resource serving configuration",
+      "properties": {
+        "uriScheme": {
+          "type": "string",
+          "default": "prompt-catalog",
+          "description": "URI scheme for MCP resource URIs"
+        },
+        "includeInstructions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include instruction files as resources"
+        },
+        "includeSchemas": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include JSON schemas as resources"
+        },
+        "includeTemplate": {
+          "type": "boolean",
+          "default": true,
+          "description": "Include the prompt template file as a resource"
+        }
+      }
+    },
+    "instructionLoading": {
+      "type": "object",
+      "description": "Controls how instruction files are recommended for loading",
+      "properties": {
+        "alwaysLoad": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [
+            "instructions/guardrails/accuracy.instructions.md",
+            "instructions/guardrails/security.instructions.md"
+          ],
+          "description": "Instruction files to always recommend loading with any prompt"
+        },
+        "loadByPhase": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically recommend phase instructions based on prompt category"
+        },
+        "loadByPlatform": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically recommend platform instructions based on prompt platforms"
+        },
+        "loadWithReferences": {
+          "type": "boolean",
+          "default": true,
+          "description": "Follow load_with references in instruction frontmatter"
+        },
+        "phaseMapping": {
+          "type": "object",
+          "description": "Maps prompt categories to SDLC phase instruction files",
+          "default": {
+            "planning": "instructions/phases/requirements.instructions.md",
+            "architecture": "instructions/phases/design.instructions.md",
+            "development": "instructions/phases/implementation.instructions.md",
+            "testing": "instructions/phases/testing.instructions.md",
+            "security": "instructions/phases/implementation.instructions.md",
+            "deployment": "instructions/phases/deployment.instructions.md",
+            "operations": "instructions/phases/maintenance.instructions.md",
+            "domains": null
+          }
+        }
+      }
+    },
+    "chainSupport": {
+      "type": "object",
+      "description": "Configuration for prompt chaining workflows",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable chain_position awareness for workflow sequencing"
+        },
+        "suggestNext": {
+          "type": "boolean",
+          "default": true,
+          "description": "When serving a prompt, suggest the next prompts in the chain"
+        },
+        "suggestPrevious": {
+          "type": "boolean",
+          "default": false,
+          "description": "When serving a prompt, suggest prerequisite prompts"
+        }
+      }
+    }
+  }
+}

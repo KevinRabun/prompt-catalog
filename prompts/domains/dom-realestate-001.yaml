@@ -1,0 +1,118 @@
+id: "DOM-REALESTATE-001"
+version: "1.0.0"
+title: "Real Estate / PropTech Application Development"
+description: "Guides development of real estate and property technology applications"
+category: "domains"
+subcategory: "real-estate"
+skill_level: "intermediate"
+platforms: ["all"]
+tags: ["real-estate", "proptech", "property", "listings", "mls", "geospatial"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a software architect designing a real estate / PropTech application.
+
+  **Context:**
+  - Application: {{application_type}}
+  - Market: {{target_market}}
+  - Registry/MLS Integration: {{mls_integration}}
+  - Key Features: {{key_features}}
+
+  **Design considering these real estate domain requirements:**
+
+  ### 1. Property Data Model
+  - Support multiple **property types** (residential, commercial, industrial, land)
+  - Handle **address normalization** and **geocoding**
+  - Support **geospatial queries** (properties within radius, within polygon/boundary)
+  - Track **property history** (price changes, ownership, renovations)
+  - Handle **multi-unit properties** (apartments, condos with units)
+  - Store and serve **media** (photos, videos, 3D tours, floor plans)
+  - Support **listing lifecycle** (draft, active, pending, sold, withdrawn, expired)
+
+  ### 2. Search and Discovery
+  - **Geospatial search** (map-based, radius, drive-time, school districts)
+  - **Faceted filtering** (price range, bedrooms, property type, features)
+  - **Full-text search** with relevance ranking
+  - **Saved searches** with notification on new matches
+  - **Comparable properties** (comps) analysis
+  - **Market analytics** (price trends, days on market, inventory levels)
+
+  ### 3. Transaction Management
+  - **Offer and negotiation** workflow
+  - **Document management** (contracts, disclosures, inspection reports)
+  - **E-signature integration** (DocuSign, HelloSign)
+  - **Timeline and milestone tracking** (offer → inspection → appraisal → closing)
+  - **Commission calculation** and split management
+  - **Escrow and closing** coordination
+
+  ### 4. Integration Points
+  - **MLS/RETS/RESO** data feeds for listing data
+  - **Property tax** database integration
+  - **Mortgage/lending** APIs for pre-qualification
+  - **Title and escrow** company integration
+  - **Government registry** for ownership records
+  - **Map services** (Google Maps, Mapbox) for visualization
+  - **Property valuation** APIs (Zestimate, AVM)
+
+  ### 5. Compliance Considerations
+  - **Fair Housing Act** — no discriminatory filtering or steering
+  - **RESPA** — Real Estate Settlement Procedures Act compliance
+  - **State licensing** — agent/broker license verification
+  - **Data privacy** — tenant and buyer personal data protection
+  - **HOA disclosure** requirements
+  - **Environmental disclosures** (lead paint, flood zone, etc.)
+
+  ### 6. Performance Considerations
+  - Geospatial queries require **spatial indexing** (PostGIS, Elasticsearch geo)
+  - Image-heavy listings need **CDN delivery** and **progressive loading**
+  - Search must be **fast** (< 500ms) with millions of listings
+  - **Cache** popular searches and property detail pages
+  - Support **offline access** for agents in the field (mobile)
+
+  **Important:**
+  - Real estate data varies significantly by market — design for flexibility
+  - MLS data licensing has restrictions — understand and enforce usage rules
+  - Property addresses must be normalized for reliable matching
+  - Fair housing compliance is legally required — no discriminatory features
+
+variables:
+  - name: "application_type"
+    description: "Type of PropTech application"
+    required: true
+    examples: ["Property listing marketplace", "Property management platform", "Real estate CRM", "Investment analysis tool"]
+  - name: "target_market"
+    description: "Geographic market"
+    required: true
+    examples: ["US residential", "UK commercial", "Australian multi-market", "Global vacation rentals"]
+  - name: "mls_integration"
+    description: "MLS or listing data source"
+    required: false
+    default: "Direct data entry"
+    examples: ["RETS/RESO feed from regional MLS", "Rightmove/Zoopla API", "REA Group feed", "No MLS — direct listings"]
+  - name: "key_features"
+    description: "Primary features of the application"
+    required: true
+    examples: ["Map search, virtual tours, offer management", "Portfolio management, ROI analysis, tenant screening"]
+
+expected_output: "PropTech architecture with data model, search design, integration patterns, and compliance considerations"
+
+quality_criteria:
+  - "Property data model supports all property types"
+  - "Geospatial search is properly designed"
+  - "Fair housing compliance is addressed"
+  - "MLS integration respects data licensing"
+  - "Transaction workflow covers offer to closing"
+
+anti_patterns:
+  - "Using basic text search instead of geospatial"
+  - "No address normalization"
+  - "Discriminatory search filters"
+  - "No media optimization for listings"
+  - "Ignoring MLS data licensing restrictions"
+
+related_prompts: ["ARCH-SYS-001", "ARCH-DATA-001", "DEV-WEB-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001", "ARCH-SYS-001"]
+  next: ["ARCH-DATA-001", "DEV-WEB-001"]

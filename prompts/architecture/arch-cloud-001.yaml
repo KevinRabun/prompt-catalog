@@ -1,0 +1,136 @@
+id: "ARCH-CLOUD-001"
+version: "1.0.0"
+title: "Cloud Architecture Design"
+description: "Designs a cloud-native architecture on a specific provider with cost, security, and compliance considerations"
+category: "architecture"
+subcategory: "cloud"
+skill_level: "advanced"
+platforms: ["cloud-azure", "cloud-aws", "cloud-gcp", "cloud-oracle", "cloud-multi"]
+tags: ["cloud", "infrastructure", "scalability", "cost", "compliance", "data-sovereignty"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a cloud solutions architect designing the cloud infrastructure for a project.
+
+  **Project Context:**
+  - System: {{system_name}}
+  - Cloud Provider: {{cloud_provider}}
+  - Requirements: {{requirements_summary}}
+  - Data Sovereignty: {{data_sovereignty_requirements}}
+  - Budget: {{monthly_budget}}
+  - Compliance: {{compliance_requirements}}
+
+  **Design the cloud architecture covering:**
+
+  ### 1. Compute Strategy
+  - Service selection (VMs, containers, serverless, PaaS) with justification
+  - Sizing recommendations (start small, define scaling rules)
+  - Auto-scaling configuration (triggers, min/max, cool-down periods)
+  - Cost comparison between options
+
+  ### 2. Data & Storage
+  - Database service selection with justification (managed SQL, NoSQL, cache)
+  - Storage tier selection (hot, cool, archive)
+  - Backup and disaster recovery configuration
+  - Data residency — which regions for which data
+  - Replication strategy (same-region, cross-region)
+
+  ### 3. Networking
+  - Virtual network design (address spaces, subnets, peering)
+  - Load balancing strategy (L4 vs. L7, internal vs. external)
+  - DNS and domain management
+  - CDN configuration for static content
+  - Private endpoints for PaaS services
+  - Firewall and network security group rules
+
+  ### 4. Security
+  - Identity and access management (managed identities, service principals)
+  - Secret management (Key Vault, Secrets Manager)
+  - Encryption (at rest, in transit, customer-managed keys if required)
+  - Network security (NSGs, firewall, WAF, DDoS protection)
+  - Compliance controls aligned to {{compliance_requirements}}
+
+  ### 5. Monitoring & Operations
+  - Monitoring service and dashboard setup
+  - Alerting rules for key metrics
+  - Log aggregation and retention
+  - Distributed tracing
+  - Cost monitoring and alerts
+
+  ### 6. Disaster Recovery
+  - RPO and RTO targets and how they're met
+  - Failover strategy (active-active, active-passive, pilot light)
+  - Backup verification process
+  - DR testing schedule
+
+  ### 7. Cost Estimate
+  - Itemized monthly cost estimate by service
+  - Cost optimization recommendations
+  - Reserved/committed use discounts analysis
+  - Cost monitoring and tagging strategy
+
+  ### 8. Infrastructure as Code
+  - IaC tool recommendation (Bicep, Terraform, CloudFormation, Pulumi)
+  - Module/template structure
+  - Environment parameterization approach
+  - State management strategy
+
+  **Output format:** Include architecture diagrams in Mermaid syntax.
+
+  **Important:**
+  - Verify service availability in the target region(s)
+  - Consider data sovereignty constraints when selecting regions
+  - Provide cost estimates with sources (pricing calculator, published rates)
+  - Flag any assumptions about service limits or pricing
+  - If uncertain about current pricing or feature availability, say so explicitly
+
+variables:
+  - name: "system_name"
+    description: "Name of the system"
+    required: true
+  - name: "cloud_provider"
+    description: "Target cloud provider(s)"
+    required: true
+    examples: ["Azure", "AWS", "GCP", "Oracle Cloud", "Multi-cloud (Azure + AWS)"]
+  - name: "requirements_summary"
+    description: "Key technical and business requirements"
+    required: true
+  - name: "data_sovereignty_requirements"
+    description: "Data residency and sovereignty constraints"
+    required: false
+    default: "No specific requirements"
+    examples: ["EU data must stay in EU", "Must comply with China's data localization", "US government data - FedRAMP required"]
+  - name: "monthly_budget"
+    description: "Target monthly cloud spend"
+    required: false
+    default: "To be determined based on design"
+    examples: ["$5,000/month", "$50,000/month", "Minimize cost, scale as needed"]
+  - name: "compliance_requirements"
+    description: "Compliance frameworks that must be met"
+    required: false
+    default: "Standard security best practices"
+    examples: ["SOC 2 Type II", "HIPAA", "PCI-DSS + GDPR", "FedRAMP Moderate"]
+
+expected_output: "Complete cloud architecture document with diagrams, service selections, cost estimates, and IaC recommendations"
+
+quality_criteria:
+  - "Services are available in required regions"
+  - "Data sovereignty requirements are satisfied"
+  - "Cost estimate is itemized and realistic"
+  - "Security follows zero-trust principles"
+  - "DR strategy meets RPO/RTO targets"
+  - "IaC approach is defined"
+
+anti_patterns:
+  - "Over-provisioning resources without auto-scaling"
+  - "Public endpoints for internal services"
+  - "No cost monitoring or alerts"
+  - "Single-region deployment when HA is required"
+  - "Ignoring data sovereignty in region selection"
+
+related_prompts: ["ARCH-SYS-001", "ARCH-MICRO-001", "DEPLOY-IAC-001"]
+
+chain_position:
+  previous: ["ARCH-SYS-001"]
+  next: ["DEPLOY-IAC-001", "DEPLOY-CICD-001", "SEC-THREAT-001"]

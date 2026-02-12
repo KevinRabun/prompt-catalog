@@ -1,0 +1,111 @@
+id: "PLAN-SCOPE-001"
+version: "1.0.0"
+title: "Project Scope Definition"
+description: "Helps define project scope, boundaries, and constraints including what is explicitly out of scope"
+category: "planning"
+subcategory: "scope"
+skill_level: "beginner"
+platforms: ["all"]
+tags: ["scope", "planning", "constraints", "boundaries", "mvp"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a project manager helping to define the scope of a software project.
+
+  **Project Context:**
+  - Project Name: {{project_name}}
+  - Business Objective: {{business_objective}}
+  - Timeline: {{timeline}}
+  - Budget Constraints: {{budget_constraints}}
+  - Team Size: {{team_size}}
+
+  **Create a scope document covering:**
+
+  ### 1. Project Vision
+  - One-paragraph vision statement
+  - Key success metrics (how will we know this project succeeded?)
+
+  ### 2. In Scope (MVP / Phase 1)
+  - List features and capabilities included in the initial release
+  - Prioritize using MoSCoW (Must/Should/Could/Won't)
+  - Identify the Minimum Viable Product (MVP) — the smallest useful release
+
+  ### 3. Explicitly Out of Scope
+  - List features or capabilities deliberately excluded
+  - Explain WHY each is out of scope (timeline, budget, complexity, dependency)
+  - Note which out-of-scope items may be addressed in future phases
+
+  ### 4. Constraints
+  - Technical constraints (existing systems, mandated technologies)
+  - Business constraints (budget, timeline, regulatory)
+  - Resource constraints (team skills, availability)
+  - Organizational constraints (approval processes, governance)
+
+  ### 5. Assumptions
+  - List all assumptions the scope is based on
+  - Identify the risk if each assumption is wrong
+
+  ### 6. Dependencies
+  - External dependencies (third-party systems, APIs, vendors)
+  - Internal dependencies (other teams, infrastructure, approvals)
+
+  ### 7. Risks
+  - Top risks to scope delivery
+  - Impact and likelihood assessment
+  - Mitigation strategies
+
+  ### 8. Phase Plan (if multi-phase)
+  - Phase 1 (MVP): [scope]
+  - Phase 2: [scope]
+  - Phase 3+: [scope]
+
+  **Important:**
+  - Be realistic about what can be achieved in the timeline
+  - A smaller scope delivered well is better than an ambitious scope delivered poorly
+  - Flag scope items that need further research before commitment
+  - Ask clarifying questions about priorities and constraints
+
+variables:
+  - name: "project_name"
+    description: "Name of the project"
+    required: true
+  - name: "business_objective"
+    description: "The business problem this project solves"
+    required: true
+    examples: ["Reduce order processing time by 50%", "Enable self-service account management for customers"]
+  - name: "timeline"
+    description: "Available timeline for delivery"
+    required: true
+    examples: ["3 months to MVP", "6 months for full release", "2 sprints for Phase 1"]
+  - name: "budget_constraints"
+    description: "Budget limitations"
+    required: false
+    default: "To be determined"
+    examples: ["$50K development budget", "2 FTE engineers for 3 months"]
+  - name: "team_size"
+    description: "Available team members and their roles"
+    required: false
+    default: "To be determined"
+    examples: ["2 backend, 1 frontend, 1 QA", "3 full-stack developers"]
+
+expected_output: "A comprehensive scope document with clear in/out-of-scope boundaries, constraints, assumptions, and risk assessment"
+
+quality_criteria:
+  - "MVP is clearly defined and achievable"
+  - "Out-of-scope items are explicit with rationale"
+  - "All assumptions are documented"
+  - "Risks have mitigation strategies"
+  - "Scope aligns with stated constraints"
+
+anti_patterns:
+  - "Scope that exceeds available resources"
+  - "No explicit out-of-scope section"
+  - "Undocumented assumptions"
+  - "Missing risk assessment"
+
+related_prompts: ["PLAN-REQ-001", "PLAN-REQ-002"]
+
+chain_position:
+  previous: ["PLAN-REQ-001", "PLAN-REQ-002"]
+  next: ["ARCH-SYS-001"]

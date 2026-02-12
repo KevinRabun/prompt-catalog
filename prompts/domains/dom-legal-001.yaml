@@ -1,0 +1,166 @@
+id: "DOM-LEGAL-001"
+version: "1.0.0"
+title: "Legal Technology (LegalTech) Application Development"
+description: "Guides development of legal technology applications including case management, document review, legal research, compliance tracking, and AI-assisted legal workflows"
+category: "domains"
+subcategory: "legal"
+skill_level: "advanced"
+platforms: ["web", "cloud"]
+tags: ["legal-tech", "case-management", "ediscovery", "legal-research", "document-review", "compliance", "matter-management", "privilege", "litigation"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a software architect designing a legal technology application.
+
+  **Context:**
+  - Application Focus: {{application_focus}}
+  - Legal Domain: {{legal_domain}}
+  - User Types: {{user_types}}
+  - Jurisdiction: {{jurisdiction}}
+  - Data Sensitivity: {{data_sensitivity}}
+
+  **Design and implement covering these legal-specific requirements:**
+
+  ### 1. Matter and Case Management
+  - **Matter structure**: hierarchical organization — client → matter → sub-matter → tasks
+  - **Matter lifecycle**: intake, conflict check, opening, active, closing, closed, archived
+  - **Conflict of interest checking**: automated cross-reference against existing clients and matters
+  - **Task management**: assignments, deadlines, dependencies, time entries linked to tasks
+  - **Calendar management**: court dates, filing deadlines, statute of limitations, discovery cutoffs
+  - **Deadline calculation**: automatic computation from triggering events with jurisdiction-specific rules
+  - **Correspondence tracking**: link all communications to matters (emails, letters, calls)
+  - **Team management**: lead attorney, associates, paralegals, support staff per matter
+
+  ### 2. Document Management (Legal-Specific)
+  - **Document profiling**: metadata (matter, doc type, author, date, privilege status, confidentiality)
+  - **Version control**: full version history with comparison and rollback
+  - **Document assembly**: template-driven generation with matter data auto-population
+  - **Naming conventions**: firm-standard naming with automated enforcement
+  - **Ethical walls**: information barriers between matters to prevent conflicts
+  - **Privilege tagging**: mark documents as privileged, work product, or confidential
+  - **Hold management**: legal holds on documents for litigation preservation
+  - **DMS integration**: iManage, NetDocuments, or custom repository
+  - **Email integration**: file emails to matters with drag-and-drop or auto-filing rules
+
+  ### 3. eDiscovery and Document Review
+  - **Collection**: defensible collection from email, files, cloud storage, databases, mobile devices
+  - **Processing**: de-duplication (exact + near-duplicate), format conversion, text extraction, OCR
+  - **Review platform**: linear review, prioritized review, predictive coding / TAR (Technology Assisted Review)
+  - **Coding panel**: responsive, not responsive, privileged, confidential, hot documents
+  - **Quality control**: sampling, inter-reviewer agreement metrics, escalation workflows
+  - **Production**: Bates stamping, redaction, production format (native, TIFF, PDF)
+  - **Privilege log**: automated generation from privilege-tagged documents
+  - **Cost management**: metrics on review rate, cost per document, accuracy
+  - **EDRM (Electronic Discovery Reference Model)** compliance across the workflow
+
+  ### 4. Legal Research and AI Integration
+  - **Research integration**: APIs to Westlaw, LexisNexis, or equivalent legal databases
+  - **Citation verification**: validate case citations are still good law (not overruled/reversed)
+  - **AI-assisted research**: LLM-powered legal research with mandatory source citation
+  - **AI guardrails for legal content**:
+    - NEVER present AI-generated text as legal advice
+    - ALL AI outputs must include citations to primary sources
+    - Confidence scoring on AI research findings
+    - Human attorney review required before any client-facing use
+    - Disclose AI usage to clients per jurisdiction ethics rules
+  - **Knowledge management**: internal precedent, memoranda, and know-how databases
+  - **Brief analysis**: automated extraction of legal issues, holdings, and reasoning
+
+  ### 5. Time, Billing, and Financial Management
+  - **Time entry**: contemporaneous time capture with timer, manual entry, and narrative
+  - **Billing guidelines compliance**: LEDES/UTBMS codes, client billing guideline enforcement
+  - **Rate management**: standard rates, client-specific rates, blended rates, fee caps
+  - **Invoice generation**: LEDES 1998B format, customizable invoice templates
+  - **Trust/IOLTA accounting**: client trust fund management per jurisdiction bar rules
+  - **Budget tracking**: matter budgets, phase budgets, variance analysis
+  - **Accounts receivable**: aging, collection workflows, write-off approval
+  - **eBilling integration**: submit to client eBilling platforms (Brightflag, CounselLink, etc.)
+
+  ### 6. Compliance and Ethics
+  - **Bar compliance**: CLE tracking, bar admission status, pro bono reporting
+  - **Ethics rules engine**: jurisdiction-specific ethics rules for conflicts, communications, fees
+  - **Regulatory calendars**: filing deadlines, compliance reporting dates
+  - **Audit trail**: complete, immutable log of all actions (document access, changes, searches)
+  - **Data retention**: per-jurisdiction and client-specific retention rules
+  - **Cross-border discovery**: manage discovery obligations across jurisdictions (Hague Convention)
+  - **Privacy**: GDPR, CCPA, and jurisdiction-specific privacy compliance for client data
+
+  ### 7. Security (Heightened for Legal)
+  - **Attorney-client privilege**: technical controls preventing unauthorized disclosure
+  - **Ethical walls / information barriers**: automated enforcement with monitoring and alerting
+  - **Client data segregation**: logical or physical separation per engagement requirements
+  - **Encryption**: AES-256 at rest, TLS 1.3 in transit, end-to-end for privileged communications
+  - **Access control**: matter-level permissions, need-to-know enforcement
+  - **Mobile security**: secure containers, remote wipe, offline access controls
+  - **External sharing**: secure portals with access logging, expiration, watermarking
+  - **Insider threat**: monitoring for bulk download, off-hours access, privilege escalation
+
+  ### 8. Reporting and Analytics
+  - **Matter dashboards**: status, budget, timeline, team utilization per matter
+  - **Financial analytics**: realization rates, utilization, profitability by practice area
+  - **Portfolio analytics**: client portfolio concentration, risk assessment
+  - **Benchmarking**: compare performance metrics across practice areas and attorneys
+  - **Regulatory reporting**: automated generation of required filings and disclosures
+  - **Client reporting**: matter status reports, budget updates, activity summaries
+
+  **IMPORTANT CAVEATS:**
+  - Legal software handles highly privileged and confidential data — security is paramount
+  - AI in legal contexts requires extraordinary guardrails against hallucination
+  - Jurisdiction-specific rules vary significantly — design for configurability
+  - Trust accounting errors can result in bar discipline — implement robust financial controls
+  - Always consult practicing attorneys for legal workflow validation
+
+  **Deliver:**
+  1. Matter and case management architecture
+  2. Document management system with privilege and ethical wall controls
+  3. eDiscovery workflow per EDRM model
+  4. AI integration design with legal-specific guardrails
+  5. Time and billing architecture with LEDES/UTBMS compliance
+  6. Security architecture addressing attorney-client privilege protection
+
+variables:
+  - name: "application_focus"
+    description: "Primary function of the legal application"
+    required: true
+    examples: ["Full practice management platform", "eDiscovery and document review", "Contract analysis and management", "Legal research augmentation", "Compliance monitoring and reporting", "IP portfolio management"]
+  - name: "legal_domain"
+    description: "Area of law served"
+    required: true
+    examples: ["Corporate and commercial litigation", "Intellectual property (patents, trademarks)", "Regulatory compliance (financial services)", "Employment law", "Real estate and property", "Government contracts and procurement"]
+  - name: "user_types"
+    description: "Types of users interacting with the system"
+    required: true
+    examples: ["Partners, associates, paralegals, legal secretaries", "In-house counsel team (50+ attorneys)", "Solo practitioner with support staff", "Compliance officers and risk managers", "Litigation support and eDiscovery specialists"]
+  - name: "jurisdiction"
+    description: "Legal jurisdictions covered"
+    required: true
+    examples: ["US federal and state courts", "Multi-jurisdiction (US + UK + EU)", "International arbitration", "Single state (California)", "Federal agencies"]
+  - name: "data_sensitivity"
+    description: "Sensitivity level of data handled"
+    required: true
+    examples: ["Attorney-client privileged communications", "Litigation-sensitive with protective orders", "Regulatory investigation materials", "Standard commercial contracts", "Government classified (CUI and above)"]
+
+expected_output: "Complete legal technology architecture with matter management, document controls, eDiscovery workflow, AI guardrails, and privilege protection"
+
+quality_criteria:
+  - "Attorney-client privilege protections are technically enforced"
+  - "Ethical walls prevent cross-matter information leakage"
+  - "AI outputs include mandatory citations and disclaimers"
+  - "eDiscovery workflow follows EDRM model"
+  - "Trust accounting complies with bar association requirements"
+  - "Audit trail is immutable and comprehensive"
+
+anti_patterns:
+  - "AI-generated legal content without attorney review gates"
+  - "No conflict-of-interest check during matter intake"
+  - "Ethical walls enforced by policy alone without technical controls"
+  - "Storing privileged documents without tagging or access control"
+  - "Generic billing without LEDES/UTBMS code compliance"
+  - "Commingling client trust funds in general operating accounts"
+
+related_prompts: ["DOM-CLM-001", "DOM-COMPLIANCE-001", "SEC-THREAT-001", "SEC-CODE-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001", "ARCH-SYS-001", "SEC-THREAT-001"]
+  next: ["DOM-CLM-001", "DEV-API-001", "TEST-INT-001"]

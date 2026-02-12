@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/KevinRabun/prompt-catalog/blob/main/schema/instruction.schema.json",
+  "title": "Prompt Catalog - Instruction File Schema",
+  "description": "Schema for validating instruction file metadata headers",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "title",
+    "purpose",
+    "scope",
+    "applies_to"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^INST-[A-Z]+-[0-9]{3}$",
+      "description": "Unique instruction identifier"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Semantic version"
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable title"
+    },
+    "purpose": {
+      "type": "string",
+      "description": "What this instruction file ensures"
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "phase",
+        "guardrail",
+        "platform",
+        "domain",
+        "universal"
+      ],
+      "description": "What category of instruction this is"
+    },
+    "applies_to": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "SDLC phases, platforms, or domains this applies to"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["critical", "high", "medium", "low"],
+      "description": "How important it is to load this instruction",
+      "default": "medium"
+    },
+    "load_with": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Other instruction IDs that should be loaded together"
+    },
+    "author": {
+      "type": "string"
+    },
+    "last_reviewed": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,124 @@
+id: "DEV-MOB-001"
+version: "1.0.0"
+title: "Mobile Application Development"
+description: "Guides mobile application development for Android, iOS, or cross-platform targets"
+category: "development"
+subcategory: "mobile"
+skill_level: "intermediate"
+platforms: ["android", "ios", "cross-platform"]
+tags: ["mobile", "android", "ios", "flutter", "react-native", "kotlin", "swift"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a mobile developer implementing a feature for a mobile application.
+
+  **Context:**
+  - Feature: {{feature_description}}
+  - Platform: {{target_platform}}
+  - Framework: {{mobile_framework}}
+  - Backend API: {{backend_api}}
+  - Minimum OS Version: {{min_os_version}}
+
+  **Implement the feature covering:**
+
+  ### 1. Architecture
+  - Follow {{target_platform}}'s recommended architecture pattern
+  - Separate UI, business logic, and data layers
+  - Use dependency injection for testability
+  - Implement proper navigation/routing
+
+  ### 2. UI Implementation
+  - Follow platform design guidelines (Material Design for Android, Human Interface Guidelines for iOS)
+  - Support different screen sizes and orientations
+  - Implement proper keyboard handling
+  - Handle safe areas and notches/islands
+  - Support dark mode
+  - Implement loading, error, and empty states
+  - Support accessibility (VoiceOver/TalkBack, Dynamic Type/Font Scaling)
+
+  ### 3. Data Layer
+  - API client with proper error handling and retry logic
+  - Offline support strategy (if applicable)
+  - Local storage for cached/persistent data
+  - Data synchronization between local and remote
+  - Handle network connectivity changes gracefully
+
+  ### 4. Platform Integration
+  - Handle app lifecycle events (foreground, background, terminate)
+  - Request permissions at point of use with clear explanation
+  - Handle permission denial gracefully
+  - Deep link / universal link support (if applicable)
+  - Push notification handling (if applicable)
+
+  ### 5. Performance
+  - Minimize main thread work (especially UI rendering)
+  - Efficient list/grid rendering with item recycling
+  - Image loading with caching and placeholder
+  - Minimize app startup time
+  - Reduce battery consumption
+
+  ### 6. Security
+  - Secure credential storage (Keychain/Keystore)
+  - Certificate pinning for API communication
+  - Biometric authentication (if applicable)
+  - Code obfuscation for release builds
+  - Never store secrets in the app binary
+
+  ### 7. Testing
+  - Unit tests for business logic
+  - Widget/UI component tests
+  - Integration tests for critical flows
+  - Test on multiple device sizes and OS versions
+
+  **Important:**
+  - Verify API compatibility with the minimum OS version specified
+  - Follow platform-specific naming conventions and patterns
+  - Handle device-specific behaviors (Android fragmentation, iOS version differences)
+  - If using cross-platform, note where platform-specific code is needed
+
+variables:
+  - name: "feature_description"
+    description: "Feature to implement"
+    required: true
+    examples: ["User profile with photo upload", "Real-time chat with push notifications"]
+  - name: "target_platform"
+    description: "Target mobile platform"
+    required: true
+    examples: ["Android", "iOS", "Both (cross-platform)"]
+  - name: "mobile_framework"
+    description: "Development framework"
+    required: true
+    examples: ["Kotlin + Jetpack Compose", "Swift + SwiftUI", "Flutter", "React Native", ".NET MAUI"]
+  - name: "backend_api"
+    description: "Backend API details"
+    required: true
+    examples: ["REST API at api.example.com with JWT auth", "GraphQL API with OAuth 2.0"]
+  - name: "min_os_version"
+    description: "Minimum supported OS version"
+    required: false
+    default: "Android 8.0 (API 26) / iOS 16"
+    examples: ["Android 10 (API 29)", "iOS 17", "Android 8.0 + iOS 16"]
+
+expected_output: "Production-ready mobile code with proper architecture, error handling, accessibility, and testing"
+
+quality_criteria:
+  - "Follows platform design guidelines"
+  - "Handles lifecycle events properly"
+  - "Supports accessibility features"
+  - "Handles offline/error states gracefully"
+  - "Security best practices followed"
+  - "Tests cover critical paths"
+
+anti_patterns:
+  - "Business logic in UI components"
+  - "No offline or error handling"
+  - "Ignoring accessibility"
+  - "Blocking the main thread"
+  - "Storing secrets in app bundle"
+
+related_prompts: ["DEV-API-001", "ARCH-SYS-001", "TEST-UNIT-001"]
+
+chain_position:
+  previous: ["ARCH-SYS-001", "PLAN-REQ-003"]
+  next: ["TEST-UNIT-001", "DEPLOY-CICD-001"]

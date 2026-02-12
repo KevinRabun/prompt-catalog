@@ -1,0 +1,118 @@
+id: "DEV-WEB-001"
+version: "1.0.0"
+title: "Web Application Implementation"
+description: "Guides implementation of a web application with frontend and backend components following best practices"
+category: "development"
+subcategory: "web"
+skill_level: "intermediate"
+platforms: ["web"]
+tags: ["web", "frontend", "backend", "fullstack", "implementation"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a senior web developer implementing a web application feature.
+
+  **Context:**
+  - Feature: {{feature_description}}
+  - Frontend Framework: {{frontend_framework}}
+  - Backend Framework: {{backend_framework}}
+  - Database: {{database}}
+  - Authentication: {{auth_method}}
+
+  **Implement the feature following this structure:**
+
+  ### 1. Backend Implementation
+  - **API Endpoints**: Define RESTful routes with proper HTTP methods
+  - **Input Validation**: Validate all request parameters and body fields
+  - **Business Logic**: Implement in a service/use-case layer (not in controllers)
+  - **Data Access**: Use repository pattern with parameterized queries
+  - **Error Handling**: Return appropriate HTTP status codes with consistent error format
+  - **Authentication/Authorization**: Enforce on every protected endpoint
+  - **Logging**: Log operations at appropriate levels
+
+  ### 2. Frontend Implementation
+  - **Component Structure**: Break UI into small, reusable components
+  - **State Management**: Use appropriate state management for the data scope
+  - **API Integration**: Centralized API client with error handling
+  - **Loading States**: Show loading, error, and empty states for async operations
+  - **Form Handling**: Client-side validation + server-side validation
+  - **Accessibility**: ARIA labels, keyboard navigation, semantic HTML
+  - **Responsive Design**: Mobile-first, test across breakpoints
+
+  ### 3. Integration
+  - API contract between frontend and backend
+  - Error propagation from backend to user-facing messages
+  - Authentication token handling
+  - CORS configuration
+
+  ### 4. Testing
+  - Backend: Unit tests for business logic, integration tests for API endpoints
+  - Frontend: Component tests, integration tests for user flows
+
+  **Code Quality Requirements:**
+  - TypeScript / type safety where applicable
+  - No `any` types (TypeScript) — use proper interfaces
+  - Consistent error handling pattern throughout
+  - Environment-specific configuration via environment variables
+  - No hard-coded URLs, secrets, or environment-specific values
+
+  **Security Requirements:**
+  - Validate all inputs server-side (client validation is UX only)
+  - Parameterized database queries
+  - Output encoding for user-generated content
+  - CSRF protection for state-changing operations
+  - Secure cookie settings (httpOnly, secure, sameSite)
+  - Rate limiting on authentication and public endpoints
+
+  **Important:**
+  - Verify that APIs and methods you use exist in the specified framework version
+  - Include inline comments for non-obvious logic
+  - Handle edge cases (empty data, network errors, concurrent modifications)
+  - If suggesting a library, verify it's actively maintained and compatible
+
+variables:
+  - name: "feature_description"
+    description: "What feature to implement"
+    required: true
+    examples: ["User registration with email verification", "Product search with filters and pagination"]
+  - name: "frontend_framework"
+    description: "Frontend framework being used"
+    required: true
+    examples: ["React 18 with TypeScript", "Vue 3 with Composition API", "Angular 17", "Svelte 4", "Next.js 14"]
+  - name: "backend_framework"
+    description: "Backend framework being used"
+    required: true
+    examples: ["Express.js with TypeScript", "ASP.NET Core 8", "Django 5", "Spring Boot 3", "FastAPI"]
+  - name: "database"
+    description: "Database being used"
+    required: true
+    examples: ["PostgreSQL 16", "MongoDB 7", "SQL Server 2022", "MySQL 8"]
+  - name: "auth_method"
+    description: "Authentication mechanism"
+    required: false
+    default: "JWT with refresh tokens"
+    examples: ["JWT", "Session-based", "OAuth 2.0 / OIDC", "API keys"]
+
+expected_output: "Production-ready code for frontend and backend with proper error handling, validation, testing, and security"
+
+quality_criteria:
+  - "API follows RESTful conventions with proper status codes"
+  - "All inputs are validated server-side"
+  - "Error handling is consistent and informative"
+  - "UI handles loading, error, and empty states"
+  - "Code is typed and follows framework conventions"
+  - "Tests cover happy path and error scenarios"
+
+anti_patterns:
+  - "Business logic in controllers/route handlers"
+  - "No input validation on the server"
+  - "Generic catch-all error handling"
+  - "UI with no loading or error states"
+  - "Hard-coded values instead of configuration"
+
+related_prompts: ["ARCH-SYS-001", "DEV-API-001", "TEST-UNIT-001"]
+
+chain_position:
+  previous: ["ARCH-SYS-001", "PLAN-REQ-003"]
+  next: ["TEST-UNIT-001", "TEST-INT-001", "DEPLOY-CICD-001"]

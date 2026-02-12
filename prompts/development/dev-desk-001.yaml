@@ -1,0 +1,118 @@
+id: "DEV-DESK-001"
+version: "1.0.0"
+title: "Desktop Application Development"
+description: "Guides implementation of Windows, macOS, and Linux desktop applications"
+category: "development"
+subcategory: "desktop"
+skill_level: "intermediate"
+platforms: ["windows", "linux", "cross-platform"]
+tags: ["desktop", "windows", "linux", "macos", "wpf", "winui", "gtk", "qt", "electron", "tauri"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a desktop application developer implementing a feature.
+
+  **Context:**
+  - Feature: {{feature_description}}
+  - Platform: {{target_platform}}
+  - Framework: {{desktop_framework}}
+  - Architecture Pattern: {{architecture_pattern}}
+  - Data Storage: {{data_storage}}
+
+  **Implement the feature covering:**
+
+  ### 1. Architecture
+  - Follow MVVM (for XAML-based), MVC, or MVP depending on framework
+  - Separate view logic from business logic completely
+  - Use dependency injection for services and data access
+  - Implement proper command/event patterns for user interactions
+  - Handle application startup, shutdown, and state persistence
+
+  ### 2. UI Implementation
+  - Follow platform UI guidelines (Fluent for Windows, GTK/KDE for Linux, macOS HIG)
+  - Support keyboard shortcuts for common actions
+  - Implement undo/redo where appropriate
+  - Support drag-and-drop if applicable
+  - Handle DPI scaling and multiple monitors
+  - Implement proper progress indication for long operations
+  - Support system theme (dark/light mode)
+
+  ### 3. Data and State
+  - Local file handling / database access
+  - Application settings persistence
+  - Document management (open, save, auto-save, recovery)
+  - Undo/redo state management
+  - Handle concurrent file access
+
+  ### 4. Background Processing
+  - Offload heavy work from the UI thread
+  - Show progress for long-running operations
+  - Support cancellation of background operations
+  - Handle errors from background tasks on the UI thread
+
+  ### 5. System Integration
+  - File type associations
+  - System tray/notification area integration
+  - OS notifications
+  - Clipboard integration
+  - Print support (if applicable)
+
+  ### 6. Packaging & Distribution
+  - Build configuration (Debug, Release)
+  - Code signing
+  - Installer/package creation
+  - Auto-update mechanism
+  - First-run experience
+
+  **Important:**
+  - Keep the UI thread responsive — never block it with I/O or computation
+  - Handle multiple-instance scenarios (single instance vs. multi-instance)
+  - Memory management — dispose of resources, avoid leaks
+  - Verify platform API availability for the target OS version
+
+variables:
+  - name: "feature_description"
+    description: "Feature to implement"
+    required: true
+    examples: ["Document editor with real-time collaboration", "System monitoring dashboard"]
+  - name: "target_platform"
+    description: "Target desktop platform"
+    required: true
+    examples: ["Windows 10+", "Linux (GTK)", "Cross-platform (Win/Mac/Linux)"]
+  - name: "desktop_framework"
+    description: "Desktop UI framework"
+    required: true
+    examples: ["WinUI 3", "WPF", ".NET MAUI", "Electron", "Tauri", "Qt 6", "GTK 4"]
+  - name: "architecture_pattern"
+    description: "Architecture pattern to follow"
+    required: false
+    default: "MVVM"
+    examples: ["MVVM", "MVC", "MVP", "Flux/Redux"]
+  - name: "data_storage"
+    description: "Local data storage approach"
+    required: false
+    default: "SQLite for structured data, file system for documents"
+    examples: ["SQLite", "LevelDB", "JSON files", "Application settings API"]
+
+expected_output: "Production-ready desktop application code with proper architecture, threading, and platform integration"
+
+quality_criteria:
+  - "UI thread never blocked"
+  - "Platform conventions followed"
+  - "Proper resource management (disposal, cleanup)"
+  - "Background operations support cancellation"
+  - "Application state persisted correctly"
+
+anti_patterns:
+  - "Long-running operations on the UI thread"
+  - "No error handling for file operations"
+  - "Missing keyboard accessibility"
+  - "Memory leaks from undisposed resources"
+  - "No auto-save or crash recovery"
+
+related_prompts: ["ARCH-SYS-001", "TEST-UNIT-001"]
+
+chain_position:
+  previous: ["ARCH-SYS-001"]
+  next: ["TEST-UNIT-001", "DEPLOY-CICD-001"]

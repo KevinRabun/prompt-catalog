@@ -1,0 +1,125 @@
+id: "DOM-FINTECH-001"
+version: "1.0.0"
+title: "FinTech Application Development"
+description: "Guides development of financial technology applications with regulatory compliance, security, and audit requirements"
+category: "domains"
+subcategory: "fintech"
+skill_level: "expert"
+platforms: ["all"]
+tags: ["fintech", "financial", "banking", "payments", "pci-dss", "sox", "audit", "compliance"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a FinTech software architect designing a financial application.
+
+  **Context:**
+  - Application: {{application_type}}
+  - Financial Operations: {{financial_operations}}
+  - Target Jurisdiction: {{jurisdiction}}
+  - Compliance Requirements: {{compliance_frameworks}}
+  - Integration Partners: {{integration_partners}}
+
+  **Design and implement considering these FinTech-specific requirements:**
+
+  ### 1. Regulatory Compliance
+  - Identify all applicable regulations for {{jurisdiction}}
+  - Map compliance requirements to technical controls
+  - Design for **audit trail** on ALL financial transactions
+  - Implement **data retention** per regulatory requirements
+  - Plan for **regulatory reporting** (format, frequency, channel)
+  - Consider **AML (Anti-Money Laundering)** and **KYC (Know Your Customer)** requirements
+  - Implement **sanctions screening** if handling cross-border transactions
+
+  ### 2. Financial Data Integrity
+  - Use **decimal types** for monetary values — NEVER floating point
+  - Implement **double-entry bookkeeping** or equivalent reconciliation
+  - All financial operations must be **idempotent** (handle retries safely)
+  - Implement **optimistic locking** for concurrent financial operations
+  - Design for **eventual consistency** with reconciliation processes
+  - Every transaction must have a unique, immutable **transaction ID**
+  - Implement **comprehensive audit logging** (who, what, when, from where)
+
+  ### 3. Payment Processing
+  - Follow **PCI-DSS** requirements for cardholder data
+  - Never store full card numbers — use tokenization
+  - Implement **3D Secure** for card-not-present transactions
+  - Support **payment status lifecycle** (pending, authorized, captured, refunded, failed)
+  - Handle **partial payments** and **split payments** if applicable
+  - Implement **reconciliation** between your system and payment processor
+  - Design for **payment failures** and retry mechanisms
+
+  ### 4. Security (Enhanced for Financial)
+  - **Encryption**: AES-256 for data at rest, TLS 1.2+ in transit
+  - **Key management**: HSM-backed key storage where required
+  - **Access control**: Separation of duties (no single person can initiate and approve)
+  - **Session management**: Short session timeouts, re-authentication for sensitive ops
+  - **Fraud detection**: Anomaly detection on transaction patterns
+  - **Rate limiting**: Per-user, per-IP, per-operation limits
+  - **Penetration testing**: Mandatory before launch, annual thereafter
+
+  ### 5. High Availability
+  - Financial systems typically require **99.99%** availability
+  - Design for **zero data loss** (RPO = 0 for financial transactions)
+  - Implement **active-active** or **active-passive with instant failover**
+  - Database replication with **synchronous writes** for financial data
+  - Implement **circuit breakers** for external financial service integrations
+
+  ### 6. Testing (Enhanced for Financial)
+  - **Reconciliation tests**: Verify books balance after every test scenario
+  - **Boundary tests**: Test with minimum, maximum, and edge-case amounts
+  - **Currency tests**: Multi-currency rounding, conversion, display
+  - **Regulatory scenario tests**: Test compliance controls
+  - **Disaster recovery tests**: Test failover and recovery procedures
+  - **Performance tests**: Test under realistic financial load patterns
+
+  **WARNING: Financial software errors can have legal and financial consequences. Flag any areas where you are uncertain and recommend expert review for:**
+  - Regulatory interpretation
+  - Tax calculation logic
+  - Specific payment processor integrations
+  - Compliance certification requirements
+
+variables:
+  - name: "application_type"
+    description: "Type of FinTech application"
+    required: true
+    examples: ["Payment processing platform", "Digital banking app", "Investment portfolio tracker", "Lending platform", "Cryptocurrency exchange"]
+  - name: "financial_operations"
+    description: "Key financial operations the system performs"
+    required: true
+    examples: ["Money transfers, bill payments, balance inquiries", "Trade execution, portfolio rebalancing", "Loan origination, credit scoring, servicing"]
+  - name: "jurisdiction"
+    description: "Operating jurisdictions"
+    required: true
+    examples: ["United States", "European Union", "UK and EU", "Singapore", "Global (multi-jurisdiction)"]
+  - name: "compliance_frameworks"
+    description: "Required compliance frameworks"
+    required: true
+    examples: ["PCI-DSS, SOX, SOC 2", "PSD2, GDPR, MiFID II", "MAS TRM, PDPA"]
+  - name: "integration_partners"
+    description: "External financial service integrations"
+    required: false
+    default: "To be determined"
+    examples: ["Stripe, Plaid, banking APIs", "FIX protocol to exchanges", "SWIFT for wire transfers"]
+
+expected_output: "FinTech architecture and implementation guide with compliance controls, security design, and financial data integrity patterns"
+
+quality_criteria:
+  - "All relevant regulations are identified"
+  - "Monetary calculations use decimal types"
+  - "Audit trail covers all financial operations"
+  - "Security exceeds standard application requirements"
+  - "Testing includes reconciliation and boundary tests"
+
+anti_patterns:
+  - "Using floating point for money"
+  - "Missing audit trail on financial transactions"
+  - "No reconciliation process"
+  - "Storing raw card numbers"
+  - "Single point of failure in payment processing"
+
+related_prompts: ["SEC-THREAT-001", "ARCH-SYS-001", "ARCH-CLOUD-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-002", "ARCH-SYS-001"]
+  next: ["SEC-THREAT-001", "TEST-INT-001"]

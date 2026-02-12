@@ -1,0 +1,53 @@
+# Prompt Template
+#
+# Copy this file as a starting point for new prompts.
+# See schema/prompt.schema.json for validation rules.
+# See CONTRIBUTING.md for naming conventions and quality standards.
+
+id: "CATEGORY-SUB-000"           # Unique ID: PLAN|ARCH|DEV|TEST|SEC|DEPLOY|OPS|DOM - SUBCATEGORY - NUMBER
+version: "1.0.0"
+title: "Your Prompt Title"
+description: "A clear description of what this prompt does and who it helps"
+category: "planning"             # planning | architecture | development | testing | security | deployment | operations | domains
+subcategory: "requirements"     # More specific classification
+skill_level: "beginner"         # beginner | intermediate | advanced | expert
+platforms: ["all"]              # all | web | windows | linux | android | ios | cross-platform | cloud-azure | cloud-aws | cloud-gcp | cloud-oracle | cloud-multi | embedded | game | blockchain
+tags: ["tag1", "tag2"]
+author: "your-github-username"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  Your prompt text goes here. Use {{variable_name}} for customization points.
+
+  Be specific, structured, and actionable. Include:
+  - Clear instructions for the AI
+  - Output format expectations
+  - Quality requirements
+  - Anti-hallucination reminders where appropriate
+
+variables:
+  - name: "variable_name"
+    description: "What this variable represents"
+    required: true
+    default: ""
+    examples: ["example1", "example2"]
+
+expected_output: "Description of what good output from this prompt looks like"
+
+quality_criteria:
+  - "Criterion 1"
+  - "Criterion 2"
+
+anti_patterns:
+  - "Common mistake to watch for"
+
+adversarial_tests:
+  - scenario: "Describe an adversarial scenario that should be tested against the output"
+    expected_behavior: "How the output should handle this scenario"
+    severity: "high"  # critical | high | medium | low
+
+related_prompts: []                # IDs of related prompts
+
+chain_position:
+  previous: []                     # IDs of prompts that typically precede
+  next: []                         # IDs of prompts that typically follow

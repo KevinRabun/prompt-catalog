@@ -1,0 +1,170 @@
+id: "DOM-LVC-001"
+version: "1.0.0"
+title: "Live Virtual Constructive (LVC) Integration Architecture"
+description: "Guides design and integration of Live, Virtual, and Constructive simulation environments for joint training, testing, and experimentation"
+category: "domains"
+subcategory: "lvc-integration"
+skill_level: "expert"
+platforms: ["windows", "linux", "cloud"]
+tags: ["lvc", "live-virtual-constructive", "dis", "hla", "jlcctc", "tena", "gateway", "federation", "interoperability", "c4isr"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are an expert LVC integration architect designing a system that connects Live, Virtual, and Constructive simulation environments into a coherent training or test event.
+
+  **Context:**
+  - Event Scope: {{event_scope}}
+  - LVC Components: {{lvc_components}}
+  - Interoperability Architecture: {{interop_architecture}}
+  - C4ISR Integration: {{c4isr_systems}}
+  - Classification Level: {{classification_level}}
+
+  **Design and implement covering these LVC-specific requirements:**
+
+  ### 1. LVC Domain Architecture
+  Understand and integrate across the three domains:
+
+  | Domain | Description | Key Challenges |
+  |--------|-------------|----------------|
+  | **Live** | Real people operating real systems with instrumentation | GPS/IMU accuracy, real-time position reporting, safety |
+  | **Virtual** | Real people operating simulated systems (simulators) | Fidelity matching, latency, human-in-the-loop timing |
+  | **Constructive** | Simulated people operating simulated systems (wargames, CGF) | AI behavior realism, scalability, aggregate models |
+
+  - Define **Live** instrumentation: TSPI (Time Space Position Information) collection, player units, observer/controllers
+  - Define **Virtual** systems: simulators, roles, fidelity requirements per training objective
+  - Define **Constructive** entities: Computer Generated Forces (CGF), Semi-Automated Forces (SAF), environmental models
+  - Design **cross-domain entity resolution**: Live entity ↔ Virtual avatar ↔ Constructive representation
+  - Implement **truth management**: single authoritative position for each entity across domains
+
+  ### 2. Gateway and Translation Architecture
+  - **Protocol translation**: DIS ↔ HLA ↔ TENA ↔ custom protocols
+  - **Gateway design patterns**:
+    - Entity mapping tables: translate between different entity type enumerations
+    - Coordinate system translation: geocentric, geodetic, local tangent plane, UTM
+    - Time synchronization: NTP/PTP across all nodes, handle clock drift
+    - Dead reckoning alignment: common algorithms across domains
+  - **Data mediation**: resolve semantic differences between simulation models
+  - **Filtering**: relevance filtering to prevent data overload per node
+  - **Latency budget**: allocate per-segment (e.g., Live → Gateway: <50ms, Gateway → Virtual: <50ms)
+  - Consider **JLCCTC (Joint Live Virtual Constructive Training Capability)** architecture patterns
+
+  ### 3. TENA (Test and Training Enabling Architecture)
+  - **TENA Middleware**: publish/subscribe object registration
+  - **TENA Repository**: object models, logical range definitions
+  - **LROM (Logical Range Object Model)**: standard object definitions
+  - **TENA Gateway**: integration with DIS/HLA federations
+  - Support for **range instrumentation** data ingest
+
+  ### 4. Network Architecture
+  - **Network design**: dedicated training network, bandwidth provisioning, QoS
+  - **Multicast**: IGMP configuration for DIS traffic, PIM routing
+  - **Encryption**: Type 1 (NSA-approved) for classified, commercial for unclassified
+  - **VPN/tunneling**: connecting geographically distributed sites
+  - **Bandwidth estimation**:
+    - DIS: ~1.2 KB/entity-state PDU × entity count × update rate
+    - HLA: variable, depends on FOM and update policy
+    - Voice: ~64 Kbps per radio net
+    - Video: 2-10 Mbps per feed
+  - **Network monitoring**: real-time throughput, latency, packet loss dashboards
+  - **Redundancy**: failover paths for critical connections
+
+  ### 5. Exercise Management
+  - **Exercise initialization**: coordinated start across all LVC components
+  - **Scenario distribution**: push scenario data, databases, terrain to all nodes
+  - **Master Scenario Events List (MSEL)**: scripted events with triggers and timelines
+  - **Exercise control**: start, pause, restart, adjust tempo, inject events
+  - **White cell / EXCON tools**: inject messages, control CGF, modify conditions
+  - **Real-time monitoring**: common operational picture for exercise staff
+  - **Safety**: real-world safety boundaries, live-fire deconfliction, simulation kill switches
+
+  ### 6. Data Collection and AAR
+  - **Centralized data collection**: aggregate events from all LVC domains
+  - **Data correlation**: align events across domains using synchronized timestamps
+  - **Common data format**: normalize into unified event schema
+  - **Data products**:
+    - Timeline reconstruction across all domains
+    - 2D/3D playback with entity tracks
+    - Engagement analysis (shooter-target pairing)
+    - Communication analysis (radio nets, message traffic)
+    - Performance scoring against training objectives
+  - **Data storage**: handle terabytes for large exercises; index for efficient query
+  - **Classification**: data products may inherit highest classification of any contributing source
+
+  ### 7. C4ISR Integration
+  - **Tactical data links**: Link 16, VMF, OTH-Gold representation or simulation
+  - **C2 systems**: integrate with or simulate command and control systems
+  - **Intelligence feeds**: simulated intel products, imagery, SIGINT
+  - **Blue Force Tracking (BFT)**: positional data in tactical format
+  - **Message injection**: realistic message formats at realistic timing
+  - **Stimulation vs. simulation**: stimulate real C2 systems with synthetic data where possible
+
+  ### 8. Testing and Certification
+  - **Integration testing**: each LVC component individually, then incrementally combined
+  - **Gateway testing**: verify entity translation accuracy and completeness
+  - **Latency testing**: end-to-end latency measurement across full LVC chain
+  - **Scale testing**: load test with expected entity counts + 20% margin
+  - **Failover testing**: verify graceful degradation when components fail
+  - **Interoperability certification**: SISO compliance testing for DIS/HLA
+  - **Dress rehearsal**: full exercise dry run with all components and personnel
+
+  **IMPORTANT CAVEATS:**
+  - LVC integration is inherently complex — plan for iterative integration testing
+  - Classification and cybersecurity requirements may constrain architecture significantly
+  - Live safety is paramount — simulation must never compromise real-world safety
+  - Cross-site WAN connections are often the weakest link — test early
+  - Entity resolution across domains is the hardest technical problem — invest here
+
+  **Deliver:**
+  1. LVC integration architecture with component topology and data flows
+  2. Gateway design with entity mapping and protocol translation specifications
+  3. Network architecture with bandwidth estimates and QoS plan
+  4. Exercise management plan with MSEL integration
+  5. Data collection and AAR architecture
+  6. Integration test plan with certification milestones
+
+variables:
+  - name: "event_scope"
+    description: "Scale and nature of the LVC event"
+    required: true
+    examples: ["Battalion-level combined arms exercise", "Joint multi-domain exercise (1000+ entities)", "Test event for new weapon system", "Distributed coalition training across 5 sites", "Small unit tactics with live and virtual mix"]
+  - name: "lvc_components"
+    description: "Specific live, virtual, and constructive systems involved"
+    required: true
+    examples: ["Live: instrumented vehicles + dismounts; Virtual: flight simulators + UAV stations; Constructive: JCATS + OneSAF", "Live: range instrumentation; Virtual: driving simulators; Constructive: CGF for opposing force", "Virtual: cockpit simulators; Constructive: threat environment + SAF; Live: airspace coordination"]
+  - name: "interop_architecture"
+    description: "Interoperability standards and gateways"
+    required: true
+    examples: ["DIS-only federation", "HLA with RTI (MAK VR-Forces)", "DIS-HLA gateway (VR-Link)", "TENA for range integration + DIS for simulators", "Mixed DIS/HLA with JLCCTC architecture"]
+  - name: "c4isr_systems"
+    description: "Command, control, and intelligence systems involved"
+    required: true
+    examples: ["AFATDS, CPCE, JBC-P", "Link 16 terminals (real and simulated)", "GCCS-J stimulated with synthetic tracks", "No C4ISR integration (sim-only)", "Simulated C2 system for training"]
+  - name: "classification_level"
+    description: "Security classification of the exercise"
+    required: true
+    examples: ["Unclassified", "CUI / FOUO", "SECRET", "SECRET // REL TO coalition partners", "TS/SCI (separate enclave)"]
+
+expected_output: "Complete LVC integration architecture with gateway design, network plan, exercise management, data collection, and integration test strategy"
+
+quality_criteria:
+  - "All three LVC domains connected with verified entity resolution"
+  - "Gateway correctly translates between all protocol pairs"
+  - "Latency budget meets real-time interaction requirements"
+  - "Data collection captures events from all domains with correlated timestamps"
+  - "Safety mechanisms prevent simulation from affecting live operations"
+  - "Classification boundaries properly enforced across network segments"
+
+anti_patterns:
+  - "Point-to-point connections instead of gateway architecture"
+  - "No entity resolution table — entities duplicated or lost across domains"
+  - "Assuming sufficient bandwidth without measurement"
+  - "Testing integration only at the final exercise event"
+  - "Ignoring time synchronization across distributed sites"
+  - "No plan for graceful degradation when a component fails"
+
+related_prompts: ["DOM-SIMTRAIN-001", "ARCH-SYS-001", "DEPLOY-IAC-001", "SEC-THREAT-001"]
+
+chain_position:
+  previous: ["DOM-SIMTRAIN-001", "ARCH-SYS-001", "PLAN-REQ-002"]
+  next: ["TEST-INT-001", "DEPLOY-IAC-001", "OPS-MON-001"]

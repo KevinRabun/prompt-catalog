@@ -1,0 +1,157 @@
+id: "DOM-HEALTHCARE-001"
+version: "1.0.0"
+title: "Healthcare and Life Sciences Application Development"
+description: "Guides development of healthcare applications with HIPAA, HL7 FHIR, and clinical safety requirements"
+category: "domains"
+subcategory: "healthcare"
+skill_level: "advanced"
+platforms: ["web", "cloud", "android", "ios"]
+tags: ["healthcare", "hipaa", "hl7-fhir", "ehr", "phi", "clinical", "telemedicine", "medical-devices"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a healthcare software architect designing a clinical or health-tech application.
+
+  **Context:**
+  - Application Type: {{application_type}}
+  - Clinical Data Standards: {{data_standards}}
+  - Regulatory Framework: {{regulatory_framework}}
+  - Integration Requirements: {{integration_requirements}}
+  - User Types: {{user_types}}
+
+  **Design and implement covering healthcare-specific requirements:**
+
+  ### 1. Data Standards and Interoperability
+  - **HL7 FHIR R4+**: Use FHIR resources as the primary data model for clinical data
+  - **FHIR resource mapping**: Map application entities to appropriate FHIR resources
+  - **Terminology services**: Integrate SNOMED CT, ICD-10, LOINC, RxNorm, CPT codes
+  - **CDA / C-CDA**: Support for clinical document exchange if required
+  - **DICOM**: Medical imaging data standards if applicable
+  - **SMART on FHIR**: Use for third-party app authorization and launch contexts
+  - **Bulk Data Access**: FHIR Bulk Data for population-level queries and analytics
+
+  ### 2. HIPAA Security Rule Technical Safeguards
+  - **Access control**: Unique user identification, emergency access, automatic logoff, encryption
+  - **Audit controls**: Record and examine activity in systems containing PHI
+  - **Integrity controls**: Protect PHI from improper alteration or destruction
+  - **Transmission security**: Encrypt PHI in transit (TLS 1.2+), integrity controls
+  - **Authentication**: Verify identity of persons seeking PHI access
+  - **Minimum necessary**: Limit PHI access and disclosure to minimum needed
+
+  | HIPAA § | Requirement | Technical Control |
+  |---------|-------------|-------------------|
+  | 164.312(a) | Access control | RBAC + MFA + auto-logoff |
+  | 164.312(b) | Audit controls | Immutable audit log of all PHI access |
+  | 164.312(c) | Integrity | Hash verification, write-once storage |
+  | 164.312(d) | Authentication | Strong authentication, unique credentials |
+  | 164.312(e) | Transmission | TLS 1.2+, end-to-end encryption |
+
+  ### 3. Clinical Safety and Data Quality
+  - **Clinical decision support**: Verify all clinical calculations and algorithms are evidence-based
+  - **Drug interaction checking**: Integrate with drug databases with proper licensing
+  - **Allergy alerts**: Cross-reference patient allergies with prescribed treatments
+  - **Dosage calculations**: Double-verify calculations; display units clearly
+  - **Data validation**: Clinical data must be validated against reference ranges
+  - **Clinical review**: Medical professionals MUST review any clinical logic before deployment
+  - **Liability boundaries**: Clearly delineate where software provides decision support vs. diagnosis
+
+  **⚠️ PATIENT SAFETY WARNING:**
+  Software that influences clinical decisions is potentially life-critical.
+  All clinical logic MUST be reviewed by qualified medical professionals.
+  Errors in clinical software can directly harm patients.
+
+  ### 4. Protected Health Information (PHI) Handling
+  - **PHI inventory**: Document every field that constitutes PHI (18 HIPAA identifiers)
+  - **De-identification**: Safe Harbor or Expert Determination method for research data
+  - **Minimum necessary**: API responses return only the PHI needed for the use case
+  - **PHI in logs**: NEVER log PHI; use opaque identifiers in all logging
+  - **PHI in URLs**: NEVER include PHI in URLs, query strings, or API paths
+  - **PHI in errors**: Error messages must not leak PHI to end users or logs
+  - **PHI disposal**: Secure deletion when retention periods expire
+  - **PHI in development**: Use synthetic data only; never use real PHI in non-production
+
+  ### 5. Patient Consent and Privacy
+  - **Consent management**: Track patient consent for each data use category
+  - **Consent granularity**: Per-purpose consent (treatment, payment, operations, research)
+  - **Consent revocation**: Patients can revoke consent with downstream enforcement
+  - **Patient access rights**: Portal for patients to view, download, and transmit their records
+  - **Accounting of disclosures**: Track and report all PHI disclosures
+  - **Privacy notices**: Configurable privacy notices per regulation
+
+  ### 6. EHR / System Integration
+  - **HL7 FHIR APIs**: RESTful APIs conforming to FHIR implementation guides
+  - **Legacy integration**: HL7 v2 message handling for older systems
+  - **Integration engine**: Message routing, transformation, and monitoring
+  - **Error handling**: Clinical messages require guaranteed delivery; implement retry, dead-letter queues
+  - **Reconciliation**: Periodic data reconciliation between systems
+  - **Interface monitoring**: Alert on integration failures immediately (patient safety impact)
+
+  ### 7. Accessibility (Critical for Healthcare)
+  - **WCAG 2.1 AA minimum**: Healthcare apps must be accessible to all patients
+  - **Screen reader**: Full support for clinical terminology and medical content
+  - **High contrast**: Medical imaging and clinical data must be viewable in high contrast
+  - **Motor accessibility**: Large touch targets, keyboard navigation, voice input
+  - **Cognitive accessibility**: Clear language, consistent navigation, error prevention
+  - **Multi-language**: Support for patient-facing content in multiple languages
+
+  ### 8. Testing for Healthcare
+  - **Clinical scenario testing**: Test with realistic clinical workflows and medical edge cases
+  - **Synthetic test data**: Generate realistic but non-real PHI test data
+  - **Interoperability testing**: Connectathon-style testing with partner systems
+  - **Regression testing**: Clinical logic must be regression-tested on every change
+  - **Penetration testing**: Annual penetration testing of systems handling PHI
+  - **Disaster recovery**: Test recovery procedures; define RTO and RPO for clinical systems
+
+  **Deliver:**
+  1. FHIR resource model and data architecture
+  2. HIPAA security control mapping
+  3. Clinical safety review checklist
+  4. PHI handling architecture with data flow diagram
+  5. Integration architecture with EHR systems
+  6. Testing strategy with synthetic data approach
+
+variables:
+  - name: "application_type"
+    description: "Type of healthcare application"
+    required: true
+    examples: ["Patient portal / PHR", "Telemedicine platform", "EHR module / clinical workflow", "Clinical trial management", "Remote patient monitoring", "Medical device companion app"]
+  - name: "data_standards"
+    description: "Clinical data standards to support"
+    required: true
+    examples: ["HL7 FHIR R4", "HL7 FHIR R4 + HL7 v2 (legacy)", "FHIR + DICOM (imaging)", "FHIR + NCPDP (pharmacy)"]
+  - name: "regulatory_framework"
+    description: "Applicable healthcare regulations"
+    required: true
+    examples: ["HIPAA (US)", "HIPAA + HITECH (US)", "GDPR + MDR (EU)", "PIPEDA (Canada)", "HIPAA + state-specific (CA, NY, TX)"]
+  - name: "integration_requirements"
+    description: "Systems to integrate with"
+    required: true
+    examples: ["Epic (FHIR R4)", "Cerner/Oracle Health", "Major EHRs via CommonWell/Carequality", "Lab systems (HL7 v2)", "Pharmacy (NCPDP SCRIPT)", "No external integration"]
+  - name: "user_types"
+    description: "Types of users accessing the system"
+    required: true
+    examples: ["Patients + Providers (physicians, nurses)", "Researchers + Data analysts", "Patients only (consumer health)", "Clinical staff + Administrators", "All (patients, providers, admins, payers)"]
+
+expected_output: "Healthcare application architecture with FHIR data model, HIPAA controls, clinical safety plan, and integration design"
+
+quality_criteria:
+  - "All PHI handling follows HIPAA minimum necessary principle"
+  - "Clinical logic is flagged for medical professional review"
+  - "FHIR resources are correctly mapped to application entities"
+  - "Audit trail captures all PHI access"
+  - "Synthetic data strategy eliminates real PHI from non-production"
+
+anti_patterns:
+  - "Using real patient data in development or testing"
+  - "Logging PHI in application logs"
+  - "Clinical calculations without medical professional review"
+  - "PHI in URLs or query parameters"
+  - "Skipping accessibility for healthcare applications"
+  - "No integration testing with real EHR systems before go-live"
+
+related_prompts: ["DOM-COMPLIANCE-001", "SEC-THREAT-001", "DEV-API-001", "DOM-DATASOV-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001", "ARCH-SYS-001", "DOM-COMPLIANCE-001"]
+  next: ["DEV-API-001", "SEC-CODE-001", "TEST-INT-001"]

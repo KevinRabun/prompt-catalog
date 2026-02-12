@@ -1,0 +1,141 @@
+id: "DEPLOY-CICD-001"
+version: "1.0.0"
+title: "CI/CD Pipeline Design"
+description: "Designs a complete CI/CD pipeline with build, test, security scan, and deployment stages"
+category: "deployment"
+subcategory: "ci-cd"
+skill_level: "intermediate"
+platforms: ["all"]
+tags: ["ci-cd", "pipeline", "automation", "github-actions", "azure-devops", "jenkins"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a DevOps engineer designing a CI/CD pipeline.
+
+  **Context:**
+  - Project: {{project_name}}
+  - CI/CD Platform: {{cicd_platform}}
+  - Source Control: {{source_control}}
+  - Deployment Target: {{deployment_target}}
+  - Application Type: {{application_type}}
+  - Environments: {{environments}}
+
+  **Design the pipeline with these stages:**
+
+  ### 1. Source Stage (On Push / PR)
+  - Code checkout
+  - Dependency installation (with lock file for reproducibility)
+  - Linting and formatting checks
+  - Commit message validation (if using conventional commits)
+
+  ### 2. Build Stage
+  - Compile / transpile code
+  - Generate build artifacts
+  - Tag artifacts with version (git SHA + semantic version)
+  - Build container images (if applicable)
+  - Store artifacts in registry (container registry, package registry)
+
+  ### 3. Test Stage
+  - Unit tests with coverage report
+  - Integration tests (using containers for dependencies)
+  - Coverage thresholds (fail if below minimum)
+  - Test result publication
+
+  ### 4. Security Stage
+  - Static Application Security Testing (SAST)
+  - Dependency vulnerability scanning
+  - Container image scanning (if applicable)
+  - Secret detection in code
+  - License compliance check
+  - Fail on critical/high vulnerabilities
+
+  ### 5. Deploy to Staging
+  - Infrastructure provisioning / update (IaC)
+  - Application deployment
+  - Database migrations
+  - Smoke tests
+  - Performance baseline tests
+
+  ### 6. Approval Gate
+  - Manual approval for production (or automated based on criteria)
+  - Change documentation
+  - Deployment window validation
+
+  ### 7. Deploy to Production
+  - Blue-green or canary deployment
+  - Health check verification
+  - Automated rollback on failure
+  - Post-deployment smoke tests
+  - Monitoring verification
+
+  ### 8. Post-Deployment
+  - Notify stakeholders
+  - Update change log
+  - Monitor error rates and latency
+  - Rollback decision window
+
+  **Pipeline Configuration Requirements:**
+  - Secrets stored in pipeline secret management (never in code)
+  - Pipeline-as-code (YAML in repository)
+  - Branch protection rules (require passing CI for merge)
+  - Artifact signing for production deployments
+  - Parallel execution where stages are independent
+  - Caching for dependencies to improve speed
+
+  **Generate the pipeline configuration file for {{cicd_platform}}.**
+
+  **Important:**
+  - All secrets via secret management — NO plaintext secrets in pipeline files
+  - Pin action/task versions for reproducibility
+  - Include timeout settings for each stage
+  - Handle failure notifications (Slack, email, Teams)
+
+variables:
+  - name: "project_name"
+    description: "Name of the project"
+    required: true
+  - name: "cicd_platform"
+    description: "CI/CD platform to generate config for"
+    required: true
+    examples: ["GitHub Actions", "Azure DevOps Pipelines", "GitLab CI", "Jenkins"]
+  - name: "source_control"
+    description: "Source control platform"
+    required: false
+    default: "GitHub"
+    examples: ["GitHub", "Azure Repos", "GitLab", "Bitbucket"]
+  - name: "deployment_target"
+    description: "Where the application is deployed"
+    required: true
+    examples: ["Azure App Service", "AWS ECS", "Kubernetes (AKS)", "Vercel", "On-premises servers"]
+  - name: "application_type"
+    description: "Type of application"
+    required: true
+    examples: [".NET 8 Web API", "Node.js + React", "Python Flask", "Go microservice"]
+  - name: "environments"
+    description: "Deployment environments"
+    required: false
+    default: "development, staging, production"
+    examples: ["dev, staging, prod", "staging, prod", "dev, qa, staging, prod"]
+
+expected_output: "Complete CI/CD pipeline configuration file with all stages, plus documentation of the pipeline design"
+
+quality_criteria:
+  - "All stages from build through production are defined"
+  - "Security scanning is included"
+  - "Secrets are managed properly"
+  - "Deployment includes health checks and rollback"
+  - "Pipeline file is syntactically correct for the chosen platform"
+
+anti_patterns:
+  - "No security scanning stage"
+  - "Secrets in pipeline file"
+  - "No rollback mechanism"
+  - "Missing test stage"
+  - "No caching for dependencies"
+
+related_prompts: ["DEPLOY-IAC-001", "DEPLOY-CONT-001", "TEST-INT-001"]
+
+chain_position:
+  previous: ["TEST-INT-001", "SEC-CODE-001"]
+  next: ["DEPLOY-IAC-001", "OPS-MON-001"]

@@ -1,0 +1,147 @@
+id: "DOM-ECOMMERCE-001"
+version: "1.0.0"
+title: "E-Commerce Platform Development"
+description: "Guides development of scalable e-commerce platforms with payment processing, inventory management, and conversion optimization"
+category: "domains"
+subcategory: "e-commerce"
+skill_level: "intermediate"
+platforms: ["web", "android", "ios", "cloud"]
+tags: ["e-commerce", "payments", "inventory", "shopping-cart", "pci-dss", "marketplace", "catalog"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are an e-commerce architect designing a scalable online commerce platform.
+
+  **Context:**
+  - Business Model: {{business_model}}
+  - Product Catalog: {{catalog_scope}}
+  - Target Markets: {{target_markets}}
+  - Payment Requirements: {{payment_requirements}}
+  - Expected Scale: {{expected_scale}}
+
+  **Design and implement covering e-commerce-specific concerns:**
+
+  ### 1. Catalog and Product Management
+  - **Product data model**: SKUs, variants (size, color), bundles, digital vs. physical
+  - **Category taxonomy**: Hierarchical categories with faceted navigation
+  - **Attribute management**: Configurable product attributes, filterable facets
+  - **Search**: Full-text search with typo tolerance, synonyms, faceting, and relevance tuning
+  - **Pricing engine**: Base price, sales, tiered pricing, customer-group pricing, currency
+  - **Inventory tracking**: Real-time stock levels, multi-warehouse, backorder  rules
+  - **Content management**: Rich product descriptions, images, videos, reviews
+  - **SEO**: Schema.org markup, canonical URLs, sitemap generation, meta management
+
+  ### 2. Shopping Cart and Checkout
+  - **Cart persistence**: Server-side cart linked to session/user, survives browser close
+  - **Cart rules**: Quantity limits, minimum order, product compatibility checks
+  - **Pricing calculation**: Subtotal → discounts → shipping → tax → total (clear breakdown)
+  - **Checkout flow**: Minimize steps; support guest checkout
+  - **Address validation**: Real-time address verification and standardization
+  - **Shipping calculation**: Rate shopping across carriers, delivery date estimation
+  - **Tax calculation**: Real-time tax calculation by jurisdiction (use tax service for accuracy)
+  - **Abandoned cart**: Track abandoned carts, trigger recovery workflows
+
+  ### 3. Payment Processing (PCI-DSS Critical)
+  - **PCI-DSS compliance**: Use tokenized payment through certified payment gateway
+  - **NEVER store raw card data**: Use payment provider tokens exclusively
+  - **Payment methods**: Credit/debit cards, digital wallets, BNPL, bank transfers
+  - **3D Secure**: Implement SCA/3DS2 for applicable transactions (EU PSD2)
+  - **Idempotent payments**: Prevent duplicate charges on retry/timeout
+  - **Refund handling**: Full and partial refunds, refund-to-original-method
+  - **Fraud detection**: Address verification, velocity checks, risk scoring
+  - **Multi-currency**: Real-time exchange rates, local currency pricing
+  - **Payment failure handling**: Clear customer messaging, retry logic, alternative payment
+
+  ### 4. Order Management
+  - **Order lifecycle**: Placed → Confirmed → Processing → Shipped → Delivered → Completed/Returned
+  - **Order splitting**: Split orders across warehouses or fulfillment centers
+  - **Backorder management**: Notify customers, partial shipment options
+  - **Returns and exchanges**: RMA workflow, restocking, refund processing
+  - **Order history**: Full order history with re-order capability
+  - **Notifications**: Order confirmation, shipping updates, delivery confirmation
+
+  ### 5. Performance and Scalability (Revenue Critical)
+  - **Page load time**: Target <2 seconds for product pages (directly impacts conversion)
+  - **CDN**: Cache static assets and product images globally
+  - **Database optimization**: Read replicas for catalog, caching for frequently accessed products
+  - **Search performance**: Dedicated search engine (Elasticsearch/Algolia) with sub-100ms response
+  - **Cart/checkout performance**: Prioritize checkout performance; never let checkout fail due to load
+  - **Flash sale / traffic spike handling**: Auto-scaling, queue-based systems for high-demand events
+  - **Image optimization**: WebP/AVIF formats, lazy loading, responsive images, CDN transformation
+
+  ### 6. Personalization and Conversion
+  - **Product recommendations**: Collaborative filtering, frequently bought together, recently viewed
+  - **Personalized search**: Search ranking influenced by user behavior and preferences
+  - **A/B testing**: Framework for testing checkout flows, pricing, and UI variations
+  - **Wishlist / favorites**: Save-for-later functionality
+  - **Customer segmentation**: Behavior-based segmentation for targeted promotions
+  - **Analytics integration**: Conversion funnel tracking, revenue attribution
+
+  ### 7. Multi-Market / Internationalization
+  - **Multi-language**: Product content, UI, emails in customer's language
+  - **Multi-currency**: Prices displayed in local currency with appropriate formatting
+  - **Local payment methods**: Region-specific payment options (iDEAL, PIX, Alipay, etc.)
+  - **Tax compliance**: VAT, GST, sales tax per jurisdiction
+  - **Shipping zones**: Region-specific shipping options and carriers
+  - **Legal compliance**: Consumer protection laws, cookie consent, right of withdrawal
+
+  ### 8. Marketplace Features (if applicable)
+  - **Seller onboarding**: KYC verification, seller agreement, catalog management
+  - **Commission and payout**: Configurable commission structures, automated seller payouts
+  - **Seller storefront**: Branded seller pages within the marketplace
+  - **Dispute resolution**: Buyer-seller dispute workflow with arbitration
+  - **Seller analytics**: Sales dashboards, performance metrics for sellers
+  - **Review moderation**: Automated and manual review of seller and product reviews
+
+  **Deliver:**
+  1. E-commerce architecture with component diagram
+  2. Product data model and catalog architecture
+  3. Checkout and payment flow with PCI-DSS controls
+  4. Performance optimization plan with SLAs
+  5. Internationalization strategy for target markets
+  6. Analytics and conversion optimization framework
+
+variables:
+  - name: "business_model"
+    description: "Type of e-commerce business"
+    required: true
+    examples: ["B2C direct-to-consumer", "B2B wholesale portal", "Multi-vendor marketplace", "Subscription box service", "Digital products / SaaS storefront"]
+  - name: "catalog_scope"
+    description: "Size and complexity of the product catalog"
+    required: true
+    examples: ["<100 products, simple variants", "1,000-10,000 products with complex attributes", "100K+ products, multi-vendor", "Digital products with licensing", "Configurable products (custom options)"]
+  - name: "target_markets"
+    description: "Geographic markets served"
+    required: true
+    examples: ["US only", "North America", "EU (multi-country, multi-currency)", "Global", "Specific countries (Australia, Japan, Brazil)"]
+  - name: "payment_requirements"
+    description: "Payment processing needs"
+    required: true
+    examples: ["Credit cards only (Stripe/PayPal)", "Multiple methods including BNPL", "Multi-currency with local payment methods", "Marketplace split payments", "Subscription recurring billing"]
+  - name: "expected_scale"
+    description: "Expected traffic and transaction volume"
+    required: true
+    examples: ["Startup: <1K orders/month", "Growing: 1K-50K orders/month", "Enterprise: 50K-500K orders/month", "High-volume: 500K+ orders/month with flash sales"]
+
+expected_output: "E-commerce architecture with catalog design, payment integration, performance plan, and internationalization strategy"
+
+quality_criteria:
+  - "Payment handling uses tokenization, never stores raw card data"
+  - "Checkout flow is optimized for minimum friction"
+  - "Performance targets are defined and achievable"
+  - "Tax calculation handles multi-jurisdiction correctly"
+  - "Architecture can scale for traffic spikes"
+
+anti_patterns:
+  - "Storing credit card numbers in your own database"
+  - "Calculating tax manually instead of using a tax service"
+  - "No abandoned cart recovery mechanism"
+  - "Synchronous payment processing blocking the UI"
+  - "Single-region deployment for multi-market commerce"
+
+related_prompts: ["DEV-WEB-001", "DEV-API-001", "ARCH-CLOUD-001", "SEC-THREAT-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001", "ARCH-SYS-001"]
+  next: ["DEV-WEB-001", "DEV-API-001", "SEC-THREAT-001", "DEPLOY-CICD-001"]

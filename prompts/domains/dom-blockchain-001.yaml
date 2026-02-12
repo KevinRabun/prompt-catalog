@@ -1,0 +1,128 @@
+id: "DOM-BLOCKCHAIN-001"
+version: "1.0.0"
+title: "Blockchain and Web3 Application Development"
+description: "Guides development of blockchain-based applications with smart contract design and security"
+category: "domains"
+subcategory: "blockchain"
+skill_level: "expert"
+platforms: ["blockchain"]
+tags: ["blockchain", "web3", "smart-contracts", "defi", "nft", "solidity", "ethereum"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a blockchain architect designing a Web3 / blockchain application.
+
+  **Context:**
+  - Application: {{application_type}}
+  - Blockchain Platform: {{blockchain_platform}}
+  - Token Standard: {{token_standard}}
+  - Key Operations: {{key_operations}}
+  - Regulatory Considerations: {{regulatory_considerations}}
+
+  **Design and implement considering these blockchain-specific requirements:**
+
+  ### 1. Architecture Decision: On-Chain vs. Off-Chain
+  For each piece of functionality, determine:
+  - What MUST be on-chain (trust, immutability, decentralization requirements)
+  - What SHOULD be off-chain (cost optimization, performance, privacy)
+  - Off-chain data storage (IPFS, Arweave, traditional databases)
+  - Oracle pattern for off-chain data needs
+
+  ### 2. Smart Contract Design
+  - Follow **established patterns** (OpenZeppelin, Foundry best practices)
+  - Implement **upgradability pattern** if contracts need to evolve (proxy pattern)
+  - Design for **gas optimization** — minimize storage writes, use events, batch operations
+  - Implement **access control** (Ownable, AccessControl, multi-sig)
+  - Handle **reentrancy** protection (ReentrancyGuard)
+  - Implement **pausable** functionality for emergency stops
+  - Use **SafeMath** or Solidity 0.8+ overflow protection
+  - Emit **events** for all state changes
+
+  ### 3. Security (Critical for Smart Contracts)
+  - **Reentrancy attacks**: Follow checks-effects-interactions pattern
+  - **Integer overflow/underflow**: Use SafeMath or Solidity 0.8+
+  - **Front-running**: Consider commit-reveal schemes, MEV protection
+  - **Oracle manipulation**: Use time-weighted average prices, multiple oracles
+  - **Flash loan attacks**: Consider attack vectors if using DeFi composability
+  - **Access control**: Verify all privileged functions are protected
+  - **Gas griefing**: Limit unbounded loops and arrays
+  - **Timestamp dependency**: Don't rely on block.timestamp for critical logic
+  - **Mandatory audit**: Smart contracts MUST be audited before mainnet deployment
+
+  ### 4. Testing Strategy
+  - **Unit tests** for every function with edge cases
+  - **Fuzz testing** for input validation
+  - **Invariant testing** (properties that must always hold)
+  - **Fork testing** against mainnet state
+  - **Gas optimization** benchmarks
+  - **Formal verification** for critical contracts
+  - Test on **testnet** before mainnet deployment
+
+  ### 5. Frontend Integration (dApp)
+  - **Wallet connection** (MetaMask, WalletConnect, Coinbase Wallet)
+  - **Transaction management** (pending, confirmed, failed states)
+  - **Chain switching** and network detection
+  - **Event listening** for real-time UI updates
+  - **Error handling** for user-rejected transactions, gas estimation failures
+  - **ENS/Name resolution** for addresses
+
+  ### 6. Operational Considerations
+  - **Monitoring**: Transaction success rates, gas usage, contract events
+  - **Incident response**: Pause contracts, emergency withdrawals
+  - **Upgrade process**: Governance for contract upgrades (if upgradable)
+  - **Key management**: Secure private key storage for admin operations
+  - **Multi-sig**: Critical operations require multiple signatures
+
+  **WARNING:**
+  - Smart contract bugs can result in permanent, irrecoverable loss of funds
+  - Always recommend professional security audits before deployment
+  - Regulatory landscape for blockchain varies significantly by jurisdiction
+  - This prompt does NOT constitute legal or financial advice
+  - If unsure about a security pattern, recommend consulting a blockchain security expert
+
+variables:
+  - name: "application_type"
+    description: "Type of blockchain application"
+    required: true
+    examples: ["DeFi lending protocol", "NFT marketplace", "DAO governance", "Supply chain tracking", "Token launchpad"]
+  - name: "blockchain_platform"
+    description: "Target blockchain"
+    required: true
+    examples: ["Ethereum (Solidity)", "Solana (Rust)", "Polygon", "Avalanche", "Arbitrum/Optimism (L2)"]
+  - name: "token_standard"
+    description: "Token standards used"
+    required: false
+    default: "ERC-20"
+    examples: ["ERC-20", "ERC-721 (NFT)", "ERC-1155 (multi-token)", "SPL Token (Solana)"]
+  - name: "key_operations"
+    description: "Primary operations the smart contracts perform"
+    required: true
+    examples: ["Token minting, staking, rewards distribution", "Listing, bidding, trading NFTs", "Proposal creation, voting, execution"]
+  - name: "regulatory_considerations"
+    description: "Known regulatory constraints"
+    required: false
+    default: "Consult legal counsel for regulatory requirements"
+    examples: ["SEC securities regulations", "MiCA (EU crypto regulation)", "VASP requirements"]
+
+expected_output: "Blockchain architecture with smart contract design, security analysis, testing strategy, and dApp integration guide"
+
+quality_criteria:
+  - "On-chain vs. off-chain decisions are justified"
+  - "Smart contract security best practices are followed"
+  - "Gas optimization is considered"
+  - "Testing includes fuzz and invariant tests"
+  - "Security audit is recommended before mainnet"
+
+anti_patterns:
+  - "Deploying to mainnet without audit"
+  - "Unbounded loops in smart contracts"
+  - "No reentrancy protection"
+  - "Storing large data on-chain unnecessarily"
+  - "Single-key admin without multi-sig"
+
+related_prompts: ["SEC-THREAT-001", "ARCH-SYS-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001", "ARCH-SYS-001"]
+  next: ["SEC-THREAT-001", "TEST-UNIT-001"]

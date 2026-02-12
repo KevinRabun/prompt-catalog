@@ -1,0 +1,140 @@
+id: "ARCH-SYS-001"
+version: "1.0.0"
+title: "System Architecture Design"
+description: "Guides the design of a complete system architecture from components to deployment topology"
+category: "architecture"
+subcategory: "system-design"
+skill_level: "advanced"
+platforms: ["all"]
+tags: ["architecture", "system-design", "components", "deployment", "scalability"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a software architect designing the system architecture for a project.
+
+  **Project Context:**
+  - Project Name: {{project_name}}
+  - Project Type: {{project_type}}
+  - Key Requirements Summary: {{requirements_summary}}
+  - Target Platforms: {{target_platforms}}
+  - Expected Scale: {{expected_scale}}
+  - Deployment Target: {{deployment_target}}
+
+  **Design the following architecture layers:**
+
+  ### 1. High-Level Architecture
+  - Architecture style (monolith, modular monolith, microservices, serverless, hybrid)
+  - Justify the choice with trade-off analysis
+  - Component diagram showing major system blocks
+  - Communication patterns between components (sync REST, async messaging, events, gRPC)
+
+  ### 2. Component Design
+  For each major component:
+  - Purpose and responsibilities
+  - Technology recommendation with justification
+  - Interfaces (APIs it exposes and consumes)
+  - Data it owns
+  - Scaling characteristics
+
+  ### 3. Data Architecture
+  - Data stores and their purposes (OLTP, OLAP, cache, search, file storage)
+  - Data flow between components
+  - Data partitioning strategy
+  - Caching strategy (what, where, TTL, invalidation)
+  - Data consistency model (strong, eventual, causal)
+
+  ### 4. Integration Architecture
+  - External system integrations
+  - API gateway / BFF pattern if applicable
+  - Authentication and authorization flow
+  - Message broker / event bus design
+  - Retry and circuit breaker patterns
+
+  ### 5. Cross-Cutting Concerns
+  - Logging and observability strategy
+  - Error handling and resilience patterns
+  - Configuration management
+  - Feature flag strategy
+  - Health checking and self-healing
+
+  ### 6. Deployment Architecture
+  - Deployment topology diagram
+  - Environment strategy (dev, staging, production)
+  - Scaling strategy (horizontal, vertical, auto-scale triggers)
+  - Load balancing approach
+  - CDN strategy for static assets
+
+  ### 7. Security Architecture
+  - Authentication mechanism
+  - Authorization model (RBAC, ABAC)
+  - Network security (VNets, firewalls, WAF)
+  - Data encryption strategy
+  - Secret management
+  - Audit logging
+
+  **For each major decision, document an Architecture Decision Record (ADR):**
+  ```
+  ADR-XXX: [Decision Title]
+  Status: Proposed
+  Context: [Why this decision is needed]
+  Decision: [What was decided]
+  Alternatives: [What else was considered and why not chosen]
+  Consequences: [Trade-offs accepted]
+  ```
+
+  **Important:**
+  - Evaluate at least 2 alternatives for each major decision
+  - Consider cost implications for each choice
+  - Consider operational complexity — can the team operate this?
+  - Flag areas where you need more information to make a confident recommendation
+  - If you're unsure about a specific technology's capability, say so
+
+variables:
+  - name: "project_name"
+    description: "Name of the project"
+    required: true
+  - name: "project_type"
+    description: "Type of system being built"
+    required: true
+    examples: ["e-commerce platform", "real-time analytics dashboard", "IoT fleet management"]
+  - name: "requirements_summary"
+    description: "Key requirements driving architecture decisions"
+    required: true
+    examples: ["Must handle 10K concurrent users, sub-second response times, GDPR compliant, multi-region"]
+  - name: "target_platforms"
+    description: "Target platforms for the system"
+    required: true
+    examples: ["web + mobile", "web-only", "desktop + web"]
+  - name: "expected_scale"
+    description: "Expected system scale"
+    required: true
+    examples: ["1M users, 10K concurrent, 100 req/s peak", "100 internal users, low traffic"]
+  - name: "deployment_target"
+    description: "Where the system will be deployed"
+    required: true
+    examples: ["Azure", "AWS", "on-premises", "hybrid Azure + on-prem"]
+
+expected_output: "Complete system architecture document with diagrams (in Mermaid or PlantUML), ADRs, and technology recommendations with justification"
+
+quality_criteria:
+  - "Architecture addresses all key requirements"
+  - "Major decisions have documented ADRs with alternatives"
+  - "Cost implications are considered"
+  - "Security is designed in, not bolted on"
+  - "Operational concerns are addressed"
+  - "Scaling strategy is defined"
+  - "Data sovereignty requirements are satisfied"
+
+anti_patterns:
+  - "Choosing microservices for a simple CRUD application"
+  - "No justification for technology choices"
+  - "Ignoring operational complexity"
+  - "Missing security architecture"
+  - "Over-engineering for current scale"
+
+related_prompts: ["ARCH-MICRO-001", "ARCH-DATA-001", "ARCH-CLOUD-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001", "PLAN-REQ-002", "PLAN-SCOPE-001"]
+  next: ["ARCH-MICRO-001", "ARCH-DATA-001", "ARCH-CLOUD-001", "DEV-WEB-001"]

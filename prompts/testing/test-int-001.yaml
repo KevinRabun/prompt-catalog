@@ -1,0 +1,145 @@
+id: "TEST-INT-001"
+version: "1.0.0"
+title: "Integration and E2E Test Strategy"
+description: "Designs integration and end-to-end testing strategies with test environment setup"
+category: "testing"
+subcategory: "integration-testing"
+skill_level: "advanced"
+platforms: ["all"]
+tags: ["testing", "integration", "e2e", "test-strategy", "test-environment"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a test architect designing the integration and E2E testing strategy for a project.
+
+  **Context:**
+  - System: {{system_name}}
+  - Architecture: {{architecture_type}}
+  - Tech Stack: {{tech_stack}}
+  - Key Integration Points: {{integration_points}}
+  - CI/CD Pipeline: {{cicd_platform}}
+
+  **Design the testing strategy:**
+
+  ### 1. Integration Test Plan
+  For each integration point, define:
+  - What is being integrated (service-to-service, service-to-database, service-to-external API)
+  - Test scenarios (happy path, error responses, timeouts, circuit breaker triggers)
+  - Test data setup and teardown strategy
+  - Environment requirements (containers, test databases, mock services)
+
+  ### 2. Test Environment Setup
+  - Docker Compose or Testcontainers configuration for dependencies
+  - Test database seeding and migration strategy
+  - Mock/stub external APIs (WireMock, MockServer, etc.)
+  - Environment isolation — tests don't affect each other
+
+  ### 3. E2E Test Suite
+  - Identify critical user journeys (top 5-10)
+  - For each journey:
+    ```
+    Journey: [Name]
+    Steps:
+      1. [Action] → [Expected Result]
+      2. [Action] → [Expected Result]
+    Preconditions: [Required state]
+    Test Data: [What data is needed]
+    Cleanup: [How to reset state]
+    ```
+  - E2E framework recommendation (Playwright, Cypress, Selenium, Appium)
+  - Page Object Model or equivalent abstraction
+
+  ### 4. Contract Testing (for microservices)
+  - Consumer-driven contract tests (Pact, Spring Cloud Contract)
+  - API schema validation against OpenAPI specs
+  - Breaking change detection
+
+  ### 5. Performance Testing
+  - Load test scenarios and tools (k6, JMeter, Gatling, Locust)
+  - Performance baselines and SLA thresholds
+  - Stress test and spike test scenarios
+
+  ### 6. CI/CD Integration
+  - Which tests run on every PR (fast feedback)
+  - Which tests run on merge to main (comprehensive)
+  - Which tests run on deploy to staging (E2E, performance)
+  - Test result reporting and failure notification
+  - Test parallelization strategy
+
+  **Important:**
+  - Integration tests should be deterministic — avoid timing-dependent assertions
+  - E2E tests should be independent — each can run alone
+  - Consider test execution time in CI/CD pipeline design
+  - Plan for test data management across environments
+
+  ### 7. Adversarial and Chaos Testing
+  - **Adversarial API testing**: Test APIs with malformed requests, missing auth, wrong content types, oversized payloads
+  - **Fault injection**: Simulate database failures, network timeouts, third-party API errors
+  - **Chaos testing**: Kill service instances, introduce latency, exhaust connection pools
+  - **Idempotency testing**: Replay the same request multiple times — verify no duplicate side effects
+  - **Race condition testing**: Send concurrent conflicting requests and verify data consistency
+
+  ### 8. Evaluate Test Effectiveness
+  After writing the test strategy, judge its quality:
+  - Would these tests catch a **regression** in the most critical user journey?
+  - Would these tests detect a **security vulnerability** introduced by a code change?
+  - Would these tests surface a **performance degradation** before users notice?
+  - Are there **blind spots** — component interactions with no test coverage?
+
+variables:
+  - name: "system_name"
+    description: "Name of the system being tested"
+    required: true
+  - name: "architecture_type"
+    description: "Architecture style of the system"
+    required: true
+    examples: ["Microservices", "Monolith", "Serverless", "N-tier"]
+  - name: "tech_stack"
+    description: "Technology stack"
+    required: true
+    examples: ["React + Node.js + PostgreSQL", "Angular + .NET Core + SQL Server"]
+  - name: "integration_points"
+    description: "Key integration points to test"
+    required: true
+    examples: ["REST APIs between 3 services, PostgreSQL, Redis, Stripe API"]
+  - name: "cicd_platform"
+    description: "CI/CD platform in use"
+    required: false
+    default: "GitHub Actions"
+    examples: ["GitHub Actions", "Azure DevOps", "Jenkins", "GitLab CI"]
+
+expected_output: "Complete test strategy document with integration tests, E2E tests, contract tests, and CI/CD integration plan"
+
+quality_criteria:
+  - "All integration points have defined test scenarios"
+  - "E2E tests cover critical user journeys"
+  - "Test environment setup is automated and reproducible"
+  - "CI/CD integration is planned with appropriate test gates"
+  - "Test data management strategy is defined"
+
+anti_patterns:
+  - "E2E tests that depend on each other"
+  - "Flaky tests that are accepted as normal"
+  - "No test environment isolation"
+  - "Manual test data setup"
+  - "All tests running on every PR (slow feedback)"
+  - "No adversarial or fault-injection testing"
+  - "No evaluation of whether tests would catch real regressions"
+
+adversarial_tests:
+  - scenario: "Test strategy only covers happy-path API calls — no malformed requests or error responses"
+    expected_behavior: "Include adversarial API test cases with missing fields, invalid auth, wrong HTTP methods, and oversized bodies"
+    severity: "high"
+  - scenario: "No chaos or fault injection tests — system is only tested when everything works"
+    expected_behavior: "Include fault injection for every external dependency (database, cache, third-party APIs)"
+    severity: "high"
+  - scenario: "E2E tests pass but would not catch a broken checkout flow with an expired coupon code"
+    expected_behavior: "E2E tests must cover edge-case user journeys, not just the golden path"
+    severity: "medium"
+
+related_prompts: ["TEST-UNIT-001", "TEST-PERF-001", "SEC-TEST-001"]
+
+chain_position:
+  previous: ["TEST-UNIT-001"]
+  next: ["DEPLOY-CICD-001"]

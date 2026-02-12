@@ -1,0 +1,151 @@
+id: "DOM-DATASOV-001"
+version: "1.0.0"
+title: "Data Sovereignty and Cross-Border Data Architecture"
+description: "Guides design of systems that enforce data residency, sovereignty, and cross-border data transfer compliance"
+category: "domains"
+subcategory: "data-sovereignty"
+skill_level: "expert"
+platforms: ["cloud", "web"]
+tags: ["data-sovereignty", "data-residency", "cross-border", "gdpr", "schrems-ii", "localization", "multi-region"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a data sovereignty architect designing systems that respect jurisdictional data requirements.
+
+  **Context:**
+  - Application: {{application_description}}
+  - Operating Jurisdictions: {{jurisdictions}}
+  - Data Types: {{data_types}}
+  - Cloud Provider(s): {{cloud_providers}}
+  - Cross-Border Transfer Requirements: {{transfer_requirements}}
+
+  **Design and implement a data-sovereign architecture covering:**
+
+  ### 1. Jurisdictional Analysis
+  For each operating jurisdiction, document:
+  - **Data residency laws**: Where specific data types MUST be stored
+  - **Data localization mandates**: Processing that must occur within borders
+  - **Cross-border transfer mechanisms**: Legal bases for transfer (SCCs, BCRs, adequacy decisions)
+  - **Government access provisions**: Law enforcement data access frameworks
+  - **Sector-specific rules**: Banking, health, telecom data regulations
+  - **Conflicting requirements**: Identify where jurisdiction requirements conflict
+
+  Build a **Jurisdiction × Data Type** matrix:
+  | Data Type | US | EU | China | India | Brazil | ... |
+  |-----------|----|----|-------|-------|--------|-----|
+  | PII       | No mandate | Residency preferred | Localization required | Localization required | LGPD requirements | ... |
+
+  ### 2. Multi-Region Data Architecture
+  - **Region topology**: Define cloud regions aligned to jurisdictional boundaries
+  - **Data partitioning strategy**: Route data to correct region at ingestion
+  - **Regional isolation**: Ensure data does not leak across jurisdictional boundaries
+  - **Metadata handling**: Even metadata may be subject to sovereignty rules
+  - **Search and indexing**: Build region-scoped indices; no cross-region search unless permitted
+  - **Backup and DR**: Backups must remain within jurisdictional boundaries
+  - **CDN considerations**: Cache headers and edge locations must respect data location rules
+
+  ### 3. Cross-Border Data Transfer Controls
+  - **Transfer impact assessments**: Evaluate each cross-border data flow
+  - **Legal mechanism selection**: SCCs, BCRs, consent, adequacy decisions
+  - **Technical safeguards**: Encryption in transit, pseudonymization before transfer
+  - **Transfer logging**: Record all cross-border data movements for audit
+  - **Data minimization**: Transfer only what is strictly necessary
+  - **Re-transfer restrictions**: Prevent onward transfers without assessment
+  - **Emergency provisions**: Procedures for transfers required by law enforcement
+
+  ### 4. Technical Enforcement Layer
+  - **Geo-routing**: API gateway / ingress rules that route requests based on user jurisdiction
+  - **Data classification tags**: Metadata on every record indicating sovereignty constraints
+  - **Policy engine**: Automated enforcement of residency and transfer rules
+  - **Encryption boundaries**: Region-specific encryption keys that cannot decrypt data outside region
+  - **Network controls**: VPC/VNet isolation, private endpoints, no cross-region peering unless authorized
+  - **Database configuration**: Region-pinned replicas, geo-restricted write endpoints
+  - **Compute isolation**: Processing occurs in the same region as the data
+
+  ### 5. Identity and Access Across Regions
+  - **Federated identity**: Single identity system with region-aware authorization
+  - **Access scoping**: Users can only access data in their authorized jurisdictions
+  - **Admin access**: Regional admin roles with no cross-region permissions by default
+  - **Audit**: Region-specific audit logs that stay within the region
+  - **Break-glass**: Cross-region emergency access with full justification trail
+
+  ### 6. Application Design Patterns
+  - **Region-aware microservices**: Services deployed per-region with regional configuration
+  - **Data federation**: Application layer queries span regions only when permitted
+  - **Event routing**: Message queues and event buses are region-scoped
+  - **API design**: Include jurisdiction context in API contracts (headers, path parameters)
+  - **Feature parity**: Ensure all regions have equivalent functionality despite constraints
+  - **Graceful degradation**: Handle scenarios where cross-border features are restricted
+
+  ### 7. Monitoring and Compliance Verification
+  - **Data flow monitoring**: Real-time detection of unauthorized cross-border transfers
+  - **Compliance dashboards**: Per-jurisdiction compliance posture
+  - **Automated policy checks**: CI/CD gates that verify deployment respects sovereignty rules
+  - **Regular assessments**: Scheduled reviews of data flows against evolving regulations
+  - **Incident detection**: Alert on data residency violations immediately
+
+  ### 8. Regulatory Change Management
+  - **Regulation tracking**: Monitor legislative changes in all operating jurisdictions
+  - **Impact assessment process**: Evaluate technical impact of new requirements
+  - **Architecture flexibility**: Design for new jurisdictions to be added with configuration, not code
+  - **Migration playbook**: Standard process for moving data to comply with new requirements
+
+  **CRITICAL CAVEATS:**
+  - Data sovereignty law evolves rapidly; design for change
+  - This prompt provides architectural guidance only, NOT legal advice
+  - Always engage local legal counsel in each jurisdiction
+  - Some jurisdictions have conflicting requirements that cannot be fully resolved technically
+  - Government access provisions may override other protections
+
+  **Deliver:**
+  1. Jurisdiction × Data Type residency matrix
+  2. Multi-region cloud architecture with data flow diagrams
+  3. Cross-border transfer assessment framework
+  4. Technical enforcement architecture (policy engine, geo-routing, encryption boundaries)
+  5. Compliance monitoring and verification plan
+  6. Regulatory change management process
+
+variables:
+  - name: "application_description"
+    description: "What the application does and who it serves"
+    required: true
+    examples: ["Global SaaS HR platform", "Multi-national banking portal", "International e-commerce marketplace", "Global healthcare research platform"]
+  - name: "jurisdictions"
+    description: "Countries and regions where the application operates"
+    required: true
+    examples: ["US + EU (GDPR)", "US + EU + China + India", "EU-only (multi-country)", "Global (190+ countries)", "Five Eyes countries"]
+  - name: "data_types"
+    description: "Categories of data the application handles"
+    required: true
+    examples: ["Employee PII, payroll, benefits data", "Financial transactions, account data, KYC data", "Patient health records, clinical trial data", "Customer profiles, purchase history, payment data"]
+  - name: "cloud_providers"
+    description: "Cloud platforms available for deployment"
+    required: true
+    examples: ["Azure (global regions)", "AWS + Azure (multi-cloud)", "Sovereign cloud (Azure Government, AWS GovCloud)", "Local providers (Alibaba Cloud for China, Yandex for Russia)"]
+  - name: "transfer_requirements"
+    description: "Known cross-border data transfer needs"
+    required: true
+    examples: ["EU-to-US transfers for analytics", "Centralized global reporting", "No cross-border transfers allowed (full localization)", "Cross-border only with pseudonymization"]
+
+expected_output: "Data sovereignty architecture with jurisdictional matrix, multi-region topology, transfer controls, and compliance monitoring"
+
+quality_criteria:
+  - "Every jurisdiction's requirements are mapped to technical controls"
+  - "Cross-border transfers have documented legal bases and safeguards"
+  - "Data cannot bypass sovereignty controls at any layer"
+  - "Architecture can add new jurisdictions via configuration"
+  - "Monitoring detects sovereignty violations in real-time"
+
+anti_patterns:
+  - "Single-region deployment serving multiple jurisdictions"
+  - "Cross-region database replication without sovereignty analysis"
+  - "Assuming cloud provider region = legal jurisdiction"
+  - "No metadata tracking of data jurisdiction"
+  - "Static architecture that cannot adapt to new regulations"
+
+related_prompts: ["DOM-COMPLIANCE-001", "SEC-THREAT-001", "ARCH-CLOUD-001", "DEPLOY-IAC-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001", "DOM-COMPLIANCE-001", "ARCH-CLOUD-001"]
+  next: ["DEPLOY-IAC-001", "OPS-MON-001"]

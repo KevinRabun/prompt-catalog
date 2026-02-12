@@ -1,0 +1,145 @@
+id: "DEPLOY-IAC-001"
+version: "1.0.0"
+title: "Infrastructure as Code"
+description: "Generates infrastructure as code templates for cloud deployments with security, monitoring, and cost optimization"
+category: "deployment"
+subcategory: "infrastructure"
+skill_level: "advanced"
+platforms: ["cloud-azure", "cloud-aws", "cloud-gcp", "cloud-oracle", "cloud-multi"]
+tags: ["iac", "terraform", "bicep", "cloudformation", "infrastructure", "automation"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are an infrastructure engineer creating Infrastructure as Code (IaC) templates.
+
+  **Context:**
+  - Cloud Provider: {{cloud_provider}}
+  - IaC Tool: {{iac_tool}}
+  - Architecture: {{architecture_description}}
+  - Environments: {{environments}}
+  - Compliance: {{compliance_requirements}}
+  - Data Sovereignty: {{data_sovereignty}}
+
+  **Generate IaC templates covering:**
+
+  ### 1. Network Foundation
+  - Virtual network / VPC with appropriate address space
+  - Subnet design (public, private, data, management)
+  - Network security groups / security lists
+  - NAT gateway for outbound from private subnets
+  - DNS configuration
+  - Private endpoints for PaaS services
+
+  ### 2. Compute Resources
+  - Application hosting (as specified in architecture)
+  - Auto-scaling configuration
+  - Load balancer setup
+  - Health check configuration
+
+  ### 3. Data Resources
+  - Database provisioning with HA configuration
+  - Storage accounts with appropriate access tiers
+  - Caching layer (if specified)
+  - Backup configuration
+
+  ### 4. Security Resources
+  - Identity and access management (roles, policies)
+  - Key vault / secret manager
+  - WAF configuration (if public-facing)
+  - DDoS protection
+  - Encryption configuration (customer-managed keys if required)
+
+  ### 5. Monitoring Resources
+  - Monitoring workspace / service
+  - Log analytics configuration
+  - Alert rules for critical metrics
+  - Dashboard definitions
+
+  ### 6. IaC Best Practices
+  - **Modular design** — reusable modules for common patterns
+  - **Parameterized** — environment-specific values as parameters, not hard-coded
+  - **Tagged** — all resources tagged for cost allocation, environment, owner
+  - **State management** — remote state with locking
+  - **Naming convention** — consistent, descriptive resource names
+  - **Outputs** — export key values needed by application deployment
+
+  ### 7. Environment Strategy
+  ```
+  modules/
+    ├── networking/
+    ├── compute/
+    ├── database/
+    ├── monitoring/
+    └── security/
+  environments/
+    ├── dev.tfvars     (or dev.bicepparam)
+    ├── staging.tfvars
+    └── prod.tfvars
+  ```
+
+  **Template Requirements:**
+  - All secrets referenced from vault, never in templates
+  - Encryption enabled on all applicable resources
+  - Diagnostic settings enabled for all resources
+  - Resource locks on production resources (if applicable)
+  - Tags: environment, project, owner, cost-center, managed-by
+  - Comply with {{compliance_requirements}}
+  - Deploy in regions that satisfy {{data_sovereignty}}
+
+  **Important:**
+  - Verify resource provider API versions are current
+  - Note any preview/GA status of APIs used
+  - Include cost estimates as comments where helpful
+  - If unsure about a resource property, flag it for verification
+
+variables:
+  - name: "cloud_provider"
+    description: "Target cloud provider"
+    required: true
+    examples: ["Azure", "AWS", "GCP", "Oracle Cloud"]
+  - name: "iac_tool"
+    description: "IaC tool to use"
+    required: true
+    examples: ["Terraform", "Bicep", "AWS CloudFormation", "Pulumi", "AWS CDK"]
+  - name: "architecture_description"
+    description: "What infrastructure to provision"
+    required: true
+    examples: ["3-tier web app: App Service + SQL Database + Redis", "EKS cluster with RDS and ElastiCache"]
+  - name: "environments"
+    description: "Environments to support"
+    required: false
+    default: "dev, staging, production"
+  - name: "compliance_requirements"
+    description: "Compliance frameworks to satisfy"
+    required: false
+    default: "Standard security best practices"
+    examples: ["SOC 2", "HIPAA", "PCI-DSS", "FedRAMP"]
+  - name: "data_sovereignty"
+    description: "Data residency requirements"
+    required: false
+    default: "No specific requirements"
+    examples: ["EU only", "US East, US West", "Australia Southeast"]
+
+expected_output: "Complete IaC template set with modules, environment configs, and deployment instructions"
+
+quality_criteria:
+  - "Templates are modular and reusable"
+  - "All resources are tagged"
+  - "Security is configured by default"
+  - "Monitoring is enabled on all resources"
+  - "Environment-specific values are parameterized"
+  - "Templates are syntactically valid"
+
+anti_patterns:
+  - "Hard-coded secrets in templates"
+  - "No tagging strategy"
+  - "Monolithic templates without modules"
+  - "Missing encryption configuration"
+  - "No diagnostic settings"
+
+related_prompts: ["ARCH-CLOUD-001", "DEPLOY-CICD-001", "DEPLOY-CONT-001"]
+
+chain_position:
+  previous: ["ARCH-CLOUD-001"]
+  next: ["DEPLOY-CICD-001", "OPS-MON-001"]

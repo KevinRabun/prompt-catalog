@@ -1,0 +1,204 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/KevinRabun/prompt-catalog/blob/main/schema/prompt.schema.json",
+  "title": "Prompt Catalog - Prompt Schema",
+  "description": "Schema for validating prompt files in the Prompt Catalog",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "title",
+    "description",
+    "category",
+    "skill_level",
+    "platforms",
+    "prompt"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Z]+-[A-Z]+-[0-9]{3}$",
+      "description": "Unique prompt identifier in format CATEGORY-SUBCATEGORY-NUMBER"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Semantic version of this prompt"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5,
+      "maxLength": 120,
+      "description": "Human-readable title"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 500,
+      "description": "Brief description of what this prompt does"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "planning",
+        "architecture",
+        "development",
+        "testing",
+        "security",
+        "deployment",
+        "operations",
+        "domains"
+      ],
+      "description": "Primary SDLC category"
+    },
+    "subcategory": {
+      "type": "string",
+      "description": "More specific classification within the category"
+    },
+    "skill_level": {
+      "type": "string",
+      "enum": ["beginner", "intermediate", "advanced", "expert"],
+      "description": "Target audience skill level"
+    },
+    "platforms": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "all",
+          "web",
+          "windows",
+          "linux",
+          "android",
+          "ios",
+          "cross-platform",
+          "cloud-azure",
+          "cloud-aws",
+          "cloud-gcp",
+          "cloud-oracle",
+          "cloud-multi",
+          "embedded",
+          "game",
+          "blockchain"
+        ]
+      },
+      "minItems": 1,
+      "description": "Target platforms this prompt applies to"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Searchable tags for discovery"
+    },
+    "author": {
+      "type": "string",
+      "description": "Author or 'community' for community contributions"
+    },
+    "last_reviewed": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of last human review (YYYY-MM-DD)"
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 50,
+      "description": "The actual prompt text, may include {{variable}} placeholders"
+    },
+    "system_context": {
+      "type": "string",
+      "description": "Optional system-level context to prepend when using this prompt"
+    },
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "description"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Variable name matching {{name}} in prompt"
+          },
+          "description": {
+            "type": "string",
+            "description": "What this variable represents"
+          },
+          "required": {
+            "type": "boolean",
+            "default": true
+          },
+          "default": {
+            "type": "string",
+            "description": "Default value if not provided"
+          },
+          "examples": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Example values"
+          }
+        }
+      },
+      "description": "Customizable variables within the prompt"
+    },
+    "expected_output": {
+      "type": "string",
+      "description": "Description of what good output looks like"
+    },
+    "quality_criteria": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Checklist for evaluating output quality"
+    },
+    "anti_patterns": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Common mistakes or bad outputs to watch for"
+    },
+    "adversarial_tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["scenario", "expected_behavior"],
+        "properties": {
+          "scenario": {
+            "type": "string",
+            "description": "Adversarial scenario or hostile input to test the AI output against"
+          },
+          "expected_behavior": {
+            "type": "string",
+            "description": "How the AI output should handle this adversarial scenario"
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["critical", "high", "medium", "low"],
+            "description": "Severity if this adversarial scenario is not handled"
+          }
+        }
+      },
+      "description": "Adversarial scenarios to evaluate AI-generated output against — tests that deliberately try to break or expose weaknesses in the output"
+    },
+    "related_prompts": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "IDs of related prompts that work well together"
+    },
+    "chain_position": {
+      "type": "object",
+      "properties": {
+        "previous": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Prompt IDs that typically precede this one"
+        },
+        "next": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Prompt IDs that typically follow this one"
+        }
+      },
+      "description": "Position in a prompt chain / workflow"
+    }
+  },
+  "additionalProperties": false
+}

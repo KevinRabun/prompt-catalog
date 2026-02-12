@@ -1,0 +1,159 @@
+id: "DOM-CLM-001"
+version: "1.0.0"
+title: "Contract Lifecycle Management (CLM) Application Development"
+description: "Guides development of contract lifecycle management systems covering authoring, negotiation, execution, obligation tracking, and renewal with compliance and integration concerns"
+category: "domains"
+subcategory: "contract-lifecycle"
+skill_level: "advanced"
+platforms: ["web", "cloud"]
+tags: ["clm", "contract-management", "e-signature", "obligation-tracking", "procurement", "legal-tech", "compliance", "workflow", "negotiation"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a software architect designing a contract lifecycle management (CLM) platform.
+
+  **Context:**
+  - Organization Type: {{organization_type}}
+  - Contract Volume: {{contract_volume}}
+  - Contract Types: {{contract_types}}
+  - Integration Requirements: {{integration_requirements}}
+  - Compliance Requirements: {{compliance_requirements}}
+
+  **Design and implement covering these CLM-specific requirements:**
+
+  ### 1. Contract Authoring and Templates
+  - **Template library**: version-controlled contract templates with clause libraries
+  - **Clause management**: modular, reusable clauses with metadata (risk level, owner, jurisdiction)
+  - **Clause alternatives**: pre-approved fallback positions for negotiation
+  - **Dynamic assembly**: assemble contracts from template + selected clauses + deal-specific terms
+  - **Smart fields**: auto-populate from CRM, ERP, or deal data (parties, dates, amounts, terms)
+  - **Playbook integration**: embed negotiation guidelines directly in the authoring workflow
+  - **Conditional logic**: clauses included/excluded based on deal attributes (value, jurisdiction, risk)
+  - **Output formats**: Word (track-changes compatible), PDF, HTML for review portals
+
+  ### 2. Negotiation and Collaboration
+  - **Redlining / track changes**: real-time or turn-based document editing with change tracking
+  - **Version comparison**: visual diff between any two versions of a contract
+  - **Internal vs. external collaboration**: separate views for internal comments and counterparty access
+  - **Approval workflows**: configurable multi-stage, multi-role approval chains
+    - Parallel and sequential approvals
+    - Escalation rules (auto-escalate after N days)
+    - Delegation and out-of-office handling
+    - Conditional approval routing based on deal value, deviation from standard terms
+  - **Deviation management**: flag non-standard terms, require justification and elevated approval
+  - **Audit trail**: every action, comment, and change logged with user and timestamp
+  - **Negotiation analytics**: track negotiation cycles, time-to-sign, common pushback points
+
+  ### 3. Execution and E-Signature
+  - **E-signature integration**: DocuSign, Adobe Sign, or qualified electronic signatures (QES)
+  - **Signature workflow**: sequential, parallel, or hybrid signing order
+  - **Legal validity**: compliance with eIDAS (EU), ESIGN Act / UETA (US), or local regulations
+  - **Wet signature handling**: upload and link physical signed documents
+  - **Countersignature tracking**: alert when awaiting counterparty signature
+  - **Executed document management**: immutable storage of fully executed contracts with metadata
+
+  ### 4. Obligation and Milestone Tracking
+  - **Obligation extraction**: identify and catalog obligations from contract text
+  - **Obligation types**: payment obligations, delivery milestones, reporting requirements, SLA commitments, notice periods
+  - **Automated reminders**: configurable alerts before obligation deadlines
+  - **Obligation ownership**: assign responsible individuals or teams per obligation
+  - **Performance tracking**: track obligation fulfillment status with evidence
+  - **Penalty / SLA management**: calculate penalties for missed obligations
+  - **Calendar integration**: sync key dates (renewals, expirations, notice periods) to calendars
+
+  ### 5. Contract Repository and Search
+  - **Central repository**: single source of truth for all contracts
+  - **Metadata schema**: standardized contract metadata (parties, type, value, dates, jurisdiction, status)
+  - **Full-text search**: search within contract text across the entire repository
+  - **AI-powered extraction**: automatically extract key terms, dates, parties, amounts from uploaded contracts
+  - **Classification**: auto-categorize contracts by type, department, risk level
+  - **Hierarchy**: parent-child relationships (master agreements, amendments, SOWs, change orders)
+  - **Access control**: role-based access per contract, department, or classification
+  - **Retention and purging**: automated retention policy enforcement with legal hold capability
+
+  ### 6. Renewals and Expirations
+  - **Renewal calendar**: dashboard of upcoming renewals and expirations
+  - **Auto-renewal management**: flag auto-renewing contracts and their opt-out windows
+  - **Renewal workflow**: initiate renewal review process N days before expiration
+  - **Amendment tracking**: link amendments and change orders to parent contracts
+  - **Termination management**: track termination provisions and notice requirements
+  - **Expired contract handling**: archival process for expired/terminated contracts
+
+  ### 7. Reporting and Analytics
+  - **Contract portfolio dashboard**: total value, count by status, upcoming expirations
+  - **Cycle time analytics**: time from request to execution, by contract type
+  - **Risk analysis**: contracts with non-standard terms, unsigned, past-due obligations
+  - **Financial reporting**: aggregate contract values, commitment forecasting
+  - **Compliance reporting**: audit-ready reports demonstrating policy adherence
+  - **Vendor/customer analysis**: contract history, performance, and relationship metrics
+  - **Export**: CSV, PDF, and API access for BI tool integration
+
+  ### 8. Integration Architecture
+  - **CRM**: Salesforce, Dynamics 365, HubSpot — deal data, account mapping
+  - **ERP**: SAP, Oracle, NetSuite — purchase orders, financial commitments
+  - **Procurement**: Coupa, Ariba — supplier contracts, RFP/RFQ linkage
+  - **Document management**: SharePoint, Google Drive — external document storage
+  - **Identity**: SSO (SAML, OIDC), directory integration for user provisioning
+  - **API design**: RESTful APIs for all core operations, webhooks for events
+  - **Data migration**: import existing contracts with metadata and OCR for legacy documents
+
+  **IMPORTANT CAVEATS:**
+  - This is a technical architecture guide — contract terms and legal language require legal counsel
+  - E-signature legal validity varies by jurisdiction — verify local requirements
+  - AI-powered clause extraction should include confidence scores and human review
+  - Retention policies must align with legal, regulatory, and organizational requirements
+
+  **Deliver:**
+  1. CLM platform architecture with module decomposition
+  2. Contract authoring and template management design
+  3. Workflow engine specification (negotiation, approval, execution)
+  4. Obligation tracking data model and alerting strategy
+  5. Integration architecture with CRM/ERP/procurement systems
+  6. Repository design with search, access control, and retention management
+
+variables:
+  - name: "organization_type"
+    description: "Type and size of the organization"
+    required: true
+    examples: ["Enterprise (10,000+ employees, global operations)", "Mid-market (500-5,000 employees)", "Government agency (federal/state)", "Law firm managing client contracts", "Procurement-heavy manufacturing company"]
+  - name: "contract_volume"
+    description: "Contract throughput and repository size"
+    required: true
+    examples: ["500+ new contracts/month, 50,000 active contracts", "50-100 new contracts/month, 5,000 active", "2,000+ new contracts/year with complex negotiations", "Low volume but high value (government contracts)"]
+  - name: "contract_types"
+    description: "Types of contracts managed"
+    required: true
+    examples: ["Sales agreements, NDAs, MSAs, SOWs", "Procurement contracts, vendor agreements, purchase orders", "Employment contracts, consulting agreements", "Government contracts (FAR/DFAR)", "Real estate leases, licensing agreements"]
+  - name: "integration_requirements"
+    description: "Systems that must integrate with the CLM"
+    required: true
+    examples: ["Salesforce CRM + NetSuite ERP + DocuSign", "Dynamics 365 + SAP + Adobe Sign", "SharePoint + ServiceNow + custom procurement", "Standalone with REST API for future integrations"]
+  - name: "compliance_requirements"
+    description: "Regulatory and policy requirements"
+    required: true
+    examples: ["SOX controls for financial contracts", "GDPR data handling for EU contracts", "FAR/DFAR for government contracts", "HIPAA for healthcare vendor agreements", "Internal policy compliance only"]
+
+expected_output: "Complete CLM platform architecture with template management, workflow engine, obligation tracking, and integration design"
+
+quality_criteria:
+  - "Template and clause library supports version control and modular assembly"
+  - "Approval workflows handle parallel, sequential, and conditional routing"
+  - "Obligation tracking provides proactive alerts before deadlines"
+  - "Repository search covers both metadata and full-text content"
+  - "Integration design provides bidirectional data flow with core business systems"
+  - "Access control enforces least-privilege per contract and role"
+
+anti_patterns:
+  - "Storing contracts only as unstructured PDFs with no metadata extraction"
+  - "No version control on contract templates"
+  - "Manual obligation tracking via spreadsheets"
+  - "Approval workflows that cannot handle delegation or escalation"
+  - "No audit trail on document changes during negotiation"
+  - "Treating all contracts identically regardless of risk or value"
+
+related_prompts: ["DOM-LEGAL-001", "DOM-COMPLIANCE-001", "DEV-WEB-001", "DEV-API-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001", "PLAN-REQ-002", "ARCH-SYS-001"]
+  next: ["DOM-LEGAL-001", "DEV-API-001", "SEC-THREAT-001"]

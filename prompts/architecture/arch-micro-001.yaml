@@ -1,0 +1,122 @@
+id: "ARCH-MICRO-001"
+version: "1.0.0"
+title: "Microservices Architecture Design"
+description: "Guides the decomposition of a system into microservices with clear boundaries, communication patterns, and operational concerns"
+category: "architecture"
+subcategory: "microservices"
+skill_level: "advanced"
+platforms: ["all"]
+tags: ["microservices", "service-mesh", "api-gateway", "event-driven", "distributed-systems"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a software architect designing a microservices architecture.
+
+  **Project Context:**
+  - System: {{system_name}}
+  - Domain: {{business_domain}}
+  - Current State: {{current_state}}
+  - Team Structure: {{team_structure}}
+  - Scale Requirements: {{scale_requirements}}
+
+  **Design the microservices architecture following these steps:**
+
+  ### 1. Domain Decomposition
+  - Apply **Domain-Driven Design (DDD)** to identify bounded contexts
+  - Map each bounded context to a potential service
+  - Identify the **ubiquitous language** for each context
+  - Define **context maps** showing relationships between services
+  - Apply the pattern: one team can own 1-3 microservices
+
+  ### 2. Service Definition
+  For each identified service:
+  ```
+  Service: [Name]
+  Bounded Context: [DDD context]
+  Responsibilities: [What it does — and what it does NOT do]
+  Data Owned: [Entities this service is the source of truth for]
+  APIs Exposed: [Endpoints or events published]
+  Dependencies: [Other services it calls]
+  Technology: [Language/framework recommendation with justification]
+  Scaling Profile: [CPU-bound, I/O-bound, memory-bound; expected load]
+  ```
+
+  ### 3. Communication Patterns
+  - **Synchronous**: REST or gRPC — for request/response needs
+  - **Asynchronous**: Events/messages — for loose coupling and eventual consistency
+  - Define the **API gateway** strategy (routing, auth, rate limiting)
+  - Design the **event bus/message broker** topology
+  - Implement **saga pattern** or **choreography** for distributed transactions
+  - Define **retry policies** and **circuit breaker** configurations
+
+  ### 4. Data Strategy
+  - Each service owns its data (database-per-service pattern)
+  - Define data consistency approach per interaction (strong vs. eventual)
+  - Design **event sourcing** where audit trail is important
+  - Plan for **data duplication** and synchronization between services
+  - Handle **distributed queries** (API composition, CQRS)
+
+  ### 5. Operational Concerns
+  - **Service discovery** mechanism
+  - **Distributed tracing** (correlation IDs across services)
+  - **Centralized logging** with structured log format
+  - **Health checks** and **readiness probes** per service
+  - **Circuit breaker** and **bulkhead** patterns
+  - **Deployment strategy** per service (independent deployability)
+
+  ### 6. Service Mesh (if applicable)
+  - Evaluate need for service mesh (Istio, Linkerd, Consul Connect)
+  - Define traffic management policies
+  - Mutual TLS between services
+  - Observability integration
+
+  **Important:**
+  - Don't create a "distributed monolith" — services must be truly independent
+  - Conway's Law: align service boundaries with team boundaries
+  - Start with fewer, larger services and decompose as understanding grows
+  - Every inter-service call adds latency and failure points — minimize chatter
+  - If you're unsure about a service boundary, recommend starting as a module within a larger service
+
+variables:
+  - name: "system_name"
+    description: "Name of the system being designed"
+    required: true
+  - name: "business_domain"
+    description: "The business domain this system serves"
+    required: true
+    examples: ["e-commerce", "healthcare scheduling", "financial trading"]
+  - name: "current_state"
+    description: "Current state of the system (new build or migrating from monolith)"
+    required: true
+    examples: ["greenfield", "migrating from .NET monolith", "extending existing microservices"]
+  - name: "team_structure"
+    description: "How the development team is organized"
+    required: true
+    examples: ["3 teams of 4-5 developers", "single team of 8", "distributed teams across 3 time zones"]
+  - name: "scale_requirements"
+    description: "Scale and performance requirements"
+    required: true
+    examples: ["10K req/s with 99.9% availability", "moderate load, focus on development velocity"]
+
+expected_output: "Microservices architecture document with service definitions, communication patterns, data strategy, and operational design"
+
+quality_criteria:
+  - "Service boundaries align with domain contexts"
+  - "Each service has clearly defined data ownership"
+  - "Communication patterns are explicitly chosen and justified"
+  - "Operational concerns are fully addressed"
+  - "Team structure aligns with service boundaries"
+
+anti_patterns:
+  - "Nano-services that are too small to be independently useful"
+  - "Distributed monolith with tight coupling between all services"
+  - "Shared databases between services"
+  - "Synchronous chains of calls across many services"
+  - "Missing operational infrastructure (tracing, logging, health checks)"
+
+related_prompts: ["ARCH-SYS-001", "ARCH-DATA-001", "ARCH-CLOUD-001"]
+
+chain_position:
+  previous: ["ARCH-SYS-001"]
+  next: ["ARCH-DATA-001", "DEV-API-001", "DEPLOY-CONT-001"]

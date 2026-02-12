@@ -1,0 +1,169 @@
+id: "DOM-MARKETING-001"
+version: "1.0.0"
+title: "Marketing Technology (MarTech) Platform Development"
+description: "Guides development of marketing technology platforms including campaign management, analytics, personalization, CRM integration, and multi-channel engagement with privacy compliance"
+category: "domains"
+subcategory: "marketing"
+skill_level: "intermediate"
+platforms: ["web", "cloud", "android", "ios"]
+tags: ["martech", "marketing", "campaign-management", "analytics", "personalization", "crm", "email-marketing", "seo", "content-management", "privacy"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a software architect designing a marketing technology platform.
+
+  **Context:**
+  - Platform Focus: {{platform_focus}}
+  - Marketing Channels: {{marketing_channels}}
+  - Integration Ecosystem: {{integration_ecosystem}}
+  - Data and Privacy Requirements: {{privacy_requirements}}
+  - Scale: {{scale}}
+
+  **Design and implement covering these MarTech-specific requirements:**
+
+  ### 1. Campaign Management Engine
+  - **Campaign lifecycle**: draft → review → approved → scheduled → active → paused → completed → archived
+  - **Multi-channel orchestration**: coordinate campaigns across email, SMS, push, web, social, paid media
+  - **Audience segmentation**: rule-based and ML-driven segmentation from customer data
+  - **Scheduling**: time-zone-aware delivery, send-time optimization, frequency capping
+  - **A/B and multivariate testing**: test subjects, content, timing, channels with statistical significance
+  - **Journey builder**: visual drag-and-drop customer journey editor with branching logic
+    - Trigger-based entry (event, segment membership, date)
+    - Wait steps, conditions, splits (random, conditional, weighted)
+    - Cross-channel touchpoints within a single journey
+  - **Budget management**: allocate and track spend per campaign, channel, and segment
+  - **Approval workflows**: multi-stakeholder review for brand compliance and legal review
+
+  ### 2. Content Management and Personalization
+  - **Content repository**: centralized asset library (images, videos, copy, templates)
+  - **Template engine**: responsive email templates, landing page templates, ad creatives
+  - **Dynamic content blocks**: swap content based on audience attributes or behavior
+  - **Personalization engine**:
+    - Rule-based: if segment = X, show content Y
+    - ML-based: collaborative filtering, content affinity scoring
+    - Real-time: personalize on-page based on current session behavior
+  - **Content versioning**: track all content changes with rollback capability
+  - **Brand guidelines enforcement**: automated checks for brand colors, fonts, logos, tone
+  - **Localization**: multi-language content management with translation workflows
+  - **AI content generation**: guardrails for AI-generated copy (human review, brand voice consistency)
+
+  ### 3. Customer Data Platform (CDP) Integration
+  - **Unified customer profile**: merge data from all touchpoints into golden record
+  - **Identity resolution**: deterministic (email, ID) + probabilistic (device graph) matching
+  - **Event tracking**: capture behavioral events (page views, clicks, purchases, app usage)
+  - **Real-time data streaming**: ingest events in real-time for triggered campaigns
+  - **Data enrichment**: append third-party data (demographics, firmographics, intent signals)
+  - **Segment computation**: batch and real-time segment evaluation
+  - **Data quality**: deduplication, normalization, validation, decay management
+  - **Profile API**: real-time access to unified profiles for personalization
+
+  ### 4. Analytics and Attribution
+  - **Campaign analytics**: opens, clicks, conversions, revenue attribution per campaign
+  - **Multi-touch attribution**: first-touch, last-touch, linear, time-decay, data-driven models
+  - **Channel analytics**: performance comparison across channels
+  - **Funnel analysis**: conversion funnels with drop-off identification
+  - **Cohort analysis**: track behavior of user groups over time
+  - **Predictive analytics**: churn prediction, lifetime value estimation, propensity scoring
+  - **Dashboard builder**: self-service reporting with drill-down capability
+  - **Data export**: for BI tools (Looker, Tableau, Power BI) via API or scheduled export
+  - **Real-time metrics**: live dashboards for active campaigns
+
+  ### 5. Email and Messaging Infrastructure
+  - **Email delivery**: dedicated IPs, IP warm-up, reputation monitoring
+  - **Deliverability**: SPF, DKIM, DMARC configuration, bounce management, complaint handling
+  - **Rendering testing**: preview across email clients (Outlook, Gmail, Apple Mail, etc.)
+  - **SMS/MMS**: short code, toll-free, carrier compliance, opt-in/opt-out management
+  - **Push notifications**: iOS APNs, Android FCM, web push, rich media support
+  - **In-app messaging**: triggered messages within mobile or web applications
+  - **Throttling**: send rate control to protect deliverability and infrastructure
+  - **Suppression lists**: bounce, unsubscribe, complaint, and custom suppression
+
+  ### 6. Privacy, Consent, and Compliance
+  - **Consent management**: opt-in/opt-out tracking per channel and purpose
+  - **GDPR compliance**: lawful basis tracking per processing activity, right to erasure, portability
+  - **CAN-SPAM / CASL**: unsubscribe mechanism, sender identification, physical address
+  - **CCPA/CPRA**: do-not-sell tracking, consumer disclosure requests
+  - **Cookie consent**: banner management with granular category consent
+  - **Preference center**: self-service subscription management for recipients
+  - **Data minimization**: retain marketing data only as long as necessary
+  - **Privacy by design**: anonymize/pseudonymize where possible, PII access controls
+  - **Audit trail**: log all consent changes, data access, and processing activities
+
+  ### 7. Integration Architecture
+  - **CRM**: Salesforce, HubSpot, Dynamics 365 — bidirectional lead/contact sync
+  - **eCommerce**: Shopify, Magento, BigCommerce — product catalog, order data, cart events
+  - **Advertising**: Google Ads, Meta Ads, LinkedIn — audience sync, conversion tracking
+  - **Web analytics**: Google Analytics 4, Adobe Analytics — behavioral data correlation
+  - **Social media**: social publishing, listening, and engagement APIs
+  - **Data warehouse**: Snowflake, BigQuery, Redshift — marketing data warehouse
+  - **Webhooks**: real-time event notifications for third-party consumption
+  - **API design**: RESTful API covering all campaign, contact, and content operations
+
+  ### 8. Performance and Scalability
+  - **Send volume**: design for peak sending (e.g., millions of emails per hour during campaigns)
+  - **Event ingestion**: handle thousands of events per second for real-time personalization
+  - **Segment computation**: near-real-time segment recalculation for large audiences
+  - **Image and asset CDN**: global delivery for email images and landing pages
+  - **Queue management**: reliable job queues for campaign sends with retry and dead-letter handling
+  - **Multi-tenancy**: if SaaS, isolate tenant data and rate limits
+
+  **IMPORTANT CAVEATS:**
+  - Privacy regulations vary by jurisdiction — design consent management for the strictest applicable
+  - AI-generated marketing content must align with brand voice and legal requirements
+  - Email deliverability is a continuous process, not a one-time configuration
+  - Attribution models are approximations — present with appropriate confidence levels
+
+  **Deliver:**
+  1. Campaign management and journey builder architecture
+  2. Personalization engine design (rule-based + ML)
+  3. Customer data platform integration with identity resolution
+  4. Analytics and attribution framework
+  5. Privacy and consent management architecture
+  6. Integration topology with CRM/eCommerce/advertising systems
+
+variables:
+  - name: "platform_focus"
+    description: "Primary function of the marketing platform"
+    required: true
+    examples: ["Full marketing automation platform", "Email marketing and campaign management", "Customer data platform with activation", "Marketing analytics and attribution", "Content personalization engine"]
+  - name: "marketing_channels"
+    description: "Channels the platform supports"
+    required: true
+    examples: ["Email, SMS, web push, in-app", "Email, social media, paid advertising", "All channels (omnichannel orchestration)", "Email and landing pages only", "Mobile push and in-app messaging"]
+  - name: "integration_ecosystem"
+    description: "Business systems to integrate with"
+    required: true
+    examples: ["Salesforce CRM + Shopify + Google Ads + GA4", "HubSpot + Stripe + Meta Ads", "Custom CRM + SAP Commerce + Snowflake", "Standalone with REST API for future integrations"]
+  - name: "privacy_requirements"
+    description: "Privacy and compliance frameworks"
+    required: true
+    examples: ["GDPR + CCPA (global audience)", "CAN-SPAM only (US domestic)", "GDPR + ePrivacy + CASL (strict compliance)", "Industry self-regulation (DMA guidelines)", "Healthcare marketing (HIPAA considerations)"]
+  - name: "scale"
+    description: "Scale of marketing operations"
+    required: true
+    examples: ["1M+ contacts, 50M emails/month", "100K contacts, 5M emails/month", "10M+ app users, 1B push notifications/month", "Small scale (<50K contacts) growing rapidly", "B2B focused (50K contacts, high personalization)"]
+
+expected_output: "Complete marketing technology platform architecture with campaign management, personalization, analytics, privacy compliance, and integration design"
+
+quality_criteria:
+  - "Multi-channel campaigns coordinate across all supported channels"
+  - "Personalization engine respects consent and privacy settings"
+  - "Analytics provide actionable attribution across channels"
+  - "Consent management complies with strictest applicable regulation"
+  - "Integration design supports real-time and batch data exchange"
+  - "Email infrastructure follows deliverability best practices"
+
+anti_patterns:
+  - "Sending marketing communications without verified consent"
+  - "No frequency capping leading to subscriber fatigue"
+  - "Personalization without privacy controls"
+  - "Single-touch attribution presented as ground truth"
+  - "Ignoring email deliverability fundamentals (SPF/DKIM/DMARC)"
+  - "Storing full customer profiles without data minimization"
+
+related_prompts: ["DOM-ECOMMERCE-001", "DEV-WEB-001", "DEV-API-001", "DOM-COMPLIANCE-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001", "ARCH-SYS-001", "ARCH-DATA-001"]
+  next: ["DEV-WEB-001", "DEV-API-001", "DEPLOY-CICD-001"]

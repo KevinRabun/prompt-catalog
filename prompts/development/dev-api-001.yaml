@@ -1,0 +1,156 @@
+id: "DEV-API-001"
+version: "1.0.0"
+title: "RESTful API Design and Implementation"
+description: "Guides the design and implementation of production-quality RESTful APIs"
+category: "development"
+subcategory: "api"
+skill_level: "intermediate"
+platforms: ["all"]
+tags: ["api", "rest", "openapi", "backend", "endpoints"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a backend developer designing and implementing a RESTful API.
+
+  **Context:**
+  - API Purpose: {{api_purpose}}
+  - Framework: {{backend_framework}}
+  - Authentication: {{auth_method}}
+  - Versioning: {{versioning_strategy}}
+  - Expected Consumers: {{api_consumers}}
+
+  **Design and implement the API following these standards:**
+
+  ### 1. Resource Design
+  - Identify resources (nouns, not verbs)
+  - Define resource hierarchy and relationships
+  - Design URL patterns following REST conventions:
+    - `GET /api/v1/resources` — List (with pagination)
+    - `GET /api/v1/resources/{id}` — Get single
+    - `POST /api/v1/resources` — Create
+    - `PUT /api/v1/resources/{id}` — Full update
+    - `PATCH /api/v1/resources/{id}` — Partial update
+    - `DELETE /api/v1/resources/{id}` — Delete
+
+  ### 2. Request/Response Design
+  **Request:**
+  - Query parameters for filtering, sorting, pagination
+  - Request body validation with clear error messages
+  - Content-Type negotiation
+
+  **Response Envelope:**
+  ```json
+  {
+    "data": {},
+    "meta": { "page": 1, "pageSize": 20, "total": 100 },
+    "errors": []
+  }
+  ```
+
+  **HTTP Status Codes:**
+  - 200 OK — Successful GET/PUT/PATCH
+  - 201 Created — Successful POST (include Location header)
+  - 204 No Content — Successful DELETE
+  - 400 Bad Request — Validation errors
+  - 401 Unauthorized — Missing or invalid authentication
+  - 403 Forbidden — Authenticated but not authorized
+  - 404 Not Found — Resource doesn't exist
+  - 409 Conflict — Duplicate or state conflict
+  - 422 Unprocessable Entity — Valid format but business rule violation
+  - 429 Too Many Requests — Rate limit exceeded
+  - 500 Internal Server Error — Unexpected failure (never expose internals)
+
+  ### 3. Pagination
+  - Cursor-based for large or real-time datasets
+  - Offset-based for simple use cases
+  - Include total count, page info, and navigation links
+  - Default page size with configurable maximum
+
+  ### 4. Filtering & Sorting
+  - `?status=active&created_after=2026-01-01` for filtering
+  - `?sort=created_at:desc,name:asc` for sorting
+  - Document all supported filters and sort fields
+
+  ### 5. Error Handling
+  ```json
+  {
+    "errors": [
+      {
+        "code": "VALIDATION_ERROR",
+        "message": "Email is required",
+        "field": "email",
+        "documentation_url": "https://docs.example.com/errors/VALIDATION_ERROR"
+      }
+    ]
+  }
+  ```
+
+  ### 6. Security
+  - Validate all inputs (type, range, format, length)
+  - Use parameterized queries
+  - Implement rate limiting (return 429 with Retry-After header)
+  - Set security headers (X-Content-Type-Options, X-Frame-Options)
+  - CORS configuration with explicit origin allowlist
+  - Authentication on all non-public endpoints
+  - Authorization checks per-resource, not just per-endpoint
+
+  ### 7. Documentation
+  - Generate OpenAPI 3.0 / Swagger specification
+  - Include request/response examples
+  - Document authentication requirements
+  - Document rate limits and quotas
+  - Document error codes and their meaning
+
+  **Important:**
+  - APIs should be backward compatible when updated
+  - Use ISO 8601 for dates, UTC timezone
+  - Use consistent naming conventions (camelCase or snake_case, not both)
+  - Verify framework-specific API signatures before generating code
+
+variables:
+  - name: "api_purpose"
+    description: "What the API provides"
+    required: true
+    examples: ["User management CRUD", "Order processing", "Product catalog with search"]
+  - name: "backend_framework"
+    description: "Framework for implementation"
+    required: true
+    examples: ["ASP.NET Core 8", "Express.js", "FastAPI", "Spring Boot 3", "Go Gin"]
+  - name: "auth_method"
+    description: "Authentication approach"
+    required: true
+    examples: ["JWT Bearer tokens", "OAuth 2.0", "API key in header"]
+  - name: "versioning_strategy"
+    description: "API versioning approach"
+    required: false
+    default: "URL path versioning (/api/v1/)"
+    examples: ["URL path (/api/v1/)", "Header (Accept-Version)", "Query parameter (?version=1)"]
+  - name: "api_consumers"
+    description: "Who will consume this API"
+    required: false
+    default: "Internal frontend applications"
+    examples: ["SPA frontend", "Mobile apps", "Third-party integrations", "Internal microservices"]
+
+expected_output: "Complete API implementation with endpoint definitions, validation, error handling, authentication, and OpenAPI spec"
+
+quality_criteria:
+  - "REST conventions are followed consistently"
+  - "All inputs are validated with clear error messages"
+  - "HTTP status codes used correctly"
+  - "Pagination implemented for list endpoints"
+  - "OpenAPI spec is complete and accurate"
+  - "Security controls are in place"
+
+anti_patterns:
+  - "Verbs in URL paths (POST /api/createUser)"
+  - "Returning 200 for errors"
+  - "No pagination on list endpoints"
+  - "Inconsistent response formats"
+  - "Exposing internal error details to clients"
+
+related_prompts: ["DEV-WEB-001", "ARCH-MICRO-001", "TEST-INT-001"]
+
+chain_position:
+  previous: ["ARCH-SYS-001", "ARCH-MICRO-001"]
+  next: ["TEST-INT-001", "SEC-CODE-001"]

@@ -1,0 +1,156 @@
+id: "OPS-MON-001"
+version: "1.0.0"
+title: "Monitoring and Observability Setup"
+description: "Designs a comprehensive monitoring strategy with dashboards, alerts, and runbooks"
+category: "operations"
+subcategory: "monitoring"
+skill_level: "intermediate"
+platforms: ["all"]
+tags: ["monitoring", "observability", "alerting", "logging", "tracing", "sre"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are an SRE/DevOps engineer designing the monitoring and observability strategy.
+
+  **Context:**
+  - System: {{system_name}}
+  - Architecture: {{architecture_type}}
+  - Monitoring Tools: {{monitoring_tools}}
+  - SLA Target: {{sla_target}}
+  - Current Pain Points: {{current_issues}}
+
+  **Design the observability strategy:**
+
+  ### 1. Service Level Objectives (SLOs)
+  For each critical service, define:
+  - **SLI** (Service Level Indicator): What to measure
+  - **SLO** (Service Level Objective): Target threshold
+  - **Error Budget**: Allowable failures before action is needed
+  - **Measurement Window**: Rolling 30-day, calendar month, etc.
+
+  Example:
+  ```
+  Service: User API
+  SLI: Percentage of requests completed in < 200ms
+  SLO: 99.9% of requests in < 200ms (rolling 30 days)
+  Error Budget: 0.1% = ~43 minutes of violations per 30 days
+  ```
+
+  ### 2. Metrics (USE + RED)
+  **For infrastructure (USE method):**
+  - **U**tilization: CPU, memory, disk, network usage %
+  - **S**aturation: Queue depth, thread pool exhaustion, connection pool usage
+  - **E**rrors: Hardware errors, OOM kills, disk failures
+
+  **For services (RED method):**
+  - **R**ate: Requests per second by endpoint
+  - **E**rrors: Error rate by endpoint and error type
+  - **D**uration: Response time percentiles (P50, P95, P99) by endpoint
+
+  ### 3. Logging Strategy
+  - Structured logging format (JSON)
+  - Required fields: timestamp, level, service, correlation_id, message
+  - Log levels: ERROR (actionable failures), WARN (degradation), INFO (operations), DEBUG (development)
+  - Log retention: 30 days hot, 90 days warm, 1 year cold (adjust for compliance)
+  - Sensitive data masking rules
+  - Centralized log aggregation
+
+  ### 4. Distributed Tracing
+  - Trace propagation across services (W3C Trace Context)
+  - Key spans to instrument
+  - Sampling strategy (head-based vs. tail-based, rate)
+  - Trace-to-log correlation
+
+  ### 5. Dashboards
+  **Executive Dashboard:** System health overview, SLO compliance
+  **Service Dashboard (per-service):**
+  - Request rate, error rate, latency (RED)
+  - Dependencies health
+  - Recent deployments
+  - Active alerts
+
+  **Infrastructure Dashboard:**
+  - Compute utilization
+  - Database performance
+  - Network throughput
+  - Cost tracking
+
+  ### 6. Alerting
+  For each alert:
+  ```
+  Alert: [Name]
+  Condition: [Metric] [operator] [threshold] for [duration]
+  Severity: Critical | Warning | Info
+  Route: Critical → PagerDuty/on-call | Warning → Slack | Info → Dashboard only
+  Runbook: [Link to troubleshooting steps]
+  ```
+
+  **Alert Design Principles:**
+  - Alert on symptoms (user impact), not causes (CPU usage)
+  - Every alert must be actionable
+  - Include runbook link in every alert
+  - Set appropriate thresholds to avoid alert fatigue
+
+  ### 7. Runbooks
+  For each common alert, create a runbook:
+  ```
+  Runbook: [Alert Name]
+  Severity: [Critical/Warning]
+  Symptoms: [What the user/system experiences]
+  Possible Causes:
+    1. [Cause] → [Diagnostic command] → [Fix]
+    2. [Cause] → [Diagnostic command] → [Fix]
+  Escalation: [When and who to escalate to]
+  ```
+
+  **Important:**
+  - Start with fewer, meaningful alerts — add more as needed
+  - Every alert should have a human-tested runbook
+  - Monitor the monitoring — ensure observability systems are healthy
+  - Consider cost of monitoring at scale
+
+variables:
+  - name: "system_name"
+    description: "Name of the system to monitor"
+    required: true
+  - name: "architecture_type"
+    description: "Architecture style"
+    required: true
+    examples: ["Microservices on Kubernetes", "3-tier web app", "Serverless event-driven"]
+  - name: "monitoring_tools"
+    description: "Monitoring stack in use"
+    required: true
+    examples: ["Azure Monitor + App Insights", "Prometheus + Grafana", "Datadog", "AWS CloudWatch + X-Ray", "ELK Stack"]
+  - name: "sla_target"
+    description: "Target availability"
+    required: false
+    default: "99.9%"
+    examples: ["99.9%", "99.95%", "99.99%"]
+  - name: "current_issues"
+    description: "Current monitoring/operational pain points"
+    required: false
+    default: "Greenfield setup"
+    examples: ["Too many alerts, unclear runbooks", "No distributed tracing", "Missing database monitoring"]
+
+expected_output: "Complete observability strategy with SLOs, dashboards, alerts with runbooks, and logging/tracing configuration"
+
+quality_criteria:
+  - "SLOs are defined for critical services"
+  - "Every alert has a runbook"
+  - "Dashboards follow USE + RED methodology"
+  - "Logging strategy includes structured format and retention policies"
+  - "Distributed tracing covers cross-service calls"
+
+anti_patterns:
+  - "Alerting on every metric threshold"
+  - "No runbooks for alerts"
+  - "Unstructured log format"
+  - "Missing distributed tracing in microservices"
+  - "No SLO definitions"
+
+related_prompts: ["DEPLOY-CICD-001", "DEPLOY-IAC-001", "ARCH-CLOUD-001"]
+
+chain_position:
+  previous: ["DEPLOY-CICD-001", "DEPLOY-IAC-001"]
+  next: []

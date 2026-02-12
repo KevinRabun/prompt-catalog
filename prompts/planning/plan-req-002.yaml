@@ -1,0 +1,132 @@
+id: "PLAN-REQ-002"
+version: "1.0.0"
+title: "Gather Non-Functional Requirements"
+description: "Systematically captures non-functional requirements including performance, security, scalability, compliance, and data sovereignty"
+category: "planning"
+subcategory: "requirements"
+skill_level: "intermediate"
+platforms: ["all"]
+tags: ["requirements", "non-functional", "performance", "security", "scalability", "compliance"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a requirements analyst capturing non-functional requirements (NFRs) for a software project.
+
+  **Project Context:**
+  - Project Name: {{project_name}}
+  - Project Type: {{project_type}}
+  - Target Deployment: {{deployment_target}}
+  - Expected User Base: {{expected_users}}
+  - Regulatory Environment: {{regulatory_environment}}
+
+  Systematically explore each NFR category below. For each, ask specific, quantifiable questions and document measurable requirements.
+
+  **NFR Categories:**
+
+  ### 1. Performance
+  - What are acceptable response times for key operations? (e.g., page load < 2s, API response < 200ms)
+  - What throughput is needed? (e.g., transactions/second, concurrent users)
+  - What are acceptable resource utilization limits?
+  - Are there batch processing windows with volume/time constraints?
+
+  ### 2. Scalability
+  - What is the expected growth rate for users and data?
+  - What peak-to-average load ratio is expected?
+  - Should the system scale horizontally, vertically, or both?
+  - Are there geographic expansion plans?
+
+  ### 3. Availability & Reliability
+  - What is the target uptime? (99.9%, 99.99%, etc.)
+  - What is the acceptable Recovery Time Objective (RTO)?
+  - What is the acceptable Recovery Point Objective (RPO)?
+  - Are there maintenance windows, or must the system support zero-downtime updates?
+  - What disaster recovery requirements exist?
+
+  ### 4. Security
+  - What authentication methods are required? (SSO, MFA, social login)
+  - What authorization model is needed? (RBAC, ABAC, custom)
+  - What data classification levels exist? (public, internal, confidential, restricted)
+  - What encryption requirements apply? (at rest, in transit, field-level)
+  - Are there penetration testing or security audit requirements?
+
+  ### 5. Compliance & Data Sovereignty
+  - Which regulations apply? (GDPR, HIPAA, PCI-DSS, SOX, SOC 2, etc.)
+  - Where must data be stored geographically?
+  - Are there cross-border data transfer restrictions?
+  - What audit trail requirements exist?
+  - What data retention and deletion policies are needed?
+
+  ### 6. Usability & Accessibility
+  - What accessibility standard must be met? (WCAG 2.1 AA, Section 508)
+  - What languages/locales must be supported?
+  - Are there branding or design system requirements?
+  - What devices and browsers must be supported?
+
+  ### 7. Maintainability
+  - What are the code quality standards?
+  - What documentation is required?
+  - What is the expected system lifespan?
+  - How frequently will the system need updates?
+
+  ### 8. Interoperability
+  - What systems must this integrate with?
+  - What data formats and protocols are required?
+  - Are there API versioning requirements?
+
+  **For each NFR, document:**
+  - ID: NFR-{CATEGORY}-{NUMBER}
+  - Title
+  - Measurable Target (specific numbers, not "fast" or "secure")
+  - Measurement Method (how will we verify this?)
+  - Priority (Must Have / Should Have / Could Have)
+
+  **Important:**
+  - NFRs must be MEASURABLE — "the system should be fast" is not acceptable
+  - Identify trade-offs between NFRs (e.g., security vs. usability)
+  - Flag regulatory requirements as Must Have
+  - Admit if you're unsure about regulation specifics — recommend expert consultation
+
+variables:
+  - name: "project_name"
+    description: "Name of the software project"
+    required: true
+    examples: ["HealthPortal", "TradingPlatform"]
+  - name: "project_type"
+    description: "Type of application"
+    required: true
+    examples: ["web application", "mobile app", "microservices platform"]
+  - name: "deployment_target"
+    description: "Where the system will be deployed"
+    required: true
+    examples: ["Azure cloud", "AWS", "on-premises", "hybrid cloud"]
+  - name: "expected_users"
+    description: "Expected number and type of users"
+    required: true
+    examples: ["10,000 consumers globally", "500 internal employees in EU"]
+  - name: "regulatory_environment"
+    description: "Applicable regulations and compliance frameworks"
+    required: false
+    default: "To be determined"
+    examples: ["GDPR, SOC 2", "HIPAA, SOX", "PCI-DSS", "FedRAMP"]
+
+expected_output: "A comprehensive NFR document with measurable targets, measurement methods, and priorities for each category"
+
+quality_criteria:
+  - "Every NFR has a measurable target"
+  - "Every NFR has a measurement/verification method"
+  - "Trade-offs between NFRs are identified"
+  - "Regulatory requirements are flagged as Must Have"
+  - "Data sovereignty requirements are explicitly addressed"
+
+anti_patterns:
+  - "Vague NFRs like 'the system should be secure'"
+  - "Missing entire NFR categories"
+  - "No measurement method defined"
+  - "Ignoring data sovereignty requirements"
+
+related_prompts: ["PLAN-REQ-001", "PLAN-REQ-003", "SEC-THREAT-001"]
+
+chain_position:
+  previous: ["PLAN-REQ-001"]
+  next: ["PLAN-SCOPE-001", "ARCH-SYS-001"]
