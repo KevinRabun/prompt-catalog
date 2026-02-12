@@ -38,6 +38,10 @@ By the end, you'll have a complete specification, architecture, data model, thre
 First, install the CLI and load the starter kit:
 
 ```bash
+# Option A: Install from PyPI
+pip install prompt-catalog
+
+# Option B: Install from source
 git clone https://github.com/KevinRabun/prompt-catalog.git
 cd prompt-catalog/server
 pip install -e .

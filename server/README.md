@@ -5,7 +5,10 @@ A working MCP server and command-line tool for the [Prompt Catalog](https://gith
 ## Installation
 
 ```bash
-# From the repository root
+# Install from PyPI (recommended)
+pip install prompt-catalog
+
+# Or install from source
 cd server
 pip install -e .
 

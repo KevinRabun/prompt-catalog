@@ -171,6 +171,9 @@ Add to your MCP settings (e.g., `claude_desktop_config.json`):
 
 ### Minimal Implementation (Python)
 
+> **Note:** A pre-built MCP server and CLI are available via `pip install prompt-catalog`.
+> The example below shows how to build a custom server from scratch.
+
 ```python
 """
 Prompt Catalog MCP Server — Python implementation.

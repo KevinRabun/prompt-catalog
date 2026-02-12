@@ -170,7 +170,10 @@ Instruction files are Markdown documents designed to be loaded as system-level c
 The catalog ships with a working [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server. Install it once and every MCP-compatible AI client (Claude Desktop, VS Code, Cursor, etc.) can access all prompts and instructions as first-class resources.
 
 ```bash
-# Install
+# Install from PyPI
+pip install prompt-catalog
+
+# Or install from source (for contributors)
 cd server && pip install -e .
 
 # Start the server
@@ -186,7 +189,10 @@ See [server/README.md](server/README.md) for Claude Desktop and VS Code configur
 The fastest way to get started is the interactive CLI:
 
 ```bash
-# Install the CLI
+# Install from PyPI
+pip install prompt-catalog
+
+# Or install from source
 cd server && pip install -e .
 
 # Interactive guided mode — recommends prompts based on your project
