@@ -1,0 +1,182 @@
+id: "OPS-CAP-001"
+version: "1.0.0"
+title: "Capacity Planning and Scaling Strategy"
+description: "Designs capacity planning models, scaling policies, and resource forecasting for production systems"
+category: "operations"
+subcategory: "capacity-planning"
+skill_level: "advanced"
+platforms: ["cloud", "web", "linux"]
+tags: ["capacity-planning", "scaling", "auto-scaling", "cost", "forecasting", "sre", "load-testing"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are an SRE/platform engineer designing the capacity planning and scaling strategy for a production system.
+
+  **Context:**
+  - System: {{system_name}}
+  - Current Scale: {{current_scale}}
+  - Growth Rate: {{growth_rate}}
+  - Cloud Provider: {{cloud_provider}}
+  - Budget Constraints: {{budget_constraints}}
+
+  **Design the capacity planning strategy:**
+
+  ### 1. Current Capacity Baseline
+  Document the current resource profile for each component:
+
+  ```
+  Component: [Name]
+  ───────────────────
+  Compute:
+    - Instance type / size: [e.g., 4 vCPU, 16 GB RAM]
+    - Current count: [e.g., 3 instances]
+    - Average utilization: CPU [X%], Memory [X%]
+    - Peak utilization: CPU [X%], Memory [X%]
+
+  Storage:
+    - Type: [SSD/HDD, managed disk, object storage]
+    - Current size: [X GB/TB]
+    - Growth rate: [X GB/month]
+    - IOPS requirements: [read/write]
+
+  Network:
+    - Bandwidth: [current throughput]
+    - Request rate: [requests/sec at P50, P95, P99]
+    - Latency: [P50, P95, P99]
+
+  Database:
+    - Engine & tier: [e.g., PostgreSQL, 8 vCPU / 32 GB]
+    - Connections: [current / max]
+    - Storage: [X GB, growth rate]
+    - Query latency: [P50, P95, P99]
+  ```
+
+  ### 2. Bottleneck Analysis
+  Identify the **first resource to saturate** under load:
+  - Run through a request lifecycle and identify resource consumption at each hop
+  - Map dependencies: Which component failure cascades to others?
+  - Identify **single points of failure** that cannot scale horizontally
+  - Document the current **breaking point** (approximate max load before degradation)
+
+  ### 3. Scaling Strategy
+
+  **Horizontal Scaling (preferred where possible):**
+  - Which components can scale horizontally? What's the minimum/maximum?
+  - Session/state management: How is state handled across instances?
+  - Data partitioning: Sharding, read replicas, or cache distribution
+  - Load balancing: Algorithm, health checks, draining
+
+  **Vertical Scaling (when horizontal isn't feasible):**
+  - Which components require vertical scaling? (e.g., database, single-threaded workers)
+  - Maximum instance size available on your cloud provider
+  - Downtime requirements for vertical scaling
+
+  **Auto-Scaling Policies:**
+  For each scalable component:
+  ```
+  Component: [Name]
+  Trigger Metric: [CPU > 70%  OR  request_queue > 100  OR  P95 latency > 500ms]
+  Scale-Out: Add [N] instances when [trigger] sustained for [X minutes]
+  Scale-In: Remove [N] instances when [metric < threshold] for [X minutes]
+  Minimum: [N] instances
+  Maximum: [N] instances
+  Cooldown: [X minutes] between scaling events
+  ```
+
+  ### 4. Capacity Forecasting
+  - Project resource needs for **3, 6, and 12 months** based on growth rate
+  - Model at least two scenarios: **organic growth** and **viral spike** (10x traffic)
+  - Identify which components need capacity increases first (lead time for provisioning)
+  - Plan for seasonal patterns if applicable (e.g., Black Friday, tax season, school year)
+
+  ### 5. Cost Optimization
+  - Right-size instances based on actual utilization (not peak)
+  - Reserved instances / savings plans for predictable baseline
+  - Spot/preemptible instances for stateless batch workloads
+  - Storage tiering (hot → warm → cold → archive)
+  - Identify idle or over-provisioned resources
+  - Set budget alerts at 80% and 100% of monthly target
+  - Calculate **cost per unit of work** (e.g., cost per 1000 API requests, cost per user/month)
+
+  ### 6. Load Testing Plan
+  Validate capacity assumptions with load tests:
+  - **Baseline test:** Confirm current capacity handles current peak + 20% headroom
+  - **Stress test:** Find the breaking point — at what load does latency explode?
+  - **Spike test:** Sudden 5x traffic burst — does auto-scaling respond in time?
+  - **Soak test:** Sustained high load for 4+ hours — identify memory leaks, connection pool exhaustion
+  - **Failover test:** Kill a node during load — does the system stay healthy?
+
+  ### 7. Scaling Checklist
+  Before expecting the system to handle N× current load, verify:
+  - [ ] Database connection pool sized for max instances × connections per instance
+  - [ ] Rate limits and quotas updated for higher throughput
+  - [ ] Third-party API rate limits can handle increased call volume
+  - [ ] DNS TTL is low enough for traffic shifts
+  - [ ] CDN/cache capacity is sufficient
+  - [ ] Logging/monitoring pipeline can handle increased event volume
+  - [ ] Alerting thresholds adjusted for new baseline
+
+  **Important:**
+  - Capacity planning is not a one-time exercise — review quarterly
+  - Always maintain headroom (target 60-70% peak utilization, not 95%)
+  - The cheapest instance is the one you don't need — measure before purchasing
+  - Test your auto-scaling before you need it — not during a production spike
+
+variables:
+  - name: "system_name"
+    description: "Name of the system"
+    required: true
+    examples: ["TaskFlow SaaS platform", "Payment API"]
+  - name: "current_scale"
+    description: "Current production scale"
+    required: true
+    examples: ["10K DAU, 100 req/s peak, 500GB database", "1M events/day, 3 API servers"]
+  - name: "growth_rate"
+    description: "Expected growth rate"
+    required: true
+    examples: ["20% month-over-month for 6 months", "Stable with 2x seasonal spikes", "10x expected after product launch"]
+  - name: "cloud_provider"
+    description: "Cloud provider and services in use"
+    required: true
+    examples: ["Azure (App Service, Azure SQL, Redis Cache)", "AWS (ECS, RDS, ElastiCache)", "GCP (GKE, Cloud SQL)"]
+  - name: "budget_constraints"
+    description: "Monthly infrastructure budget or constraints"
+    required: false
+    default: "Optimize for cost-efficiency"
+    examples: ["$5K/month max", "$50K/month with room to grow", "No hard limit but justify every dollar"]
+
+expected_output: "Complete capacity plan with current baseline, bottleneck analysis, scaling policies, cost projections, and load testing plan"
+
+quality_criteria:
+  - "Current capacity baseline is documented with actual metrics"
+  - "Bottleneck analysis identifies the first component to saturate"
+  - "Auto-scaling policies have specific metrics, thresholds, and limits"
+  - "Cost optimization recommendations are included"
+  - "Load testing plan covers baseline, stress, spike, and soak scenarios"
+  - "Forecasting covers at least 3, 6, and 12 months"
+
+anti_patterns:
+  - "Scaling plan based on guesses rather than measurements"
+  - "No headroom — running at 95% utilization and hoping for the best"
+  - "Auto-scaling with no maximum limit"
+  - "Ignoring database as a scaling bottleneck"
+  - "No load testing before expecting the system to handle more traffic"
+  - "Capacity plan that is created once and never revisited"
+
+adversarial_tests:
+  - scenario: "Capacity plan assumes linear scaling but the database is a single vertical instance"
+    expected_behavior: "Plan must identify non-horizontally-scalable components and provide vertical scaling or re-architecture strategies"
+    severity: "critical"
+  - scenario: "Auto-scaling policy triggers on CPU only, but the actual bottleneck is database connections"
+    expected_behavior: "Scaling triggers should be based on the actual bottleneck metric, not just CPU — include application-level metrics"
+    severity: "high"
+  - scenario: "Cost projections assume current pricing forever — no reserved instance analysis"
+    expected_behavior: "Include reserved capacity, spot instances, and savings plan analysis for predictable workloads"
+    severity: "medium"
+
+related_prompts: ["OPS-MON-001", "OPS-INC-001", "ARCH-CLOUD-001"]
+
+chain_position:
+  previous: ["OPS-MON-001"]
+  next: []

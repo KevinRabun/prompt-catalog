@@ -149,8 +149,8 @@ anti_patterns:
   - "Missing distributed tracing in microservices"
   - "No SLO definitions"
 
-related_prompts: ["DEPLOY-CICD-001", "DEPLOY-IAC-001", "ARCH-CLOUD-001"]
+related_prompts: ["OPS-INC-001", "OPS-CAP-001"]
 
 chain_position:
   previous: ["DEPLOY-CICD-001", "DEPLOY-IAC-001"]
-  next: []
+  next: ["OPS-INC-001", "OPS-CAP-001"]

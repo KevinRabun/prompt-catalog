@@ -1,0 +1,201 @@
+id: "OPS-INC-001"
+version: "1.0.0"
+title: "Incident Response and Runbook Design"
+description: "Designs incident response processes, escalation paths, runbooks, and post-incident review templates"
+category: "operations"
+subcategory: "incident-response"
+skill_level: "advanced"
+platforms: ["all"]
+tags: ["incident-response", "runbooks", "on-call", "escalation", "postmortem", "sre", "toil"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are an SRE/DevOps engineer designing the incident response process for a production system.
+
+  **Context:**
+  - System: {{system_name}}
+  - Architecture: {{architecture_type}}
+  - Team Size: {{team_size}}
+  - Current On-Call Setup: {{oncall_setup}}
+  - Communication Channels: {{communication_channels}}
+
+  **Design the complete incident response process:**
+
+  ### 1. Incident Classification
+  Define severity levels with clear, unambiguous criteria:
+
+  | Severity | Criteria | Response Time | Update Frequency | Examples |
+  |----------|----------|---------------|------------------|----------|
+  | SEV-1 (Critical) | Total service outage or data loss | < 15 min | Every 15 min | Database down, payments broken |
+  | SEV-2 (High) | Major feature degraded, significant user impact | < 30 min | Every 30 min | Search broken, slow responses (>5s) |
+  | SEV-3 (Medium) | Minor feature degraded, workaround exists | < 2 hours | Every 2 hours | Export failing, UI glitch |
+  | SEV-4 (Low) | Cosmetic or minor issue, no user impact | Next business day | On resolution | Typo, non-critical log noise |
+
+  ### 2. Escalation Paths
+  For each severity, define:
+  - **First responder:** Who is paged and how
+  - **Escalation trigger:** When to involve the next tier
+  - **Escalation chain:** Primary → Secondary → Engineering Manager → VP Engineering → CTO
+  - **External communication:** When to notify customers, status page updates
+  - **Stakeholder notification:** Who needs to know at each severity level
+
+  ### 3. Runbook Template
+  For each critical alert, create a structured runbook:
+
+  ```
+  Runbook: [Alert/Incident Name]
+  ─────────────────────────────
+  Severity: [SEV-1 / SEV-2 / SEV-3]
+  Owner: [Team or individual]
+  Last Tested: [Date]
+
+  Symptoms:
+    - What the user experiences
+    - What monitoring shows
+
+  Triage (first 5 minutes):
+    1. Verify the alert is real (not a monitoring false positive)
+    2. Check: [specific dashboard/log URL]
+    3. Determine blast radius: [command to check affected users/requests]
+
+  Diagnosis:
+    Possible Cause 1: [Description]
+      Check: [diagnostic command or query]
+      Fix: [mitigation steps]
+      Rollback: [if the fix makes things worse]
+
+    Possible Cause 2: [Description]
+      Check: [diagnostic command or query]
+      Fix: [mitigation steps]
+
+  Mitigation (if root cause is unknown):
+    1. [Emergency action to reduce impact — e.g., failover, scale up, feature flag]
+    2. [Reduce traffic — e.g., rate limit, redirect]
+
+  Escalation:
+    - If not resolved in [X minutes]: Page [person/team]
+    - If data loss suspected: Immediately page [DBA/data team]
+
+  Communication:
+    - Status page: [Update template]
+    - Slack: Post in #incidents with severity and ETA
+  ```
+
+  ### 4. On-Call Structure
+  - **Rotation schedule:** Primary and secondary on-call, rotation frequency
+  - **Handoff process:** What information is passed between on-call shifts
+  - **Fatigue management:** Maximum incident load before backup is activated
+  - **Compensation:** On-call pay, time-in-lieu, or other recognition
+  - **Coverage gaps:** Holidays, vacations, single points of failure
+
+  ### 5. Incident Communication
+  - **Internal:** Where incidents are declared, tracked, and discussed
+  - **External:** Status page updates, customer notifications, SLA breach communication
+  - **Templates:** Pre-written templates for common incident types
+  - **Timeline:** When to send first update, update cadence, resolution notice
+
+  ### 6. Post-Incident Review (Blameless Postmortem)
+  Template for every SEV-1 and SEV-2:
+
+  ```
+  Post-Incident Review: [Title]
+  Date: [Incident date]   Duration: [Start → Resolution]
+  Severity: [SEV-X]       Impact: [Users/revenue affected]
+
+  Summary:
+    [1-2 sentence description of what happened]
+
+  Timeline:
+    HH:MM — [Event]
+    HH:MM — [Event]
+
+  Root Cause:
+    [Technical root cause — be specific]
+
+  Contributing Factors:
+    - [Factor 1 — e.g., missing monitoring, untested failover]
+    - [Factor 2]
+
+  What Went Well:
+    - [What worked in the response]
+
+  What Could Be Improved:
+    - [Process/tooling gaps identified]
+
+  Action Items:
+    | Action | Owner | Priority | Due Date | Status |
+    |--------|-------|----------|----------|--------|
+    | [Fix root cause] | [Name] | P1 | [Date] | Open |
+    | [Add monitoring] | [Name] | P2 | [Date] | Open |
+    | [Update runbook] | [Name] | P3 | [Date] | Open |
+  ```
+
+  ### 7. Toil Reduction
+  - Identify **recurring incidents** that could be automated away
+  - Track **mean time to detect (MTTD)** and **mean time to resolve (MTTR)**
+  - Set targets: reduce MTTR by X% per quarter
+  - Automate common mitigations (auto-scaling, auto-restart, auto-failover)
+
+  **Important:**
+  - Runbooks should be tested regularly — an untested runbook is worse than none
+  - Post-incident reviews must be blameless — focus on systems, not individuals
+  - Incident response is a skill — practice with game days and tabletop exercises
+  - Keep runbooks in version control, not in a wiki that goes stale
+
+variables:
+  - name: "system_name"
+    description: "Name of the system"
+    required: true
+    examples: ["TaskFlow SaaS", "Payment Processing Platform"]
+  - name: "architecture_type"
+    description: "Architecture style"
+    required: true
+    examples: ["Microservices on Kubernetes", "Monolithic web app", "Serverless event-driven"]
+  - name: "team_size"
+    description: "Size of the engineering team"
+    required: true
+    examples: ["5 engineers", "20+ across 4 teams", "Solo founder"]
+  - name: "oncall_setup"
+    description: "Current on-call setup or 'none'"
+    required: false
+    default: "No on-call rotation currently"
+    examples: ["PagerDuty with weekly rotation", "Informal Slack-based", "None"]
+  - name: "communication_channels"
+    description: "How the team communicates during incidents"
+    required: false
+    default: "Slack"
+    examples: ["Slack #incidents channel", "Microsoft Teams + PagerDuty", "Discord"]
+
+expected_output: "Complete incident response playbook with severity definitions, escalation paths, runbook templates, on-call structure, and postmortem template"
+
+quality_criteria:
+  - "Severity levels have clear, unambiguous criteria"
+  - "Every severity has a defined response time and escalation path"
+  - "Runbook template includes diagnosis, mitigation, and escalation steps"
+  - "Post-incident review template is blameless and action-oriented"
+  - "On-call structure addresses rotation, handoff, and fatigue"
+
+anti_patterns:
+  - "Severity definitions so vague that everything becomes SEV-1"
+  - "Runbooks that say 'contact the team' without specific names or procedures"
+  - "Post-incident reviews that assign blame to individuals"
+  - "On-call without a secondary or backup"
+  - "Runbooks stored only in someone's head or a private document"
+
+adversarial_tests:
+  - scenario: "Incident response plan has no defined escalation path — first responder is on their own"
+    expected_behavior: "Every severity level must have a clear escalation chain with specific people/roles and time-based triggers"
+    severity: "critical"
+  - scenario: "Runbooks contain stale commands or references to decommissioned services"
+    expected_behavior: "Runbooks should include a 'Last Tested' date and a review cadence (monthly for SEV-1, quarterly for SEV-2+)"
+    severity: "high"
+  - scenario: "Post-incident review names and blames the on-call engineer who made the mistake"
+    expected_behavior: "Postmortem template must explicitly state blameless norms and focus on systemic contributing factors"
+    severity: "high"
+
+related_prompts: ["OPS-MON-001", "OPS-CAP-001"]
+
+chain_position:
+  previous: ["OPS-MON-001"]
+  next: []

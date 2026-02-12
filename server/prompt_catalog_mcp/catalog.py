@@ -7,11 +7,14 @@ This module is the shared backend used by both the MCP server and the CLI.
 from __future__ import annotations
 
 import json
+import logging
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
+
+logger = logging.getLogger(__name__)
 
 # ── Constants ────────────────────────────────────────────────────────
 
@@ -183,8 +186,8 @@ class Catalog:
                 try:
                     entry = PromptEntry.from_yaml(f)
                     cat.prompts[entry.id] = entry
-                except Exception:
-                    pass  # skip malformed files
+                except Exception as exc:
+                    logger.warning("Skipping malformed prompt %s: %s", f, exc)
 
         # Load instructions
         for scope in INSTRUCTION_SCOPES:
@@ -195,8 +198,8 @@ class Catalog:
                 try:
                     entry = InstructionEntry.from_path(scope, f)
                     cat.instructions[entry.stem] = entry
-                except Exception:
-                    pass
+                except Exception as exc:
+                    logger.warning("Skipping malformed instruction %s: %s", f, exc)
 
         # Load starter kits
         kits_dir = root / "starter-kits"
@@ -205,8 +208,8 @@ class Catalog:
                 try:
                     kit = StarterKit.from_yaml(f)
                     cat.starter_kits[kit.id] = kit
-                except Exception:
-                    pass
+                except Exception as exc:
+                    logger.warning("Skipping malformed starter kit %s: %s", f, exc)
 
         return cat
 

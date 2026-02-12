@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/KevinRabun/prompt-catalog/actions/workflows/ci.yml/badge.svg)](https://github.com/KevinRabun/prompt-catalog/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Prompts](https://img.shields.io/badge/prompts-35-blue)](#coverage)
+[![Prompts](https://img.shields.io/badge/prompts-38-blue)](#coverage)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
 
 An open-source, community-driven library of prompts and instruction files for AI-assisted software development. Designed to be **human-readable** for review and **machine-readable** for ingestion by MCP servers, AI agents, and automation tooling.

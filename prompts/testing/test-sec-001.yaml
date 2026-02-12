@@ -1,0 +1,232 @@
+id: "TEST-SEC-001"
+version: "1.0.0"
+title: "Security Testing Strategy"
+description: "Designs security testing plans covering SAST, DAST, dependency scanning, penetration testing, and security regression testing"
+category: "testing"
+subcategory: "security-testing"
+skill_level: "advanced"
+platforms: ["web", "cloud", "windows", "linux", "android", "ios"]
+tags: ["security-testing", "sast", "dast", "penetration-testing", "owasp", "vulnerability-scanning", "dependency-audit"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a security engineer designing a comprehensive security testing strategy.
+
+  **Context:**
+  - System: {{system_name}}
+  - Tech Stack: {{tech_stack}}
+  - Authentication: {{auth_method}}
+  - Sensitive Data: {{sensitive_data_types}}
+  - Compliance Requirements: {{compliance_requirements}}
+
+  **Design the security testing strategy:**
+
+  ### 1. Static Application Security Testing (SAST)
+  Automated code analysis integrated into the development workflow:
+
+  **Tool Selection:** Choose SAST tools appropriate for {{tech_stack}}:
+  - Languages: [e.g., Semgrep, CodeQL, SonarQube, Checkmarx, Bandit (Python), Brakeman (Ruby)]
+  - Secrets detection: [e.g., gitleaks, truffleHog, detect-secrets]
+  - IaC scanning: [e.g., checkov, tfsec, kics]
+
+  **Rules to Enforce:**
+  - SQL injection patterns (string concatenation in queries)
+  - XSS patterns (unescaped output, dangerouslySetInnerHTML)
+  - Hardcoded secrets (API keys, passwords, tokens, connection strings)
+  - Insecure cryptography (MD5, SHA1, DES, ECB mode, hardcoded IVs)
+  - Path traversal (user input in file paths)
+  - Command injection (user input in shell commands)
+  - Insecure deserialization
+  - Missing input validation on trust boundaries
+
+  **CI/CD Integration:**
+  - Run on every PR — block merge on critical/high findings
+  - Run full scan on main branch nightly
+  - Track findings over time — trending dashboard
+
+  ### 2. Dynamic Application Security Testing (DAST)
+  Test the running application for vulnerabilities:
+
+  **Automated Scanning:**
+  - Tool: [e.g., OWASP ZAP, Burp Suite, Nuclei, Nikto]
+  - Scope: All public endpoints + authenticated endpoints
+  - Authentication handling: Configure scanner with valid credentials
+  - Crawl coverage: Ensure scanner reaches all application routes
+
+  **OWASP Top 10 Test Cases:**
+  For each OWASP category, define specific test cases:
+
+  | Category | Test | Input | Expected Result |
+  |----------|------|-------|-----------------|
+  | Injection | SQL injection | `' OR '1'='1` in login | Request blocked or parameterized |
+  | Injection | NoSQL injection | `{"$gt":""}` in JSON field | Request rejected |
+  | XSS | Reflected XSS | `<script>alert(1)</script>` in search | Output encoded |
+  | XSS | Stored XSS | Script tag in user profile | Sanitized on display |
+  | Broken Auth | Session fixation | Reuse session ID after login | New session ID issued |
+  | Broken Auth | Brute force | 100 login attempts in 1 min | Rate limited after [N] |
+  | IDOR | Direct reference | Access `/api/users/OTHER_USER_ID` | 403 Forbidden |
+  | SSRF | Internal access | `http://169.254.169.254/` in URL param | Request blocked |
+  | Path Traversal | File access | `../../etc/passwd` in file param | Request rejected |
+
+  ### 3. Dependency and Supply Chain Security
+  - **Dependency scanning:** [e.g., Dependabot, Snyk, npm audit, pip-audit, OWASP Dependency-Check]
+  - **License compliance:** Flag copyleft licenses in proprietary code
+  - **Vulnerability SLA:**
+    - Critical CVE: Patch within 24 hours or apply workaround
+    - High CVE: Patch within 7 days
+    - Medium CVE: Patch within 30 days
+    - Low CVE: Next scheduled maintenance
+  - **Lock files:** Require lock files (package-lock.json, Pipfile.lock) in version control
+  - **Signing:** Verify package integrity (checksums, signatures)
+
+  ### 4. API Security Testing
+  For each API endpoint:
+
+  ```
+  Endpoint: [METHOD /path]
+  ──────────────────────────
+  Authentication Tests:
+    - No token → 401
+    - Expired token → 401
+    - Token for wrong user → 403
+    - Token with insufficient scope → 403
+
+  Authorization Tests:
+    - User A accessing User B's resource → 403
+    - Non-admin accessing admin endpoint → 403
+    - Deactivated user with valid token → 401/403
+
+  Input Validation Tests:
+    - Missing required fields → 400 with field-level errors
+    - Extra unexpected fields → Ignored or 400
+    - String where integer expected → 400
+    - Exceeding max length → 400
+    - Null bytes in strings → Rejected
+    - Unicode normalization attacks → Handled correctly
+
+  Rate Limiting Tests:
+    - Exceed rate limit → 429 with Retry-After header
+    - Rate limit per user, not just per IP
+
+  Response Security:
+    - No internal error details leaked (stack traces, SQL)
+    - Sensitive fields excluded from responses (password hashes, internal IDs)
+    - Security headers present (CORS, CSP, HSTS, X-Content-Type-Options)
+  ```
+
+  ### 5. Infrastructure Security Testing
+  - **Port scanning:** Verify only intended ports are open
+  - **TLS configuration:** Test cipher suites, certificate validity, HSTS
+  - **Cloud configuration:** Review IAM policies, storage access, network ACLs
+  - **Container security:** Scan images for vulnerabilities, run as non-root, read-only rootfs
+  - **Kubernetes security:** Pod security standards, network policies, RBAC
+
+  ### 6. Penetration Testing Plan
+  For manual or guided penetration testing:
+
+  **Scope:**
+  - In-scope: [Web app, API, mobile app, cloud infrastructure]
+  - Out-of-scope: [Third-party services, social engineering, physical access]
+
+  **Methodology:**
+  1. Reconnaissance: Discover all entry points, API endpoints, subdomains
+  2. Authentication testing: Credential stuffing, session management, MFA bypass
+  3. Authorization testing: Privilege escalation (horizontal + vertical), IDOR
+  4. Business logic testing: Price manipulation, workflow bypass, race conditions
+  5. Data exfiltration: Can an attacker extract data through error messages, timing, or side channels?
+
+  **Frequency:**
+  - Full pentest: Before launch, annually, and after major architecture changes
+  - Targeted retest: After fixing critical findings
+  - Bug bounty: Consider for ongoing coverage (if applicable)
+
+  ### 7. Security Regression Testing
+  Prevent fixed vulnerabilities from being reintroduced:
+
+  - For **every security fix**, write an automated test that:
+    1. Reproduces the original vulnerability (expects blocked/safe behavior)
+    2. Runs in CI on every build
+    3. Is tagged as a security regression test for prioritization
+  - Maintain a **security test suite** separate from functional tests
+  - Review security tests quarterly for coverage gaps
+
+  ### 8. Reporting and Triage
+  ```
+  Security Finding Report:
+    Finding: [Title]
+    Severity: Critical / High / Medium / Low / Informational
+    CVSS Score: [If applicable]
+    CWE: [CWE ID]
+    OWASP Category: [A01-A10]
+    Affected Component: [Endpoint, file, or service]
+    Description: [What the vulnerability is]
+    Proof of Concept: [Steps to reproduce]
+    Impact: [What an attacker could achieve]
+    Remediation: [Specific fix recommendation]
+    Verified Fix: [Date and method of verification]
+  ```
+
+  **Important:**
+  - Security testing must cover the **entire attack surface**, not just the UI
+  - Always test authentication AND authorization — they are separate concerns
+  - Business logic flaws (e.g., buying items for negative prices) are often missed by automated scanners
+  - Document all findings even if "low severity" — they combine for impact
+
+variables:
+  - name: "system_name"
+    description: "Name of the system to test"
+    required: true
+    examples: ["TaskFlow SaaS", "Mobile Banking API", "E-commerce platform"]
+  - name: "tech_stack"
+    description: "Technology stack"
+    required: true
+    examples: ["Next.js, Node.js, PostgreSQL, Redis", "Django, Python, MySQL", "Spring Boot, Java, MongoDB"]
+  - name: "auth_method"
+    description: "Authentication mechanism in use"
+    required: true
+    examples: ["JWT with OAuth 2.0 (Auth0)", "Session-based with MFA", "API keys + OAuth"]
+  - name: "sensitive_data_types"
+    description: "Types of sensitive data the system handles"
+    required: true
+    examples: ["PII (names, emails, addresses)", "Financial data (account balances, transactions)", "PHI (medical records, diagnoses)"]
+  - name: "compliance_requirements"
+    description: "Regulatory or compliance frameworks"
+    required: false
+    default: "General security best practices"
+    examples: ["SOC 2 Type II", "PCI-DSS Level 1", "HIPAA", "GDPR", "FedRAMP"]
+
+expected_output: "Complete security testing strategy with SAST/DAST configuration, OWASP test cases, dependency scanning plan, penetration test scope, and regression testing approach"
+
+quality_criteria:
+  - "SAST rules cover OWASP Top 10 vulnerability patterns"
+  - "DAST includes both automated and manual test cases"
+  - "API security tests cover authentication, authorization, and input validation"
+  - "Dependency scanning has defined vulnerability SLAs"
+  - "Penetration testing scope and methodology are clearly defined"
+  - "Security regression tests prevent reintroduction of fixed vulnerabilities"
+
+anti_patterns:
+  - "Only running automated scanners and calling it 'security tested'"
+  - "Testing authentication but not authorization"
+  - "No security regression tests — fixed vulnerabilities reappear"
+  - "Dependency scanning without a defined patching SLA"
+  - "Penetration testing only at launch, never again"
+  - "Ignoring business logic vulnerabilities that scanners can't detect"
+
+adversarial_tests:
+  - scenario: "Security test plan only runs OWASP ZAP automated scan — no manual testing of business logic"
+    expected_behavior: "Plan must include manual or guided testing for business logic flaws (price manipulation, workflow bypass, race conditions)"
+    severity: "critical"
+  - scenario: "All security tests pass, but there are no tests for authorization — only authentication"
+    expected_behavior: "Separate test cases for authentication (who are you?) and authorization (what can you do?), including horizontal privilege escalation"
+    severity: "critical"
+  - scenario: "Security regression suite exists but is not run in CI — only run manually before releases"
+    expected_behavior: "Security regression tests must run in CI on every PR/build, not just before releases"
+    severity: "high"
+
+related_prompts: ["SEC-THREAT-001", "SEC-CODE-001", "TEST-INT-001"]
+
+chain_position:
+  previous: ["SEC-CODE-001", "SEC-THREAT-001"]
+  next: ["DEPLOY-CICD-001"]

@@ -3,23 +3,23 @@
   "generated": "2026-02-12",
   "description": "Master index of all prompts in the Prompt Catalog for programmatic discovery and MCP server ingestion",
   "statistics": {
-    "total_prompts": 34,
+    "total_prompts": 38,
     "total_starter_kits": 6,
     "total_case_studies": 4,
     "categories": {
       "planning": 4,
       "architecture": 4,
       "development": 4,
-      "testing": 2,
+      "testing": 4,
       "security": 2,
       "deployment": 2,
-      "operations": 1,
+      "operations": 3,
       "domains": 13
     },
     "skill_levels": {
       "beginner": 2,
       "intermediate": 11,
-      "advanced": 11,
+      "advanced": 15,
       "expert": 8
     },
     "platforms_covered": ["web", "windows", "linux", "android", "ios", "cloud", "blockchain"]
@@ -177,6 +177,28 @@
       "platforms": ["web", "cloud", "windows", "linux", "android", "ios"],
       "tags": ["integration-testing", "e2e", "contract-testing", "performance-testing", "test-environments"],
       "file": "prompts/testing/test-int-001.yaml",
+      "chain_next": ["TEST-PERF-001", "DEPLOY-CICD-001"]
+    },
+    {
+      "id": "TEST-PERF-001",
+      "title": "Performance Testing Strategy and Execution",
+      "category": "testing",
+      "subcategory": "performance-testing",
+      "skill_level": "advanced",
+      "platforms": ["web", "cloud", "windows", "linux"],
+      "tags": ["performance", "load-testing", "stress-testing", "benchmarking", "latency", "throughput"],
+      "file": "prompts/testing/test-perf-001.yaml",
+      "chain_next": ["OPS-MON-001", "OPS-CAP-001"]
+    },
+    {
+      "id": "TEST-SEC-001",
+      "title": "Security Testing Strategy",
+      "category": "testing",
+      "subcategory": "security-testing",
+      "skill_level": "advanced",
+      "platforms": ["web", "cloud", "windows", "linux", "android", "ios"],
+      "tags": ["security-testing", "sast", "dast", "penetration-testing", "owasp", "vulnerability-scanning"],
+      "file": "prompts/testing/test-sec-001.yaml",
       "chain_next": ["DEPLOY-CICD-001"]
     },
     {
@@ -232,6 +254,28 @@
       "platforms": ["cloud", "web", "windows", "linux"],
       "tags": ["monitoring", "observability", "sre", "alerting", "logging", "apm"],
       "file": "prompts/operations/ops-mon-001.yaml",
+      "chain_next": ["OPS-INC-001", "OPS-CAP-001"]
+    },
+    {
+      "id": "OPS-INC-001",
+      "title": "Incident Response and Runbook Design",
+      "category": "operations",
+      "subcategory": "incident-response",
+      "skill_level": "advanced",
+      "platforms": ["cloud", "web", "windows", "linux"],
+      "tags": ["incident-response", "runbooks", "on-call", "escalation", "postmortem", "sre", "toil"],
+      "file": "prompts/operations/ops-inc-001.yaml",
+      "chain_next": []
+    },
+    {
+      "id": "OPS-CAP-001",
+      "title": "Capacity Planning and Scaling Strategy",
+      "category": "operations",
+      "subcategory": "capacity-planning",
+      "skill_level": "advanced",
+      "platforms": ["cloud", "web", "linux"],
+      "tags": ["capacity-planning", "scaling", "auto-scaling", "cost", "forecasting", "sre", "load-testing"],
+      "file": "prompts/operations/ops-cap-001.yaml",
       "chain_next": []
     },
     {
@@ -526,10 +570,14 @@
         "DEV-WEB-001",
         "TEST-UNIT-001",
         "TEST-INT-001",
+        "TEST-PERF-001",
+        "TEST-SEC-001",
         "SEC-CODE-001",
         "DEPLOY-CICD-001",
         "DEPLOY-IAC-001",
-        "OPS-MON-001"
+        "OPS-MON-001",
+        "OPS-INC-001",
+        "OPS-CAP-001"
       ]
     },
     "cloud_native": {

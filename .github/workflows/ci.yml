@@ -38,6 +38,80 @@ jobs:
       - name: Validate catalog
         run: prompt-catalog validate
 
+  schema-validation:
+    name: JSON Schema validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install validation tools
+        run: pip install jsonschema pyyaml
+
+      - name: Validate all prompts against schema
+        run: |
+          python -c "
+          import json, sys, yaml
+          from pathlib import Path
+          from jsonschema import Draft7Validator
+
+          schema = json.loads(Path('schema/prompt.schema.json').read_text())
+          validator = Draft7Validator(schema)
+          errors = 0
+
+          for d in ['planning','architecture','development','testing','security','deployment','operations','domains']:
+              for f in sorted(Path(f'prompts/{d}').glob('*.yaml')):
+                  if f.name.startswith('_'):
+                      continue
+                  data = yaml.safe_load(f.read_text())
+                  issues = list(validator.iter_errors(data))
+                  if issues:
+                      for e in issues:
+                          path = '.'.join(str(p) for p in e.absolute_path) or '(root)'
+                          print(f'::error file={f}::{path}: {e.message}')
+                      errors += len(issues)
+                  else:
+                      print(f'  ✓ {f}')
+
+          print(f'\n{errors} error(s) found')
+          sys.exit(1 if errors else 0)
+          "
+
+      - name: Validate index.json cross-references
+        run: |
+          python -c "
+          import json, sys
+          from pathlib import Path
+
+          index = json.loads(Path('prompts/index.json').read_text())
+          errors = 0
+
+          for entry in index.get('prompts', []):
+              f = entry.get('file', '')
+              if f and not Path(f).exists():
+                  print(f'::error file=prompts/index.json::Prompt {entry[\"id\"]} references missing file: {f}')
+                  errors += 1
+
+          for entry in index.get('instructions', []):
+              f = entry.get('file', '')
+              if f and not Path(f).exists():
+                  print(f'::error file=prompts/index.json::Instruction {entry[\"id\"]} references missing file: {f}')
+                  errors += 1
+
+          for entry in index.get('starter_kits', []):
+              f = entry.get('file', '')
+              if f and not Path(f).exists():
+                  print(f'::error file=prompts/index.json::Starter kit {entry[\"id\"]} references missing file: {f}')
+                  errors += 1
+
+          print(f'\n{errors} cross-reference error(s)')
+          sys.exit(1 if errors else 0)
+          "
+
   lint:
     name: YAML lint
     runs-on: ubuntu-latest

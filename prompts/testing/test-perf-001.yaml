@@ -1,0 +1,211 @@
+id: "TEST-PERF-001"
+version: "1.0.0"
+title: "Performance Testing Strategy and Execution"
+description: "Designs performance testing plans with load, stress, spike, and soak tests including benchmark targets and bottleneck identification"
+category: "testing"
+subcategory: "performance-testing"
+skill_level: "advanced"
+platforms: ["web", "cloud", "windows", "linux"]
+tags: ["performance", "load-testing", "stress-testing", "benchmarking", "latency", "throughput", "k6", "jmeter", "locust"]
+author: "community"
+last_reviewed: "2026-02-12"
+
+prompt: |
+  You are a performance engineer designing and executing a performance testing strategy.
+
+  **Context:**
+  - System: {{system_name}}
+  - Architecture: {{architecture_type}}
+  - Current Traffic: {{current_traffic}}
+  - Performance SLAs: {{performance_slas}}
+  - Testing Tool: {{testing_tool}}
+
+  **Design the performance testing strategy:**
+
+  ### 1. Performance Objectives
+  Define measurable targets for each critical path:
+
+  | Endpoint / Operation | P50 Latency | P95 Latency | P99 Latency | Throughput | Error Rate |
+  |---------------------|-------------|-------------|-------------|------------|------------|
+  | [e.g., Login] | < 200ms | < 500ms | < 1s | 100 rps | < 0.1% |
+  | [e.g., Search] | < 300ms | < 800ms | < 2s | 200 rps | < 0.1% |
+  | [e.g., Checkout] | < 500ms | < 1s | < 3s | 50 rps | < 0.01% |
+
+  ### 2. Test Scenarios
+
+  **Baseline Test:**
+  - Purpose: Establish current performance envelope
+  - Load: Current production traffic pattern (use access logs to model)
+  - Duration: 15-30 minutes at steady state
+  - Success criteria: All SLAs met, no errors
+  - Capture: Latency percentiles, throughput, error rate, resource utilization
+
+  **Load Test:**
+  - Purpose: Verify the system handles expected peak load
+  - Load: 2× current peak traffic
+  - Ramp: Gradually increase over 5 minutes
+  - Duration: 30 minutes at target load
+  - Success criteria: All SLAs met at 2× load
+
+  **Stress Test:**
+  - Purpose: Find the breaking point
+  - Load: Incrementally increase until SLAs are breached or errors spike
+  - Ramp: Step function — add 25% load every 5 minutes
+  - Capture: Exact load level where degradation begins
+  - Document: What breaks first? (CPU? Memory? DB connections? Queue depth?)
+
+  **Spike Test:**
+  - Purpose: Validate auto-scaling and system resilience to sudden traffic
+  - Load: Sudden jump from baseline to 5-10× traffic for 2-3 minutes, then back down
+  - Success criteria: System recovers within [X seconds], no data loss
+  - Capture: Recovery time, error rate during spike, auto-scaling response time
+
+  **Soak Test (Endurance):**
+  - Purpose: Identify memory leaks, connection pool exhaustion, resource degradation
+  - Load: 70-80% of maximum sustainable load
+  - Duration: 4-8 hours (or 24 hours for critical systems)
+  - Monitor: Memory usage trend, GC pauses, connection count, response time drift
+
+  **Concurrency Test:**
+  - Purpose: Identify race conditions and deadlocks under concurrent access
+  - Scenario: Multiple users performing conflicting operations simultaneously
+  - Focus: Shared resources — inventory, account balances, seat reservations
+  - Success criteria: Data consistency maintained, no deadlocks
+
+  ### 3. Workload Modeling
+  Design a realistic test workload based on production traffic:
+
+  ```
+  User Journey Mix:
+    - Browse / Read:      60% of traffic
+    - Search:             15% of traffic
+    - Write / Update:     15% of traffic
+    - Authentication:      8% of traffic
+    - Admin operations:    2% of traffic
+
+  Think Time: [X-Y seconds] between actions (simulate real user pauses)
+  Session Duration: [Average X minutes]
+  Data Volume: [Realistic dataset size — don't test on an empty database]
+  ```
+
+  ### 4. Test Infrastructure
+  - **Environment:** Dedicated performance test environment (NOT production)
+  - **Data:** Realistic dataset size matching production scale
+  - **Isolation:** No other tests or deployments during performance runs
+  - **Monitoring:** Full observability stack running during tests
+  - **Load generation:** Distributed load generators if single source is a bottleneck
+
+  ### 5. Bottleneck Analysis Framework
+  When SLAs are breached, systematically diagnose:
+
+  ```
+  Layer 1 — Network: Bandwidth saturation? DNS resolution? TLS handshake?
+  Layer 2 — Load Balancer: Connection limits? Health check failures?
+  Layer 3 — Application: Thread pool exhaustion? GC pauses? Synchronous blocking?
+  Layer 4 — Database: Slow queries? Lock contention? Connection pool full?
+  Layer 5 — Cache: Cache miss rate spike? Eviction storms?
+  Layer 6 — External Dependencies: Third-party API latency? Rate limits hit?
+  ```
+
+  ### 6. Test Script Example
+  Provide a working test script skeleton for {{testing_tool}}:
+  - Ramp-up, hold, and ramp-down phases
+  - Multiple scenarios with realistic user journey
+  - Custom metrics and thresholds
+  - Pass/fail criteria embedded in the script
+
+  ### 7. Results Report Template
+
+  ```
+  Performance Test Report: [Test Name]
+  Date: [Date]   Environment: [Env]   Duration: [X min]
+
+  Test Configuration:
+    - Virtual Users: [N]   Ramp: [X/min]
+    - Tool: [k6/JMeter/Locust]
+    - Dataset: [Size and composition]
+
+  Results Summary:
+    | Metric | Target | Actual | Status |
+    |--------|--------|--------|--------|
+    | P50 Latency | < 200ms | 180ms | ✓ PASS |
+    | P95 Latency | < 500ms | 620ms | ✗ FAIL |
+    | Throughput | > 100 rps | 95 rps | ✗ FAIL |
+    | Error Rate | < 0.1% | 0.05% | ✓ PASS |
+
+  Bottleneck Identified: [e.g., Database connection pool saturated at 85 VUs]
+  Recommendation: [e.g., Increase pool from 20 to 50, add read replica]
+
+  Resource Utilization at Peak:
+    - CPU: [X%]   Memory: [X%]   DB Connections: [X/max]
+  ```
+
+  ### 8. CI/CD Integration
+  - Run **baseline performance tests** on every PR (< 5 minutes, smoke-level load)
+  - Run **full load tests** on merge to main or before release
+  - Set **automatic failure gates** — PR blocked if P95 latency regresses by > 20%
+  - Track performance trends over time — detect gradual degradation
+
+  **Important:**
+  - Never performance-test against production without explicit approval and guardrails
+  - Use realistic data volumes — an empty database gives misleading results
+  - Test from load generator location(s) that match your user geography
+  - Monitor the load generator itself — it can become the bottleneck
+
+variables:
+  - name: "system_name"
+    description: "Name of the system to test"
+    required: true
+    examples: ["TaskFlow SaaS API", "E-commerce platform", "Real-time messaging service"]
+  - name: "architecture_type"
+    description: "Architecture style"
+    required: true
+    examples: ["Microservices on Kubernetes", "Monolithic Django app", "Serverless API Gateway + Lambda"]
+  - name: "current_traffic"
+    description: "Current production traffic levels"
+    required: true
+    examples: ["50K DAU, 200 req/s peak", "1M API calls/day", "500 concurrent WebSocket connections"]
+  - name: "performance_slas"
+    description: "Performance SLA targets"
+    required: true
+    examples: ["P95 < 500ms, 99.9% availability", "< 200ms API response, 0 data loss", "< 100ms for real-time updates"]
+  - name: "testing_tool"
+    description: "Performance testing tool to use"
+    required: false
+    default: "k6"
+    examples: ["k6", "JMeter", "Locust", "Gatling", "Artillery", "wrk"]
+
+expected_output: "Complete performance testing plan with test scenarios, workload model, test scripts, bottleneck analysis framework, and results report template"
+
+quality_criteria:
+  - "Performance targets are specific with latency percentiles and throughput numbers"
+  - "Test scenarios cover baseline, load, stress, spike, and soak"
+  - "Workload model reflects realistic production traffic patterns"
+  - "Bottleneck analysis framework is systematic and layered"
+  - "Results report template includes pass/fail criteria"
+  - "CI/CD integration plan prevents performance regressions"
+
+anti_patterns:
+  - "Testing on an empty database and extrapolating results"
+  - "Only testing happy-path endpoints"
+  - "No think time between requests (unrealistic load pattern)"
+  - "Performance testing only before launch, never again"
+  - "Ignoring the load generator as a potential bottleneck"
+  - "Setting P50 targets but ignoring P99 tail latency"
+
+adversarial_tests:
+  - scenario: "Performance test uses an empty database with 10 rows — production has 10 million"
+    expected_behavior: "Test plan must specify realistic data volume requirements matching production scale"
+    severity: "critical"
+  - scenario: "All test scenarios use reads-only — no writes, updates, or deletes"
+    expected_behavior: "Workload mix must include write operations proportional to production traffic pattern"
+    severity: "high"
+  - scenario: "Load test runs for 2 minutes and declares the system 'passed'"
+    expected_behavior: "Load tests must run at sustained load for at least 15-30 minutes; soak tests for 4+ hours"
+    severity: "high"
+
+related_prompts: ["TEST-INT-001", "OPS-MON-001", "OPS-CAP-001"]
+
+chain_position:
+  previous: ["TEST-INT-001"]
+  next: ["OPS-MON-001", "OPS-CAP-001"]
