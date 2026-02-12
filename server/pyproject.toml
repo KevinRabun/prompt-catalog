@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "prompt-catalog-mcp"
+name = "prompt-catalog"
 version = "1.0.0"
 description = "MCP server and CLI for the Prompt Catalog — an open-source prompt library for AI-assisted software development"
 readme = "README.md"
