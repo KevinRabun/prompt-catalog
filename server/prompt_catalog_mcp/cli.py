@@ -20,7 +20,6 @@ from pathlib import Path
 
 import click
 from rich.console import Console
-from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.table import Table
 from rich.prompt import Prompt as RichPrompt
