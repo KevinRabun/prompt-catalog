@@ -59,7 +59,7 @@ def judge(output: str, rubric: str, *, model: str | None = None) -> JudgeVerdict
     Raises RuntimeError if the LLM returns something unparseable.
     """
     try:
-        from openai import OpenAI
+        from openai import OpenAI  # pyright: ignore[reportMissingImports]
     except ImportError as exc:
         raise ImportError(
             "openai package is required for judge evals. "

@@ -37,7 +37,7 @@ jobs:
     name: Publish to PyPI
     needs: test
     runs-on: ubuntu-latest
-    environment: pypi
+    environment: pypi  # yamllint disable-line rule:truthy
 
     steps:
       - uses: actions/checkout@v4
