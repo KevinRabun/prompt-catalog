@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
-from jsonschema import Draft7Validator, ValidationError
+from jsonschema import Draft7Validator
 
 from .catalog import PROMPT_DIRS, INSTRUCTION_SCOPES
 
